@@ -1,0 +1,12 @@
+{
+  "name": "apac-ai-troubleshooting-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Azure-hosted Matcha mission client with Azure identity SSO",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

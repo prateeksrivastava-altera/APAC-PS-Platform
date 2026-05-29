@@ -1,0 +1,7 @@
+{
+  "apiKey": "REPLACE_WITH_MATCHA_API_KEY",
+  "baseUrl": "https://matcha.harriscomputer.com/rest/api/v1",
+  "missionId": 1920,
+  "workspaceId": -1,
+  "personaPath": "./persona_improved.md"
+}
