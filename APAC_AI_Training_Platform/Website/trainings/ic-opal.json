@@ -1,0 +1,1818 @@
+{
+  "id": "ic-opal",
+  "name": "Onboarding Professional Services Opal Integration Consultant",
+  "description": "Onboarding training program for Professional Services Staff to learn Opal Integration Implementation",
+  "role": "Integration Consulting",
+  "phases": [
+    {
+      "id": "phase-1773369153974",
+      "name": "Introduction",
+      "items": [
+        {
+          "id": "ai-chat-1773369539972",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Roles and responsibilities of an Opal Integration Consultant",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "ai-chat-1773369565307",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Opal Tier",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "ai-chat-1773369593223",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Altera internal environments",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "doc-1773824312886",
+          "type": "doc",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:w:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/Altera%20Internal%20Environments.docx?d=w45c113020c434a38a0483bbe410133b2&csf=1&web=1&e=ms1lSd",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "text-1773831663264",
+          "type": "text",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "The above link provides access to the Altera Internal Environments Access Guide document. It contains all required environment URLs along with their respective usage (PS, Sales, and R&D teams) and important access instructions, including the mandatory VPN (azaus-vpn) connection.",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "assessment-1776404010019",
+          "type": "assessment",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "80",
+            "durationMinutes": "15",
+            "questions": [
+              {
+                "text": "1. What is the name of the VPN required to access the internal environments?",
+                "options": [
+                  {
+                    "text": "A. altera-vpn",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. apac-vpn",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. azaus-vpn",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. core-vpn",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "2. Which environment is used by the PS team for training or testing?",
+                "options": [
+                  {
+                    "text": "A. APAC Demo Environment",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. GA Web Environment",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. APAC PS Environment",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Production Environment",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "3. Which of the following modules is available in all environments listed?",
+                "options": [
+                  {
+                    "text": "A. Billing Manager",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Patient Desktop",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Inventory Control",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. HR Portal",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "4. What should you do if you cannot access internal links?",
+                "options": [
+                  {
+                    "text": "A. Restart your system",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Use a different browser",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Ensure VPN (azaus-vpn) is connected",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Change your password",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "5. Which of the following statements is CORRECT regarding access and usage of the environments?",
+                "options": [
+                  {
+                    "text": "A. The GA Web Environment can be used by the Sales team for client demonstrations if VPN is connected",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. All environments can be accessed without VPN if the correct URL is used",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. The APAC PS Environment should only be used by the PS team for training or testing purposes",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. The DMR Capture Endpoint requires HTTPS access in all environments",
+                    "correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "phase-1773831266756",
+      "name": "Architecture",
+      "items": [
+        {
+          "id": "ai-chat-1773831499409",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "High level overview",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "text-1773831642445",
+          "type": "text",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "High level overview of:\n \nServers available: Web, Doc, Message, DB server(s), Bulk Print \nIIS applications (Web server) \nPurpose of each server \nServices configured on the servers \n\nDocument is uploded to the below given URL ",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "doc-1773915348292",
+          "type": "doc",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:w:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/Altera%20OPAL%20Architecture%20Overview.docx?d=w320771ae4acf49b7af493acac9bf92bb&csf=1&web=1&e=fgI1N0",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "assessment-1776405008003",
+          "type": "assessment",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "80",
+            "durationMinutes": "30",
+            "questions": [
+              {
+                "text": "1. What is the primary purpose of using a multi-tier architecture in the system?",
+                "options": [
+                  {
+                    "text": "A. To reduce the number of servers",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. To combine all services into one server",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. To distribute responsibilities across dedicated servers",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. To eliminate the need for databases",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "2. Which of the following is NOT a server type mentioned in the system?",
+                "options": [
+                  {
+                    "text": "A. Web Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Messaging Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Authentication Server",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Bulk Print Server",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "3. Which server is responsible for hosting OPAL web applications and APIs?",
+                "options": [
+                  {
+                    "text": "A. Web Server",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Messaging Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Document Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Database Server",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "4. What is the role of the Authentication Module in the Web Server?",
+                "options": [
+                  {
+                    "text": "A. Managing print queues",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Sending external messages",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Processing documents",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Handling user authentication and session management",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "5. Which service is responsible for secure communication between users and the Web Server?",
+                "options": [
+                  {
+                    "text": "A. IIS",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. SSL/TLS",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. SQL Server Agent",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. DMR Page Management",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "6. Which server handles document storage, retrieval, and scanning operations?",
+                "options": [
+                  {
+                    "text": "A. Messaging Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Web Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Document Server",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Bulk Print Server",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "7. What is the primary function of the Messaging Server?",
+                "options": [
+                  {
+                    "text": "A. Communication between systems and message processing",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Printing documents",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Data storage",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Hosting web applications",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "8. Which service is responsible for handling inbound messaging in the system?",
+                "options": [
+                  {
+                    "text": "A. Opal – Patient Messages",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Opal – Trigger Management",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Opal – Inbound Fax",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Opal – DBAPI",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "9. A failure occurs in the “DMRExternalImporter” process, causing external client systems to stop sending documents into OPAL. Based on the architecture, which server is MOST directly impacted?",
+                "options": [
+                  {
+                    "text": "A. Web Server, because it hosts OPAL APIs used for external communication",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Document Server, because it handles external importer processes for file ingestion",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Messaging Server, because it manages system-to-system communication",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Database Server, because it stores all structured data",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "10. A system administrator notices that outbound messages from OPAL are not being delivered to external systems. Based on the architecture, which service failure is MOST likely responsible?",
+                "options": [
+                  {
+                    "text": "A. Opal – Inbound Fax service on Document Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Opal – Trigger Management service on Messaging Server",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Opal – DBAPI service on Document Server",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. SQL Server Agent (OPAL) on Database Server",
+                    "correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "phase-1775630340898",
+      "name": "Opal Application",
+      "items": [
+        {
+          "id": "ai-chat-1775630779594",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Overview",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "text-1775630790881",
+          "type": "text",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "Overview of :\nOpal client web application:  \nPatient Desktop, Digital Medical Record (DMR) \nDMR Scanning \nDMR Search \nWeb Outcomes \n\nOpal desktop application:  \nDMRCapture \neForms: viewing submitted eForms in DMR ",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "ai-chat-1775630815945",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Web Application : Patinet Desktop",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "video-1776405753810",
+          "type": "video",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:v:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/Web%20Application%20overview%20%20Patient%20Desktop.mp4?csf=1&web=1&e=6nIKHW",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "assessment-1776405865912",
+          "type": "assessment",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "80",
+            "durationMinutes": "15",
+            "questions": [
+              {
+                "text": "1. What is the primary purpose of the Patient Desktop Overview session in OPAL Web Application?",
+                "options": [
+                  {
+                    "text": "A. To teach database configuration",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. To explain patient care and record management features",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. To demonstrate server architecture",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. To train on messaging services",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "2. Which OPAL application is used to search for patient records?",
+                "options": [
+                  {
+                    "text": "A. Patient Desktop",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Clinical Alerts Manager",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. DMR Search",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Web Outcomes",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "3. Which of the following identifiers can be used to search for a patient in OPAL?",
+                "options": [
+                  {
+                    "text": "A. Only Patient Name",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Only MRN",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Patient Name, MRN, and Date of Birth",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Only Date of Birth and Address",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "4. What happens when a user clicks on a patient from the Patient List?",
+                "options": [
+                  {
+                    "text": "A. Clinical Record opens in structured view",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Patient Desktop closes automatically",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Patient record is deleted",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. System logs out user session",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "5. What type of information is available in the Results Review section?",
+                "options": [
+                  {
+                    "text": "A. Only billing details",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Only patient demographics",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Only doctor notes and prescriptions",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Laboratory, imaging, and diagnostic results",
+                    "correct": true
+                  }
+                ]
+              }
+            ]
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "phase-1775630365294",
+      "name": "Opal Administration",
+      "items": [
+        {
+          "id": "ai-chat-1776407921689",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "OPAL Web Admin",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "video-1776746747243",
+          "type": "video",
+          "source": "upload",
+          "url": "",
+          "fileName": "Message Admin Module-1776746764328-1.mp4",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "assessment-1776411792022",
+          "type": "assessment",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "80",
+            "durationMinutes": "30",
+            "questions": [
+              {
+                "text": "1. What is the primary purpose of the OPAL Message Admin module?",
+                "options": [
+                  {
+                    "text": "A. Managing patient records",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Managing message flow (inbound and outbound)",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Configuring databases",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Monitoring print jobs",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "2. Which component is used to trigger or resend outbound messages?",
+                "options": [
+                  {
+                    "text": "A. Interface",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Pending Queues",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Outbound Send",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. IM Dashboard",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "3. What does “Queued Outbound Documents” represent?",
+                "options": [
+                  {
+                    "text": "A. Messages that failed",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Messages waiting to be sent",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Messages already delivered",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Deleted messages",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "4. Where can you monitor incoming messages into OPAL?",
+                "options": [
+                  {
+                    "text": "A. Outbound Send",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Pending Queues",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Interface",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Admin Portal",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "5. A user wants to check why a message has not yet been sent after being triggered. Where should they FIRST look?",
+                "options": [
+                  {
+                    "text": "A. Interface",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. IM Dashboard",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Pending Queues – Queued Outbound Documents",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Interface Settings",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "6. A message has been processed but not visible in external systems. Which section would BEST confirm whether it completed outbound preparation?",
+                "options": [
+                  {
+                    "text": "A. Processed Outbound Creation Messages",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Interface",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Outbound Send filters",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. IM Dashboard",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "7. If a user needs to identify failed incoming messages, which combination is MOST appropriate?",
+                "options": [
+                  {
+                    "text": "A. Outbound Send + IM Dashboard",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Interface filters (status + date range)",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Pending Queues + Settings",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Authority Code search only",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "8. Which feature provides insights into message delays and processing time?",
+                "options": [
+                  {
+                    "text": "A. Interface Settings",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Pending Queues",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Outbound Send",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. IM Dashboard (Latency)",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "9. A system admin wants to understand which external systems are connected to OPAL and how messages flow between them. Where should they go?",
+                "options": [
+                  {
+                    "text": "A. Interface Settings",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Pending Queues",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Outbound Send",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Queued Outbound Documents",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "10. What does the IM Dashboard primarily display?",
+                "options": [
+                  {
+                    "text": "A. Patient clinical records",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Message status, volume, and latency",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. User login activity",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Document storage details",
+                    "correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "collapsed": true
+        }
+      ]
+    },
+    {
+      "id": "phase-1775630423458",
+      "name": "Opal Integration",
+      "items": [
+        {
+          "id": "ai-chat-1776746955048",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Usage of Opal Integration",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "ai-chat-1776747023227",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Creating a New or Updating an HL7 Interface",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "doc-1776748580909",
+          "type": "doc",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:w:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/External%20importer%20HL7%20specification.docx?d=w17ef181bcccb4af98fbfd93ee86f0a4a&csf=1&web=1&e=yVOlEx",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "video-1776747073518",
+          "type": "video",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:v:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/OPAL%20%20Inbound%20Interface%20Communication%20Point%20Configuration.mp4?csf=1&web=1&e=dXRQN4",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "video-1776747243967",
+          "type": "video",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:v:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/Interface%20Specification%20File%20Create%20and%20Update.mp4?csf=1&web=1&e=gk0tin",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "ai-chat-1776747337315",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Troubleshooting Interface Issues",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "doc-1776747399935",
+          "type": "doc",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:w:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/OPAL%20Interface%20Message%20Troubleshooting.docx?d=w1245bf0b95164ebf87678a53a2d7ed0c&csf=1&web=1&e=JAnLLe",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "video-1776747741781",
+          "type": "video",
+          "source": "url",
+          "url": "https://alteradh.sharepoint.com/:v:/r/teams/APACProfessionalServices/Professional%20Services/Technical%20Services/Integration%20Consulting/Opal/Training/Opal%20Training/Integration%20Message%20troubleshooting.mp4?csf=1&web=1&e=rakgsq",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": true
+        },
+        {
+          "id": "assessment-1776748689189",
+          "type": "assessment",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "80",
+            "durationMinutes": "30",
+            "questions": [
+              {
+                "text": "1. What is the purpose of the External Importer (EI)? (Select all that apply)",
+                "options": [
+                  {
+                    "text": "A. Receive HL7 messages",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Store images",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Transform HL7 data",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Send emails",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "2. HL7 messages are processed based on configurations stored in which table?",
+                "options": [
+                  {
+                    "text": "A. IM_DMR_EI_BlackBoxSpecification",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. IM_DMR_EI_SETUP_Settings",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. USER_TABLE",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. HL7_CONFIG_FILE",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "3. What does the 'Append' property do?",
+                "options": [
+                  {
+                    "text": "A. Deletes values",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Combines multiple values",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Replaces values",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Sorts values",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "4. Which symbol represents HL7 components?",
+                "options": [
+                  {
+                    "text": "A. |",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. ^",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. &",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. ~",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "5. What does FixedText represent?",
+                "options": [
+                  {
+                    "text": "A. Dynamic HL7 value",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Static value",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Database query",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. System variable",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "6. Which are valid operators in EI conditions? (Select all that apply)",
+                "options": [
+                  {
+                    "text": "A. =",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. LIKE",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. IN",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. ADD",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "7. What does <NOW> represent?",
+                "options": [
+                  {
+                    "text": "A. Patient ID",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Message type",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. HL7 segment",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Current timestamp",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "8. Which function removes extra spaces?",
+                "options": [
+                  {
+                    "text": "A. FORMAT",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. REPLACE",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. TRIM",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. LEFT",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "9. What is the purpose of PATIENTALTERNATEDATASTRING?",
+                "options": [
+                  {
+                    "text": "A. Extend patient attributes",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Store images",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Delete records",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Encrypt data",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "10. When the error 'No EI Template has been configured' occurs, what should you do?",
+                "options": [
+                  {
+                    "text": "A. Restart server",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Execute Fill EI Template script",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Delete HL7 message",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Update database schema",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "11. Which properties control value fallback and caching? (Select all that apply)",
+                "options": [
+                  {
+                    "text": "A. OnlyIfEmpty",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. ValueIsNotDynamic",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Append",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Segment",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "12. What is the most likely cause of repeated HL7 message resending due to ACK issues?",
+                "options": [
+                  {
+                    "text": "A. Incorrect usage of TRIM function",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Missing FixedText value",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Incorrect MSH-9 message type",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Improper use of Append property",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "13. What keys needs to be used to run the specification file?",
+                "options": [
+                  {
+                    "text": "A. Ctrl + Shift + L",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Ctrl + Shift + Del",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Ctrl + Alt + L",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Ctrl + Shift + R",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "14. What does '%006' represent?",
+                "options": [
+                  {
+                    "text": "A. Error code",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. HL7 segment",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. ASCII control character",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Database key",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "15. In Result Link Command creation, which elements are used? (Select all that apply)",
+                "options": [
+                  {
+                    "text": "A. ResultCode",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. ResultValue",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. LinkCommandID",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. All",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "16. Which functions are used for string manipulation? (Select all that apply)",
+                "options": [
+                  {
+                    "text": "A. LEFT",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. UCASE",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. MID",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. All",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "17. Which are advanced extraction functions?",
+                "options": [
+                  {
+                    "text": "A. GET_HL723_PATIENTIDENTIFIERS",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. FORMAT",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. TRIM",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. BASE64DECODE",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "18. What can cause HL7 ACK issues? (Select all that apply)",
+                "options": [
+                  {
+                    "text": "A. Incorrect MSH-9",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Missing EI Template",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Unsupported event type",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Mismatch in configuration",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "19. Which property ensures that a value is only assigned if no previous value has been populated?",
+                "options": [
+                  {
+                    "text": "A. Append",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. PostAppend",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. OnlyIfEmpty",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. ValueIsNotDynamic",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "20. Which of the following functions is specifically used to map values using predefined OPAL lookup lists?",
+                "options": [
+                  {
+                    "text": "A. FORMAT",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. EXTRACTFIELDLISTVALUE",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. NUMERICOPERATION",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. REPLACE",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "21. What does the status INTEGRATED: 1 | REASON: 0 indicate?",
+                "options": [
+                  {
+                    "text": "A. Message failed",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Message queued",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Message successfully processed",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Message duplicated",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "22. What is the meaning of REASON: 1?",
+                "options": [
+                  {
+                    "text": "A. Patient mismatch",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Duplicate message ID",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. System crash",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Missing ACK",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "23. Which process is responsible for external message importing?",
+                "options": [
+                  {
+                    "text": "A. InterfaceManagerX.exe",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. SQLServer.exe",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. DMRExternalImport.exe",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. HL7Service.exe",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "24. What does REASON: 5 indicate?",
+                "options": [
+                  {
+                    "text": "A. Network failure",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Duplicate message",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Patient demographic mismatch",
+                    "correct": true
+                  },
+                  {
+                    "text": "D. Missing configuration",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "25. What should you check if messages are delayed in processing?",
+                "options": [
+                  {
+                    "text": "A. Queue accumulation",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. UI design",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. User permissions",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Printer settings",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "26. A message shows INTEGRATED: 0 | REASON: 2. What is the most likely issue?",
+                "options": [
+                  {
+                    "text": "A. Duplicate message retry",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Missing ACK",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Patient mismatch",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Message arrived out of sequence",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "27. Which of the following is the best first step when diagnosing REASON: 3 (patientStream -2)?",
+                "options": [
+                  {
+                    "text": "A. Check stream configuration",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. Restart database",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Verify CPU usage",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Delete message",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "28. Which condition may cause both duplicate messages and out-of-order delivery?",
+                "options": [
+                  {
+                    "text": "A. Low disk space",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Missing FixedText",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. Incorrect TRIM function",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Network instability",
+                    "correct": true
+                  }
+                ]
+              },
+              {
+                "text": "29. Why is a successful ACK not always sufficient to confirm proper integration?",
+                "options": [
+                  {
+                    "text": "A. ACK only confirms receipt, not processing",
+                    "correct": true
+                  },
+                  {
+                    "text": "B. ACK confirms database insertion",
+                    "correct": false
+                  },
+                  {
+                    "text": "C. ACK validates patient identity",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. ACK ensures correct configuration",
+                    "correct": false
+                  }
+                ]
+              },
+              {
+                "text": "30. A system shows increasing message backlog, high CPU usage, and delayed processing, but all services are running. What is the most likely root cause?",
+                "options": [
+                  {
+                    "text": "A. Duplicate Message ID",
+                    "correct": false
+                  },
+                  {
+                    "text": "B. Resource limitation causing processing",
+                    "correct": true
+                  },
+                  {
+                    "text": "C. Patient demographic mismatch",
+                    "correct": false
+                  },
+                  {
+                    "text": "D. Missing stream configuration",
+                    "correct": false
+                  }
+                ]
+              }
+            ]
+          },
+          "collapsed": true
+        }
+      ]
+    }
+  ],
+  "mentorMissionId": "4108",
+  "mentorFolderId": "14000"
+}

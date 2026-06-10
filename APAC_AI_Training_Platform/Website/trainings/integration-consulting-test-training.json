@@ -1,0 +1,125 @@
+{
+  "id": "integration-consulting-test-training",
+  "name": "Test Training",
+  "description": "For testing purposes",
+  "phases": [
+    {
+      "id": "phase-1768178132107",
+      "name": "Introduction",
+      "items": [
+        {
+          "id": "ai-chat-1768178188110",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Introduction to Opal Integration",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": false
+        },
+        {
+          "id": "doc-1768178152150",
+          "type": "doc",
+          "source": "library",
+          "url": "",
+          "fileName": "CureMD.pdf",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": false
+        },
+        {
+          "id": "video-1768178247412",
+          "type": "video",
+          "source": "upload",
+          "url": "",
+          "fileName": "INC21585073-20250113-OPAL22.1-MultiWindow-Error _1_.mp4",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": false
+        },
+        {
+          "id": "text-1768178320436",
+          "type": "text",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "dfdfdf",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": false
+        },
+        {
+          "id": "assessment-1768178333805",
+          "type": "assessment",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "",
+          "mentorTopic": "",
+          "assessment": {
+            "passingMarks": "1",
+            "durationMinutes": "10",
+            "questions": [
+              {
+                "text": "Question 1",
+                "options": [
+                  {
+                    "text": "Option 1",
+                    "correct": false
+                  },
+                  {
+                    "text": "Option 2",
+                    "correct": true
+                  }
+                ]
+              }
+            ]
+          },
+          "collapsed": false
+        }
+      ]
+    }
+  ],
+  "mentorMissionId": "4108",
+  "mentorFolderId": "14000",
+  "role": "Integration Consulting"
+}

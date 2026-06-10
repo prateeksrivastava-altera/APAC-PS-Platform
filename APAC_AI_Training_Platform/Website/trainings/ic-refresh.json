@@ -1,0 +1,28 @@
+{
+  "id": "ic-refresh",
+  "name": "Refresher Crash Course for Professional Services Integration Consultant",
+  "description": "Quick refresher on key integration consulting concepts",
+  "role": "Integration Consulting",
+  "phases": [
+    {
+      "id": "ic-refresh-phase-0",
+      "name": "Core Concepts",
+      "items": []
+    },
+    {
+      "id": "ic-refresh-phase-1",
+      "name": "API Refresh",
+      "items": []
+    },
+    {
+      "id": "ic-refresh-phase-2",
+      "name": "Data Validation",
+      "items": []
+    },
+    {
+      "id": "ic-refresh-phase-3",
+      "name": "Deployment Tips",
+      "items": []
+    }
+  ]
+}

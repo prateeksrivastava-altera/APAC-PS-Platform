@@ -1,0 +1,49 @@
+|| ONE TIME INSTALLATION ||
+winget install --exact --id Microsoft.AzureCLI
+
+|| GIT COMMIT ||
+git add -A
+git commit -m "1.2.0"
+git push
+
+|| LOCAL RUN ||
+$env:DEV_BYPASS_AUTH="true"
+$env:DEV_USER_NAME="Prateek Srivastava"
+$env:DEV_USER_EMAIL="prateek@example.com"
+$env:MATCHA_API_KEY="1568636f2ee44def97f16f6fffdcea2b"
+$env:MATCHA_MISSION_ID="1920"
+$env:MATCHA_WORKSPACE_ID="-1"
+$env:MATCHA_BASE_URL="https://matcha.harriscomputer.com/rest/api/v1"
+node .\server.js
+
+|| CLEAN ZIP DEPLOYMENT ||
+az login
+
+Remove-Item -LiteralPath .\altera-apac-ps-hub.zip -ErrorAction SilentlyContinue
+tar.exe -a -c -f .\altera-apac-ps-hub.zip `
+  public `
+  server.js `
+  package.json `
+  package-lock.json `
+  node_modules `
+  auth.js `
+  persona_improved.md `
+  matcha-client.js `
+  AZURE_DEPLOYMENT.md `
+  APAC_AI_Training_Platform\Website\index.html
+
+az account set --subscription "SalesAustraliaQa"
+az webapp deploy `
+  --resource-group "APAC_PS_AI_Platform" `
+  --name "altera-apac-ps-hub" `
+  --src-path ".\altera-apac-ps-hub.zip" `
+  --type zip `
+  --restart true
+
+|| POST DEPLOY CHECKS ||
+az webapp show `
+  --resource-group "APAC_PS_AI_Platform" `
+  --name "altera-apac-ps-hub" `
+  --query defaultHostName
+
+

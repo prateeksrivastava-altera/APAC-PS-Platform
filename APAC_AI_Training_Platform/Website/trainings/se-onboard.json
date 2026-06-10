@@ -1,0 +1,33 @@
+{
+  "id": "se-onboard",
+  "name": "Onboarding Professional Services Systems Engineer",
+  "description": "Complete onboarding program for Systems Engineers",
+  "role": "Systems Engineering",
+  "phases": [
+    {
+      "id": "se-onboard-phase-0",
+      "name": "Intro & Overview",
+      "items": []
+    },
+    {
+      "id": "se-onboard-phase-1",
+      "name": "Architecture Basics",
+      "items": []
+    },
+    {
+      "id": "se-onboard-phase-2",
+      "name": "Tooling",
+      "items": []
+    },
+    {
+      "id": "se-onboard-phase-3",
+      "name": "Deployment",
+      "items": []
+    },
+    {
+      "id": "se-onboard-phase-4",
+      "name": "Certification",
+      "items": []
+    }
+  ]
+}

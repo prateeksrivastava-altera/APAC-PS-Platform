@@ -139,9 +139,6 @@
     if (!authenticated) {
       setButton("Sign in", "out");
       authBtn.onclick = redirectToLogin;
-      if (state?.authMode !== "development-bypass") {
-        redirectToLogin();
-      }
       return null;
     }
 
@@ -155,6 +152,8 @@
   }
 
   window.authBootstrap = {
+    loadAuthState,
     requireAuthOrRedirect,
+    redirectToLogin,
   };
 })();

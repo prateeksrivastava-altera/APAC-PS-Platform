@@ -1,0 +1,35 @@
+{
+  "id": "integration-consulting-customer-interfaces-sme-session",
+  "name": "Customer Interfaces SME Session",
+  "description": "",
+  "phases": [
+    {
+      "id": "phase-1772092770004",
+      "name": "All Customers Interfaces",
+      "items": [
+        {
+          "id": "ai-chat-1772092785733",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Details of clients existing interfaces",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": false
+        }
+      ]
+    }
+  ],
+  "mentorMissionId": "4108",
+  "mentorFolderId": "14000",
+  "role": "Integration Consulting"
+}

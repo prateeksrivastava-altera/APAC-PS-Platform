@@ -7,159 +7,203 @@
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
-    <div class="pageGlow pageGlow--left" aria-hidden="true"></div>
-    <div class="pageGlow pageGlow--right" aria-hidden="true"></div>
-
-    <div class="shell">
-      <header class="topbar">
-        <div class="brandBlock">
-          <p class="eyebrow">APAC Professional Services</p>
-          <h1>Platform Homepage</h1>
-          <p class="subtitle">
-            One entry point for delivery accelerators, guided troubleshooting, and reusable professional services workflows.
-          </p>
+    <div class="appShell">
+      <aside class="sidebar">
+        <div class="sidebarBrand">
+          <div class="brandMark">AP</div>
+          <div class="brandTitle">APAC Professional Services Application Hub</div>
         </div>
-        <div id="authBox" class="authBox">
-          <button id="authBtn" class="authPill authPill--loggedOut" type="button" aria-expanded="false">
-            <span class="authAvatar">A</span>
-            <span class="authName">Checking sign-in</span>
+
+        <nav class="sidebarNav" aria-label="Platform apps">
+          <button class="navItem navItem--active" type="button" data-view-target="platform-briefing">
+            Platform Briefing
+            <span class="navItemMeta">Overview and delivery signals</span>
           </button>
+
+          <button class="navItem" type="button" data-view-target="troubleshooting-platform">
+            Troubleshooting Platform
+            <span class="navItemMeta">Powered by Matcha</span>
+          </button>
+
+          <button class="navItem" type="button" data-view-target="training-platform">
+            Training Platform
+            <span class="navItemMeta">APAC AI enablement workspace</span>
+          </button>
+
+          <div class="navDivider">Upcoming</div>
+
+          <button class="navItem navItem--disabled" type="button" disabled>
+            Test Script Generator
+          </button>
+        </nav>
+
+        <div class="sidebarFooter">
+          <div class="sidebarFooterUser">Prateek Workspace</div>
+          <div class="sidebarFooterMeta">Testing mode active</div>
+          <div id="sidebarVersion" class="sidebarFooterVersion">Version</div>
         </div>
-      </header>
+      </aside>
 
-      <main class="homepage">
-        <section class="hero panel">
-          <div class="heroCopy">
-            <p class="heroTag">Platform launchpad</p>
-            <h2>Tools for APAC PS delivery, faster triage, and repeatable execution.</h2>
-            <p class="heroText">
-              Start from the app catalog below. AI Troubleshooting is available now and connects to the Azure-hosted Matcha assistant for mission-guided issue analysis.
-            </p>
-            <div class="heroActions">
-              <button class="primaryButton" type="button" data-app-target="ai-troubleshooting">Open AI Troubleshooting</button>
-              <a class="ghostButton ghostButton--link" href="#appCatalog">Browse apps</a>
-            </div>
-          </div>
+      <main class="mainStage">
+        <header class="mainHeader">
+          <p class="mainHeaderEyebrow">APAC Professional Services</p>
+          <h1 class="mainHeaderTitle">Application Hub</h1>
+        </header>
 
-          <div class="heroStats" aria-label="Platform summary">
-            <div class="statCard">
-              <div class="statValue">01</div>
-              <div class="statLabel">Live app today</div>
-            </div>
-            <div class="statCard">
-              <div class="statValue">Azure</div>
-              <div class="statLabel">Authenticated access</div>
-            </div>
-            <div class="statCard">
-              <div class="statValue">1920</div>
-              <div class="statLabel">Troubleshooting mission</div>
-            </div>
-          </div>
-        </section>
-
-        <section id="appCatalog" class="catalogSection">
-          <div class="sectionHeading">
-            <div>
-              <p class="sectionEyebrow">App Catalog</p>
-              <h2>Professional Services Apps</h2>
-            </div>
-            <p class="sectionText">Use the live app now or keep this homepage ready for additional tools as they are onboarded.</p>
-          </div>
-
-          <div class="appGrid">
-            <article class="appCard appCard--featured">
-              <div class="appCardHeader">
-                <span class="appBadge">Live</span>
-                <span class="appMeta">AI assistant</span>
+        <div class="contentRail">
+          <section id="platform-briefing" class="appView appView--active">
+            <div class="viewHero">
+              <div>
+                <p class="sectionEyebrow">App View</p>
+                <h2>Platform Briefing</h2>
+                <p class="boardText">
+                  Overview of delivery posture, operating signals, and the currently live application portfolio.
+                </p>
               </div>
-              <h3>AI Troubleshooting</h3>
-              <p>
-                Guided issue triage for APAC PS teams with mission context, authenticated access, and a persistent troubleshooting chat.
-              </p>
-              <ul class="featureList">
-                <li>Mission-backed troubleshooting workflow</li>
-                <li>Azure identity aware</li>
-                <li>Live assistant chat and mission status</li>
-              </ul>
-              <button class="primaryButton" type="button" data-app-target="ai-troubleshooting">Launch app</button>
-            </article>
-
-            <article class="appCard">
-              <div class="appCardHeader">
-                <span class="appBadge appBadge--muted">Planned</span>
-                <span class="appMeta">Delivery automation</span>
-              </div>
-              <h3>SOW Generator</h3>
-              <p>Reserved for a future integrated statement-of-work workflow within this platform homepage.</p>
-              <button class="ghostButton" type="button" disabled>Coming soon</button>
-            </article>
-
-            <article class="appCard">
-              <div class="appCardHeader">
-                <span class="appBadge appBadge--muted">Planned</span>
-                <span class="appMeta">Knowledge ops</span>
-              </div>
-              <h3>Delivery Playbooks</h3>
-              <p>Space for reusable runbooks, implementation patterns, and curated PS guidance.</p>
-              <button class="ghostButton" type="button" disabled>Coming soon</button>
-            </article>
-          </div>
-        </section>
-
-        <section id="ai-troubleshooting" class="workspaceSection panel">
-          <div class="workspaceIntro">
-            <div>
-              <p class="sectionEyebrow">Live Workspace</p>
-              <h2>AI Troubleshooting</h2>
-              <p class="sectionText">
-                Use the assistant for symptoms, scope, logs, recent changes, and validation steps. Mission details load after authentication.
-              </p>
+              <button class="primaryButton" type="button" data-view-target="troubleshooting-platform">Open Troubleshooting Platform</button>
             </div>
-            <div class="workspacePill">Azure-hosted Matcha assistant</div>
-          </div>
 
-          <div class="layout">
-            <section class="panel missionPanel">
-              <div class="panelHeader">
-                <h3>Mission status</h3>
-                <button id="refreshMissionBtn" class="ghostButton" type="button">Refresh</button>
+            <section class="greetingCard">
+              <div class="greetingIdentity">
+                <div class="greetingAvatar">P</div>
+                <div>
+                  <div class="greetingLabel">Good morning</div>
+                  <div class="greetingName">APAC Professional Services</div>
+                </div>
               </div>
-              <div id="missionStatus" class="metaGrid"></div>
             </section>
 
-            <section class="panel chatPanel">
-              <div class="panelHeader">
+            <section class="briefingBoard">
+              <div class="boardHeader">
                 <div>
-                  <h3>Ask the assistant</h3>
-                  <p class="hint">Authentication is required before chat starts.</p>
+                  <p class="sectionEyebrow">Command Centre</p>
+                  <h2>Platform briefing</h2>
+                  <p class="boardText">
+                    This hub is the front door for APAC Professional Services applications. It is intended to consolidate
+                    troubleshooting, enablement, script generation, and other delivery accelerators behind one consistent interface.
+                  </p>
                 </div>
               </div>
 
-              <div id="chatTranscript" class="transcript">
-                <article class="message message--assistant">
-                  <div class="messageRole">Assistant</div>
-                  <div class="messageBody">
-                    Start with the issue symptom, scope, timeline, and what has already been tried.
-                  </div>
+              <div class="briefingContent">
+                <article class="briefingCard">
+                  <h3>Current live capability</h3>
+                  <p>
+                    The hub currently exposes two live applications: Troubleshooting Platform for Matcha-guided issue triage
+                    and Training Platform for APAC AI onboarding, learning paths, and mentor-led enablement.
+                  </p>
+                </article>
+
+                <article class="briefingCard">
+                  <h3>How the platform is structured</h3>
+                  <p>
+                    Each application appears as a selectable item in the left navigation. Selecting an app loads its
+                    dedicated experience into the main panel so users stay within one shared APAC PS workspace.
+                  </p>
+                </article>
+
+                <article class="briefingCard">
+                  <h3>Planned expansion</h3>
+                  <p>
+                    Additional accelerators such as Test Script Generator remain visible in the
+                    navigation to show roadmap intent, but they stay disabled until their workflows are implemented.
+                  </p>
                 </article>
               </div>
-
-              <form id="chatForm" class="composer">
-                <label class="composerLabel" for="promptInput">Troubleshooting prompt</label>
-                <textarea
-                  id="promptInput"
-                  name="prompt"
-                  rows="5"
-                  placeholder="Example: Opal upload fails for all users in TEST after yesterday's deployment. Browser and workstation change did not help."
-                  required
-                ></textarea>
-                <div class="composerActions">
-                  <button id="sendBtn" class="primaryButton" type="submit">Send</button>
-                </div>
-              </form>
             </section>
-          </div>
-        </section>
+          </section>
+
+          <section id="troubleshooting-platform" class="appView">
+            <section class="workspaceBoard">
+              <div class="boardHeader">
+                <div>
+                  <p class="sectionEyebrow">Live Workspace</p>
+                  <h2>Troubleshooting Platform</h2>
+                  <p class="boardText">
+                    Powered by Matcha. Use the sign-in control here only while tenant approval is pending.
+                  </p>
+                </div>
+                <div class="workspaceActions">
+                  <div class="workspacePill">Azure-hosted Matcha assistant</div>
+                  <div id="authBox" class="authBox authBox--inline">
+                    <div class="authTestingLabel">Microsoft sign-in test</div>
+                    <button id="authBtn" class="authPill authPill--loggedOut" type="button" aria-expanded="false">
+                      <span class="authAvatar">A</span>
+                      <span class="authName">Sign in for testing</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="workspaceLayout">
+                <section class="chatPanel">
+                  <div class="panelHeader">
+                    <div>
+                      <h3>Ask the assistant</h3>
+                      <p id="chatHint" class="hint">Chat is ready. Microsoft sign-in is optional, and you can also attach screenshots for Matcha to review.</p>
+                    </div>
+                  </div>
+
+                  <div id="chatTranscript" class="transcript">
+                    <article class="message message--assistant">
+                      <div class="messageRole">Assistant</div>
+                      <div class="messageBody">
+                        Start with the issue symptom, scope, timeline, affected users, recent changes, and what has already been tried.
+                      </div>
+                    </article>
+                  </div>
+
+                  <form id="chatForm" class="composer">
+                    <label class="composerLabel" for="promptInput">Troubleshooting prompt</label>
+                    <div id="composerDropZone" class="composerDropZone">
+                      <textarea
+                        id="promptInput"
+                        name="prompt"
+                        rows="5"
+                        placeholder="Describe the issue here. Press Enter to send, Shift+Enter for a new line. Drag screenshots into this area or use the + button."
+                        required
+                      ></textarea>
+                      <div class="composerToolbar">
+                        <label class="attachButton" for="screenshotInput" title="Attach screenshots">+</label>
+                        <button id="sendBtn" class="sendIconButton" type="submit" title="Send">
+                          &#9992;
+                        </button>
+                      </div>
+                      <input id="screenshotInput" class="uploadInput uploadInput--hidden" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+                      <div id="screenshotList" class="screenshotList"></div>
+                    </div>
+                  </form>
+                </section>
+              </div>
+            </section>
+          </section>
+
+          <section id="training-platform" class="appView">
+            <section class="workspaceBoard">
+              <div class="boardHeader">
+                <div>
+                  <p class="sectionEyebrow">Live Workspace</p>
+                  <h2>Training Platform</h2>
+                  <p class="boardText">
+                    APAC AI enablement workspace for onboarding, curated training paths, mentor interactions, and training administration.
+                  </p>
+                </div>
+                <div class="workspaceActions">
+                  <div class="workspacePill">Embedded inside Application Hub</div>
+                </div>
+              </div>
+
+              <div class="embeddedAppFrameWrap">
+                <iframe
+                  class="embeddedAppFrame"
+                  src="/training-platform/"
+                  title="APAC AI Training Platform"
+                  loading="lazy"
+                ></iframe>
+              </div>
+            </section>
+          </section>
+        </div>
       </main>
     </div>
 

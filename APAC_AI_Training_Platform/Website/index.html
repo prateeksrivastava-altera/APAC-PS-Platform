@@ -1,0 +1,2611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>APAC AI Training Platform</title>
+  <style>
+    :root {
+      --blue: #4130c7;
+      --blue-dark: #26146f;
+      --bg: linear-gradient(180deg, #f5f4fd 0%, #ece9fa 100%);
+      --text: #120d33;
+      --muted: #4e4770;
+      --card: #ffffff;
+      --surface: #f6f4fd;
+      --surface-strong: #eeebfb;
+      --line: rgba(38, 20, 111, 0.14);
+      --line-strong: rgba(38, 20, 111, 0.22);
+      --success: #0f7a3f;
+      --danger: #b42318;
+      --radius: 14px;
+      --shadow: 0 20px 40px rgba(39, 24, 114, 0.12);
+      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .page-shell { max-width: 1520px; margin: 0 auto; padding: 24px; }
+    /* Top nav */
+    .nav { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.98); padding: 18px 22px; border-radius: 18px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+    .nav-left { display: flex; gap: 12px; align-items: center; }
+    .home-icon { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #ece9ff 0%, #d8d1ff 100%); display: grid; place-items: center; color: var(--blue); }
+    .nav-title { font-weight: 700; font-size: 18px; letter-spacing: -0.02em; }
+    .nav-sub { color: var(--muted); font-size: 13px; }
+    .nav-actions { display: flex; align-items: center; gap: 14px; }
+    .link-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 10px; border-radius: 10px; color: var(--muted); background: #f6f4fd; border: 1px solid rgba(64, 45, 132, 0.12); cursor: pointer; font-size: 13px; }
+    .link-btn.logout { color: #c62828; border-color: #f5d7d7; background: #fff7f7; }
+    .link-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .link-btn.logout:hover { border-color: #e53935; color: #e53935; }
+    /* Auth shells */
+    .auth-wrap { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 24px; }
+    .auth-card { background: #fff; width: min(760px, 95vw); padding: 32px 36px; border-radius: 22px; box-shadow: var(--shadow); border: 1px solid rgba(64, 45, 132, 0.12); }
+    .auth-header { text-align: center; }
+    .icon-circle { width: 62px; height: 62px; border-radius: 50%; background: rgba(91, 75, 219, 0.12); display: grid; place-items: center; color: var(--blue); margin: 0 auto 12px; }
+    .auth-title { font-size: 20px; font-weight: 700; margin: 0 0 4px; }
+    .auth-sub { color: var(--muted); margin: 0 0 18px; font-size: 14px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px 18px; }
+    .form-grid.single { grid-template-columns: 1fr; }
+    label { font-size: 13px; color: #29214d; margin-bottom: 6px; display: block; font-weight: 600; }
+    .field { display: flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: #fcfbff; }
+    .field input, .field select { border: none; background: transparent; outline: none; width: 100%; font-size: 14px; color: var(--text); }
+    .field:focus-within { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(65,48,199,0.14); background: #fff; }
+    .icon-mini { width: 16px; height: 16px; color: #7c88a6; flex-shrink: 0; }
+    .muted-box { border: 1px dashed var(--line-strong); border-radius: 12px; padding: 24px 16px; display: grid; place-items: center; color: #665d8f; background: var(--surface); min-height: 150px; text-align: center; }
+    .training-panel { border: 1px dashed var(--line-strong); border-radius: 12px; background: var(--surface); height: 260px; overflow: hidden; position: relative; padding: 12px; }
+    .training-panel .muted-box { border: none; background: transparent; position: absolute; inset: 0; display: grid; place-items: center; height: 100%; }
+    .training-list { display: grid; gap: 12px; max-height: 236px; overflow: auto; padding: 4px; position: relative; }
+    .training-item { border: 1px solid #dde2f0; border-radius: 12px; padding: 14px 16px; background: #fff; box-shadow: 0 6px 18px rgba(16, 12, 49, 0.05); display: flex; gap: 10px; align-items: flex-start; cursor: pointer; transition: border 0.15s, box-shadow 0.15s, background 0.15s; }
+    .training-item.selected { border-color: var(--blue); background: #ece9ff; box-shadow: 0 8px 20px rgba(65,48,199,0.15); }
+    .training-desc { color: #564f79; font-size: 13px; margin: 4px 0 0; line-height: 1.45; }
+    .primary { width: 100%; border: none; border-radius: 12px; padding: 13px; font-size: 15px; font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--blue) 0%, var(--blue-dark) 100%); cursor: pointer; box-shadow: 0 10px 24px rgba(57, 41, 136, 0.22); margin-top: 10px; }
+    .primary:hover { background: var(--blue-dark); }
+    .primary:disabled,
+    .primary.is-disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+    .primary.is-disabled { pointer-events: none; }
+    .assess-option { border: 1px solid #d8deed; background: #f7f9fe; border-radius: 10px; padding: 8px 10px; font-size: 13px; cursor: pointer; text-align: left; }
+    .assess-option:hover { border-color: var(--blue); color: var(--blue); }
+    .assess-option.selected { border-color: #1c8c4a; background: #e8f8ef; color: #1c8c4a; }
+    .footer-text { text-align: center; font-size: 13px; color: var(--muted); margin-top: 12px; }
+    /* Dashboard */
+    .card { background: var(--card); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--line); }
+    .profile-card { background: linear-gradient(135deg, #5b4bdb 0%, #38239f 100%); color: #fff; padding: 18px 20px; border-radius: 16px; box-shadow: 0 14px 32px rgba(57, 41, 136, 0.28); display: flex; justify-content: space-between; align-items: center; }
+    .profile-meta { line-height: 1.4; }
+    .profile-meta .label { font-size: 13px; opacity: 0.85; }
+    .big-count { font-size: 32px; font-weight: 800; text-align: right; }
+    .section-row { display: flex; justify-content: space-between; align-items: center; margin: 18px 0 10px; }
+    .section-title { font-weight: 700; font-size: 16px; }
+    .add-btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 16px; border-radius: 12px; border: none; background: var(--blue); color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 10px 22px rgba(65,48,199,0.22); }
+    .add-btn:hover { background: var(--blue-dark); }
+    .group-card { background: var(--surface); border-radius: 14px; padding: 18px; border: 1px solid rgba(64, 45, 132, 0.10); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
+    .group-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+    .badge { background: #dfe9ff; color: var(--blue); padding: 6px 10px; border-radius: 999px; font-size: 12px; }
+    .training-row { background: #fff; border-radius: 12px; padding: 14px 16px; border: 1px solid #dfe4f0; box-shadow: 0 6px 20px rgba(16,12,49,0.05); display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; margin-top: 12px; }
+    .train-name { font-weight: 700; color: #1f2a44; margin-bottom: 4px; }
+    .status-chip { border: 1px solid #dfe4ed; border-radius: 18px; padding: 6px 10px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #4b556b; }
+    .status-chip.not { background: #f8fafc; }
+    .status-chip.in { background: #e8f1ff; color: var(--blue); }
+    .status-chip.done { background: #e8f8ef; color: #1c8c4a; border-color: #d3eddc; }
+    .progress-wrap { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #4b556b; }
+    .progress-bar { width: 120px; height: 8px; border-radius: 999px; background: #e4e8f1; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--blue); }
+    .start-btn { padding: 10px 16px; border-radius: 12px; border: none; background: var(--blue); color: #fff; font-weight: 700; cursor: pointer; box-shadow: 0 10px 22px rgba(13,91,255,0.25); }
+    .start-btn:hover { background: var(--blue-dark); }
+    /* Training view */
+    .training-layout { margin-top: 16px; }
+    .training-top { display: flex; align-items: center; gap: 12px; }
+    .phase-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 2px; }
+    .phase-tab { border: 1px solid #dfe4f2; background: #f7f9fe; border-radius: 12px; padding: 8px 12px; font-size: 13px; color: #324a7a; cursor: default; display: inline-flex; gap: 8px; align-items: center; }
+    .phase-tab.current { border-color: var(--blue); background: #e7edff; color: var(--blue); }
+    .phase-tab.done { border-color: #cfead7; background: #f2fbf5; color: #1c8c4a; }
+    .chat-shell { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: #fff; display: flex; flex-direction: column; height: 560px; }
+    .chat-box { flex: 1; overflow: auto; background: #faf9fe; padding: 20px; }
+    .msg { padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; max-width: 80%; box-shadow: 0 6px 18px rgba(27,63,140,0.07); }
+    .bot { background: #eef3ff; color: #1b3f8c; }
+    .user { background: #dff7e8; color: #0d5228; margin-left: auto; }
+    .timestamp { display: block; font-size: 11px; color: #7a859d; margin-top: 4px; }
+    .chat-input { display: flex; gap: 10px; padding: 12px; border-top: 1px solid #e3e8f3; background: #fff; align-items: center; }
+    .chat-input input { flex: 1; background: #f9fbff; border-radius: 10px; border: 1px solid #d8deed; padding: 10px 12px; }
+    .chat-input button { width: 120px; border-radius: 10px; }
+    .light-btn { padding: 9px 13px; border-radius: 10px; border: 1px solid #cfd7ea; background: #fff; color: #261f47; cursor: pointer; font-size: 13px; font-weight: 600; }
+    .light-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .phase-builder { margin-top: 18px; border: 1px solid #d9def0; border-radius: 18px; padding: 18px; background: linear-gradient(180deg, #fcfbff 0%, #f6f4fd 100%); }
+    .phase-builder-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
+    .phase-card { background: #fff; border: 1px solid #dbe1f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 8px 22px rgba(16,12,49,0.05); }
+    .phase-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; margin-bottom: 12px; flex-wrap: wrap; }
+    .phase-title { display: flex; align-items: center; gap: 10px; flex: 1; min-width: min(100%, 460px); }
+    .phase-name-input { width: 100%; border: 1px solid #cad3ea; border-radius: 12px; padding: 11px 12px; background: #fff; font-size: 15px; color: var(--text); font-weight: 600; }
+    .phase-tools { display: flex; gap: 10px; flex-wrap: wrap; }
+    .chip-btn { border: 1px solid #cad3ea; background: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12px; cursor: pointer; color: #2f2757; }
+    .chip-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .phase-items { display: grid; gap: 10px; margin-top: 12px; }
+    .phase-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid #dde3f0; background: #fcfcff; }
+    .phase-item-body { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 0; }
+    .phase-item-config { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+    .phase-item-config select, .phase-item-config input, .phase-item-config textarea { width: 100%; border: 1px solid #cad3ea; border-radius: 10px; padding: 8px 10px; background: #fff; font-size: 13px; font-family: inherit; color: var(--text); }
+    .file-name { background: #f1f4fb; color: #4b556b; }
+    .assessment-block { border: 1px dashed #cad3ea; border-radius: 12px; padding: 12px; background: #f8faff; }
+    .assessment-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .assessment-question { border: 1px solid #e6ebf5; border-radius: 10px; padding: 8px; background: #fff; margin-top: 8px; }
+    .assessment-top { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center; }
+    .assessment-options { margin-top: 8px; display: grid; gap: 6px; }
+    .assessment-option { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
+    .tiny-btn { border: 1px solid #cad3ea; background: #fff; border-radius: 10px; padding: 5px 9px; font-size: 11px; cursor: pointer; color: #29214d; }
+    .tiny-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .phase-item-header { display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap; }
+    .phase-item-header .activity-chip { cursor: pointer; }
+    .collapse-btn { border: 1px solid #cad3ea; background: #fff; border-radius: 10px; padding: 5px 9px; font-size: 11px; cursor: pointer; color: #29214d; }
+    .collapse-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .phase-item-body.is-collapsed .phase-item-config { display: none; }
+    .phase-item-body.is-collapsed .assessment-block { display: none; }
+    .phase-item.dragging { opacity: 0.6; }
+    .drag-handle { font-size: 12px; color: #7c88a6; cursor: grab; user-select: none; }
+    .activity-chip { background: #ece9ff; color: #2b2072; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 600; }
+    .mini-btn { margin-left: auto; border: 1px solid #cad3ea; background: #fff; border-radius: 10px; padding: 7px 11px; font-size: 12px; cursor: pointer; color: #29214d; }
+    .mini-btn:hover { border-color: var(--danger); color: var(--danger); }
+    @media (max-width: 900px) {
+      .training-row { grid-template-columns: 1fr; }
+      .nav { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .phase-title { min-width: 100%; }
+      .phase-item-config { grid-template-columns: 1fr; }
+      .assessment-top { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <script>
+    // Storage keys
+    const STORAGE_KEY = 'aipt_users';
+    const SESSION_KEY = 'aipt_session';
+    const TEMPLATES_KEY = 'aipt_templates';
+    const RESET_KEY = 'aipt_reset_done';
+    const VIDEO_LIBRARY_KEY = 'aipt_video_library';
+    const PDF_LIBRARY_KEY = 'aipt_pdf_library';
+
+    // App base path (IIS virtual directory). Empty for local dev.
+    const BASE_PATH = '/training-platform';
+
+    // Role -> training templates (loaded from storage or defaults)
+    let roleTrainingTemplates;
+    let templatesCache = null;
+    let templatesLoaded = false;
+
+    const state = { view: 'login', currentUser: null, selectedTraining: null, showAddPanel: false, isAdmin: false, showMentor: false, mentorReason: '' };
+    const el = (id) => document.getElementById(id);
+    const ACTIVITY_TYPES = [
+      { type: 'doc', label: 'Documentation reading' },
+      { type: 'lms', label: 'LMS/Workday Course' },
+      { type: 'video', label: 'Watch video' },
+      { type: 'assessment', label: 'Assessment' },
+      { type: 'text', label: 'Formatted text' },
+      { type: 'handson', label: 'Hands-on activity' },
+      { type: 'ai-chat', label: 'Mentor session' }
+    ];
+    let adminDraftTraining = { editingId: '', originalRole: '', roleSelect: '', roleNew: '', name: '', description: '', phases: [] };
+    let dragState = null;
+    let videoLibrary = [];
+    let pdfLibrary = [];
+    let librariesLoaded = false;
+    let missionsCache = [];
+    let missionsLoaded = false;
+    let lastMentorRequest = null;
+    let adminTrainingMentorMissionId = '';
+    let adminTrainingMentorFolderId = '';
+    const foldersByMission = {};
+    const foldersLoading = {};
+    const pendingUploadFiles = {};
+    const assessmentTimers = new Map();
+    let activeAssessmentKey = '';
+
+    // One-time cleanup of prior data in localStorage
+    function clearExistingDataOnce() {
+      if (localStorage.getItem(RESET_KEY)) return;
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem(SESSION_KEY);
+      localStorage.removeItem(TEMPLATES_KEY);
+      localStorage.setItem(RESET_KEY, '1');
+    }
+
+    // Storage helpers
+    let usersCache = [];
+    let usersLoaded = false;
+    const loadUsers = () => usersCache;
+    const loadSession = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; } };
+    const saveSession = (payload) => localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
+    const clearSession = () => localStorage.removeItem(SESSION_KEY);
+    const findUser = (id) => loadUsers().find(u => u.employeeId === id);
+    const loadLibrary = (key) => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
+    const saveLibrary = (key, list) => localStorage.setItem(key, JSON.stringify(list));
+
+    async function ensureUsersLoaded() {
+      if (usersLoaded) return;
+      try {
+        const res = await fetch(`${BASE_PATH}/api/users`);
+        if (!res.ok) throw new Error('Users fetch failed');
+        const data = await res.json();
+        usersCache = Array.isArray(data) ? data : [];
+      } catch {
+        usersCache = [];
+        alert('Unable to load users from server.');
+      }
+      usersLoaded = true;
+    }
+
+    async function createUser(user) {
+      const res = await fetch(`${BASE_PATH}/api/users`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+      });
+      if (!res.ok) {
+        if (res.status === 409) throw new Error('Employee ID already exists.');
+        throw new Error('User creation failed.');
+      }
+      const created = await res.json();
+      usersCache.push(created);
+      return created;
+    }
+
+    async function updateUser(user) {
+      const res = await fetch(`${BASE_PATH}/api/users/${encodeURIComponent(user.employeeId)}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(user)
+      });
+      if (!res.ok) {
+        let detail = '';
+        try { detail = await res.text(); } catch { /* ignore */ }
+        throw new Error(`User update failed (${res.status}${detail ? `): ${detail}` : ')'}`);
+      }
+      const updated = await res.json();
+      const idx = usersCache.findIndex(u => u.employeeId === updated.employeeId);
+      if (idx >= 0) usersCache[idx] = updated;
+      return updated;
+    }
+
+    async function removeUser(empId) {
+      const res = await fetch(`${BASE_PATH}/api/users/${encodeURIComponent(empId)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error('User delete failed.');
+      usersCache = usersCache.filter(u => u.employeeId !== empId);
+    }
+
+    // Template helpers
+    function defaultTemplates() {
+      return {};
+    }
+    function loadTemplatesFromStorage() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(TEMPLATES_KEY));
+        if (stored && typeof stored === 'object') return normalizeTemplates(stored);
+      } catch { /* ignore */ }
+      return null;
+    }
+    async function ensureTemplatesLoaded() {
+      if (templatesLoaded) return;
+      let normalized = null;
+      try {
+        const res = await fetch(`${BASE_PATH}/api/templates`);
+        if (!res.ok) throw new Error('Templates fetch failed');
+        const data = await res.json();
+        normalized = normalizeTemplates(data || {});
+        if (!Object.keys(normalized).length) {
+          const fallback = loadTemplatesFromStorage() || normalizeTemplates(defaultTemplates());
+          normalized = fallback;
+          persistTemplates(normalized).catch(() => {});
+        }
+      } catch {
+        normalized = loadTemplatesFromStorage() || normalizeTemplates(defaultTemplates());
+      }
+      roleTrainingTemplates = normalized;
+      templatesCache = normalized;
+      templatesLoaded = true;
+      localStorage.setItem(TEMPLATES_KEY, JSON.stringify(normalized));
+    }
+    function saveTemplates(data) {
+      const normalized = normalizeTemplates(data);
+      roleTrainingTemplates = normalized;
+      templatesCache = normalized;
+      localStorage.setItem(TEMPLATES_KEY, JSON.stringify(normalized));
+      persistTemplates(normalized).catch(() => alert('Unable to save templates to server.'));
+    }
+    async function persistTemplates(templates) {
+      const res = await fetch(`${BASE_PATH}/api/templates`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(templates)
+      });
+      if (!res.ok) throw new Error('Templates save failed');
+    }
+    const getRoleList = () => Object.keys(roleTrainingTemplates || {});
+    const getPhaseName = (phase) => typeof phase === 'string' ? phase : (phase && phase.name ? phase.name : 'Untitled Phase');
+    const activityLabel = (type) => (ACTIVITY_TYPES.find(t => t.type === type) || {}).label || type;
+    const resourceUrl = (type, fileName) => {
+      if (!fileName) return '';
+      const base = type === 'video' ? `${BASE_PATH}/resources/videos/` : `${BASE_PATH}/resources/documents/`;
+      return `${base}${encodeURIComponent(fileName)}`;
+    };
+
+    function normalizeAssessment(raw) {
+      const data = raw && typeof raw === 'object' ? raw : {};
+      if (Array.isArray(data.questions)) {
+        return {
+          passingMarks: data.passingMarks || '',
+          durationMinutes: data.durationMinutes || '',
+          questions: data.questions.map(q => ({
+            text: q.text || '',
+            options: Array.isArray(q.options) ? q.options.map(opt => ({
+              text: opt.text || '',
+              correct: !!opt.correct
+            })) : []
+          }))
+        };
+      }
+      if (data.question || data.options || data.answers) {
+        const options = Array.isArray(data.options) ? data.options : [];
+        const answers = Array.isArray(data.answers) ? data.answers : [];
+        return {
+          passingMarks: data.passingMarks || '',
+          durationMinutes: data.durationMinutes || '',
+          questions: [{
+            text: data.question || '',
+            options: options.map(opt => ({
+              text: opt,
+              correct: answers.includes(opt)
+            }))
+          }]
+        };
+      }
+      return { passingMarks: data.passingMarks || '', durationMinutes: data.durationMinutes || '', questions: [] };
+    }
+
+    async function fetchLibrary(type) {
+      const res = await fetch(`${BASE_PATH}/api/library/${type}`);
+      if (!res.ok) throw new Error('Library fetch failed');
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    }
+
+    async function ensureLibrariesLoaded() {
+      if (librariesLoaded) return;
+      try {
+        const [videos, documents] = await Promise.all([fetchLibrary('video'), fetchLibrary('document')]);
+        videoLibrary = videos;
+        pdfLibrary = documents;
+        saveLibrary(VIDEO_LIBRARY_KEY, videoLibrary);
+        saveLibrary(PDF_LIBRARY_KEY, pdfLibrary);
+      } catch {
+        videoLibrary = loadLibrary(VIDEO_LIBRARY_KEY);
+        pdfLibrary = loadLibrary(PDF_LIBRARY_KEY);
+      }
+      librariesLoaded = true;
+      if (state.view === 'admin-trainings') renderAdminTrainings();
+    }
+
+    async function ensureMissionsLoaded() {
+      if (missionsLoaded) return;
+      try {
+        const res = await fetch(`${BASE_PATH}/api/matcha/missions`);
+        if (!res.ok) throw new Error('Mission fetch failed');
+        const data = await res.json();
+        missionsCache = Array.isArray(data) ? data : [];
+      } catch {
+        missionsCache = [];
+      }
+      missionsLoaded = true;
+      if (state.view === 'admin-trainings') renderAdminTrainings();
+    }
+
+    async function ensureFoldersLoaded(missionId) {
+      if (!missionId || foldersByMission[missionId] || foldersLoading[missionId]) return;
+      foldersLoading[missionId] = true;
+      try {
+        const res = await fetch(`${BASE_PATH}/api/matcha/folders?missionId=${encodeURIComponent(missionId)}`);
+        if (!res.ok) throw new Error('Folder fetch failed');
+        const data = await res.json();
+        foldersByMission[missionId] = Array.isArray(data) ? data : [];
+      } catch {
+        foldersByMission[missionId] = [];
+      }
+      foldersLoading[missionId] = false;
+      if (state.view === 'admin-trainings') renderAdminTrainings();
+    }
+
+    async function uploadResource(type, file) {
+      const form = new FormData();
+      form.append('file', file);
+      const res = await fetch(`${BASE_PATH}/api/upload/${type}`, { method: 'POST', body: form });
+      if (!res.ok) throw new Error('Upload failed');
+      return res.json();
+    }
+
+    function normalizeTemplates(templates) {
+      const toSlug = (value) => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `phase-${Date.now()}`;
+      const normalized = {};
+      Object.keys(templates || {}).forEach(role => {
+        normalized[role] = (templates[role] || []).map((t, tIndex) => {
+          const base = toSlug(t.id || t.name || `${role}-${tIndex}`);
+          const phases = (t.phases || []).map((phase, pIndex) => {
+            const phaseObj = typeof phase === 'string' ? { name: phase } : (phase || {});
+            const phaseId = phaseObj.id || `${base}-phase-${pIndex}`;
+            const items = (phaseObj.items || []).map((item, iIndex) => {
+              const itemObj = typeof item === 'string' ? { type: item } : (item || {});
+              return {
+                id: itemObj.id || `${phaseId}-item-${iIndex}`,
+                type: itemObj.type || 'doc',
+                source: itemObj.source || '',
+                url: itemObj.url || '',
+                fileName: itemObj.fileName || '',
+                pendingFileName: '',
+                textContent: itemObj.textContent || '',
+                lmsLink: itemObj.lmsLink || '',
+                handsonText: itemObj.handsonText || '',
+                missionId: itemObj.missionId || '',
+                mentorTopic: itemObj.mentorTopic || '',
+                assessment: normalizeAssessment(itemObj.assessment),
+                collapsed: !!itemObj.collapsed
+              };
+            });
+            return { id: phaseId, name: phaseObj.name || `Phase ${pIndex + 1}`, items };
+          });
+          return { ...t, phases };
+        });
+      });
+      return normalized;
+    }
+
+    // Auth logic
+    async function handleLogin(data) {
+      await ensureUsersLoaded();
+      // Admin shortcut
+      if (data.employeeId === 'APAC' && data.password === 'APACadmin') {
+        state.isAdmin = true; state.currentUser = null; state.selectedTraining = null; state.view = 'admin-home'; state.showAddPanel = false;
+        saveSession({ admin: true });
+        return render();
+      }
+      const user = findUser(data.employeeId);
+      if (!user || user.password !== data.password) return alert('Invalid Employee ID or password.');
+      state.isAdmin = false; state.currentUser = user; state.view = 'dashboard'; state.showAddPanel = false; saveSession({ employeeId: user.employeeId }); render();
+    }
+
+    async function handleRegister(data, selectedIds) {
+      await ensureUsersLoaded();
+      if (loadUsers().some(u => u.employeeId === data.employeeId)) return alert('Employee ID already exists. Please sign in.');
+      if (!data.role) return alert('Please select a role.');
+      const name = (data.name || '').trim();
+      if (!name) return alert('Please enter your name.');
+      if (data.password !== data.confirm) return alert('Passwords do not match.');
+      if (!selectedIds.length) return alert('Please select at least one training.');
+      const trainings = buildTrainingsFromTemplate(data.role, selectedIds);
+      const newUser = { employeeId: data.employeeId, name, title: data.title, role: data.role, password: data.password, managerEmployeeId: data.managerEmployeeId || '', approvals: [], trainings };
+      try {
+        const created = await createUser(newUser);
+        state.isAdmin = false; state.currentUser = created; state.view = 'dashboard'; state.showAddPanel = false; saveSession({ employeeId: created.employeeId }); render();
+      } catch (err) {
+        alert(err.message || 'Registration failed.');
+      }
+    }
+
+    function buildTrainingsFromTemplate(role, ids) {
+      const template = roleTrainingTemplates[role] || [];
+      return template.filter(t => ids.includes(t.id)).map(t => {
+        const phases = (t.phases || []).map((p, idx) => ({
+          id: p.id || `phase-${idx}`,
+          name: getPhaseName(p),
+          items: (p.items || []).map((item, itemIdx) => ({
+            id: item.id || `item-${itemIdx}`,
+            type: item.type || 'doc',
+            source: item.source || '',
+            url: item.url || '',
+            fileName: item.fileName || '',
+            pendingFileName: '',
+            textContent: item.textContent || '',
+            lmsLink: item.lmsLink || '',
+            handsonText: item.handsonText || '',
+            missionId: item.missionId || '',
+            mentorTopic: item.mentorTopic || '',
+            assessment: normalizeAssessment(item.assessment),
+            collapsed: !!item.collapsed
+          }))
+        }));
+        return {
+          ...t,
+          role,
+          phases,
+          currentPhaseIndex: 0,
+          currentItemIndex: 0,
+          started: false,
+          completedItemIds: [],
+          mentorMissionId: t.mentorMissionId || '',
+          mentorFolderId: t.mentorFolderId || '',
+          status: 'not-started',
+          chatHistory: [{ from: 'bot', text: `Welcome to ${t.name}! We'll be going through ${phases.length} phases together. Currently, you're in Phase 1: ${getPhaseName(phases[0])}. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.`, time: new Date().toLocaleTimeString() }]
+        };
+      });
+    }
+
+    // Training helpers
+    const statusLabel = (s) => s === 'completed' ? { text: 'Completed', cls: 'done' } : s === 'in-progress' ? { text: 'In Progress', cls: 'in' } : { text: 'Not Started', cls: 'not' };
+    const progressPct = (t) => Math.round(((t.currentPhaseIndex + 1) / t.phases.length) * 100);
+
+    function ensureTrainingState(t) {
+      if (typeof t.currentItemIndex !== 'number') t.currentItemIndex = 0;
+      if (typeof t.started !== 'boolean') t.started = false;
+      if (!Array.isArray(t.completedItemIds)) t.completedItemIds = [];
+      return t;
+    }
+
+    function syncTrainingMetadata(training) {
+      const templates = roleTrainingTemplates?.[training.role] || [];
+      const template = templates.find(t => t.id === training.id);
+      if (!template) return;
+      if (!training.mentorMissionId && template.mentorMissionId) training.mentorMissionId = template.mentorMissionId;
+      if (!training.mentorFolderId && template.mentorFolderId) training.mentorFolderId = template.mentorFolderId;
+      training.phases = (template.phases || []).map(tplPhase => {
+        const existingPhase = (training.phases || []).find(p => p.id === tplPhase.id) || { items: [] };
+        const existingItemMap = new Map((existingPhase.items || []).map(i => [i.id, i]));
+        const mergedItems = (tplPhase.items || []).map(tplItem => {
+          const existingItem = existingItemMap.get(tplItem.id) || {};
+          return {
+            ...tplItem,
+            ...existingItem,
+            missionId: existingItem.missionId || tplItem.missionId || '',
+            lmsLink: existingItem.lmsLink || tplItem.lmsLink || '',
+            handsonText: existingItem.handsonText || tplItem.handsonText || '',
+            textContent: existingItem.textContent || tplItem.textContent || ''
+          };
+        });
+        return { ...existingPhase, ...tplPhase, items: mergedItems };
+      });
+    }
+
+    function setTrainingProgress(training, idx) {
+      training.currentPhaseIndex = Math.min(idx, training.phases.length - 1);
+      if (idx === 0) training.status = 'not-started';
+      else if (idx < training.phases.length - 1) training.status = 'in-progress';
+      else training.status = 'completed';
+      persistUser(state.currentUser); render();
+    }
+
+    function advancePhase(training) {
+      if (training.currentPhaseIndex < training.phases.length - 1) setTrainingProgress(training, training.currentPhaseIndex + 1);
+      else { training.status = 'completed'; persistUser(state.currentUser); render(); }
+    }
+
+    function persistUser(user) {
+      updateUser(user).catch(() => alert('Unable to save user updates.'));
+    }
+
+    function editProfile() {
+      const user = state.currentUser;
+      const name = prompt('Name', user.name || '') ?? user.name;
+      const title = prompt('Title', user.title || '') ?? user.title;
+      const managerEmployeeId = prompt('Manager Employee ID (optional)', user.managerEmployeeId || '') ?? user.managerEmployeeId;
+      user.name = name;
+      user.title = title;
+      user.managerEmployeeId = managerEmployeeId;
+      persistUser(user);
+      render();
+    }
+
+    function getManagedUsers() {
+      if (!state.currentUser) return [];
+      return loadUsers().filter(u => u.managerEmployeeId === state.currentUser.employeeId);
+    }
+
+    function renderApprovals() {
+      const container = el('approvals-section');
+      if (!container) return;
+      const managed = getManagedUsers();
+      const pending = [];
+      managed.forEach(user => {
+        (user.approvals || []).forEach(req => {
+          if (req.status === 'pending') pending.push({ user, req });
+        });
+      });
+      const myPending = (state.currentUser?.approvals || []).filter(req => req.status === 'pending');
+      if (!pending.length && !myPending.length) {
+        container.innerHTML = '';
+        return;
+      }
+      container.innerHTML = `
+        ${pending.length ? `
+          <div class="card" style="margin-top:16px;">
+            <div style="font-weight:700; margin-bottom:10px;">Approvals</div>
+            ${pending.map(({ user, req }) => `
+              <div class="training-row" style="grid-template-columns: 1fr auto;">
+                <div>
+                  <div style="font-weight:700;">${user.name || user.employeeId}</div>
+                  <div class="training-desc">${req.trainingName || 'Training'} • ${req.itemLabel || req.type || 'Item'} • Requested ${req.requestedAt || ''}</div>
+                </div>
+                <div style="display:flex; gap:8px;">
+                  <button class="light-btn" onclick="handleApproval('${user.employeeId}','${req.id}',true)">Approve</button>
+                  <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="handleApproval('${user.employeeId}','${req.id}',false)">Reject</button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+        ${myPending.length ? `
+          <div class="card" style="margin-top:16px;">
+            <div style="font-weight:700; margin-bottom:10px;">My Pending Approvals</div>
+            ${myPending.map(req => `
+              <div class="training-row" style="grid-template-columns: 1fr;">
+                <div>
+                  <div style="font-weight:700;">${req.trainingName || 'Training'}</div>
+                  <div class="training-desc">${req.itemLabel || req.type || 'Item'} • Requested ${req.requestedAt || ''}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+      `;
+    }
+
+      window.handleApproval = async (employeeId, requestId, approved) => {
+        await ensureUsersLoaded();
+        const user = loadUsers().find(u => u.employeeId === employeeId);
+        if (!user) return alert('User not found.');
+        const req = (user.approvals || []).find(r => r.id === requestId);
+        if (!req) return alert('Request not found.');
+        req.status = approved ? 'approved' : 'rejected';
+        req.resolvedAt = new Date().toLocaleString();
+        try {
+          await updateUser(user);
+          render();
+        } catch {
+          alert('Unable to update approval.');
+      }
+    };
+
+    function getItemByIndex(training, phaseIndex, itemIndex) {
+      const phase = training.phases?.[phaseIndex];
+      if (!phase) return null;
+      return (phase.items || [])[itemIndex] || null;
+    }
+
+      function requiresApproval(item) {
+        return item && (item.type === 'lms' || item.type === 'handson');
+      }
+
+      function getApprovalRequest(user, trainingId, itemId) {
+        const list = (user.approvals || []).filter(r => r.trainingId === trainingId && r.itemId === itemId);
+        return list.length ? list[list.length - 1] : null;
+      }
+
+      function getPendingApproval(user, trainingId, itemId) {
+        return (user.approvals || []).find(r => r.trainingId === trainingId && r.itemId === itemId && r.status === 'pending');
+      }
+
+      function requestApproval(user, training, phaseIndex, itemIndex, item) {
+        user.approvals = user.approvals || [];
+        const existing = getPendingApproval(user, training.id, item.id);
+        if (existing) return existing;
+      const req = {
+        id: `req-${Date.now()}`,
+        trainingId: training.id,
+        trainingName: training.name,
+        phaseIndex,
+        itemIndex,
+        itemId: item.id,
+        itemLabel: activityLabel(item.type),
+        type: item.type,
+        status: 'pending',
+        requestedAt: new Date().toLocaleString()
+      };
+      user.approvals.push(req);
+      return req;
+    }
+
+    function completeItemAndAdvance(training, item) {
+      if (!training.completedItemIds.includes(item.id)) training.completedItemIds.push(item.id);
+      training.currentItemIndex += 1;
+      advanceToNextItem(training);
+    }
+
+    function advanceToNextItem(training) {
+      const phases = training.phases || [];
+      while (training.currentPhaseIndex < phases.length) {
+        const items = phases[training.currentPhaseIndex]?.items || [];
+        if (training.currentItemIndex < items.length) return;
+        training.currentPhaseIndex += 1;
+        training.currentItemIndex = 0;
+      }
+      training.status = 'completed';
+    }
+
+    function ensureCurrentItem(training) {
+      const phases = training.phases || [];
+      while (training.currentPhaseIndex < phases.length) {
+        const items = phases[training.currentPhaseIndex]?.items || [];
+        if (training.currentItemIndex < items.length) return;
+        training.currentPhaseIndex += 1;
+        training.currentItemIndex = 0;
+      }
+    }
+
+    // Chat bot
+    function botReply(training, text) {
+      const lower = text.toLowerCase();
+      if (lower.includes('phase') || lower.includes('next')) return `You're on "${training.phases[training.currentPhaseIndex]}". Want to move to the next phase?`;
+      if (lower.includes('help') || lower.includes('stuck')) return 'Try checking the phase checklist and examples. I can also summarize the key steps.';
+      if (lower.includes('summary')) return 'Summary: focus on the objectives of this phase, validate data, and capture learnings in your notes.';
+      if (lower.includes('security')) return 'Security reminder: follow least-privilege, encrypt in transit, and log access changes.';
+      if (lower.includes('api')) return 'API tip: test with small payloads first, inspect response codes, and capture sample requests.';
+      return 'Noted. Let me know if you want a summary or to move forward.';
+    }
+
+    function sendMessage(text) {
+      if (!text.trim()) return;
+      const t = state.selectedTraining;
+      t.chatHistory.push({ from: 'user', text, time: new Date().toLocaleTimeString() });
+      persistUser(state.currentUser);
+      renderChat();
+      const currentItem = getCurrentTrainingItem();
+      const mentorActive = state.showMentor || (currentItem && currentItem.type === 'ai-chat');
+      if (mentorActive) return sendMentorMessage(text, currentItem);
+      const reply = botReply(t, text);
+      setTimeout(() => {
+        t.chatHistory.push({ from: 'bot', text: reply, time: new Date().toLocaleTimeString() });
+        persistUser(state.currentUser);
+        renderChat();
+      }, 250);
+    }
+
+    function getCurrentTrainingItem() {
+      const t = state.selectedTraining;
+      if (!t) return null;
+      const phase = t.phases?.[t.currentPhaseIndex];
+      return phase?.items?.[t.currentItemIndex] || null;
+    }
+
+    function buildMentorPayload(item, phase, missionId, extraMessages = [], baseMessages = null) {
+      const t = state.selectedTraining;
+      const messages = Array.isArray(baseMessages)
+        ? baseMessages
+        : t.chatHistory.map(m => ({
+            role: m.from === 'user' ? 'user' : 'assistant',
+            content: m.text
+          }));
+      const userContext = {
+        employeeId: state.currentUser?.employeeId,
+        name: state.currentUser?.name,
+        role: state.currentUser?.role,
+        title: state.currentUser?.title,
+        trainingName: t.name,
+        phaseName: getPhaseName(phase),
+        activityLabel: activityLabel(item.type)
+      };
+      const systemContent = [
+        'You are Matcha AI mentor for APAC AI Training Programs.',
+        'Do not ask the trainee to introduce themselves. Do not repeat greetings or re-introduce the program on every reply. Focus only on the current question and provided context.',
+        `User: ${userContext.name || 'Unknown'} (${userContext.employeeId || 'N/A'})`,
+        `Role: ${userContext.role || 'N/A'} | Title: ${userContext.title || 'N/A'}`,
+        `Training: ${userContext.trainingName || 'N/A'}`,
+        `Phase: ${userContext.phaseName || 'N/A'} | Activity: ${userContext.activityLabel || 'N/A'}`,
+        item.mentorTopic ? `Mentor session topic: ${item.mentorTopic}` : '',
+        state.mentorReason || ''
+      ].join('\n');
+      const payload = {
+        model: 'gpt-4.1',
+        missionId,
+        messages: [{ role: 'system', content: systemContent }, ...messages, ...extraMessages],
+        userContext
+      };
+      if (item.type === 'doc' && item.fileName && t.mentorFolderId) {
+        payload.document = { fileName: item.fileName, folderId: t.mentorFolderId };
+      }
+      return payload;
+    }
+
+    async function sendMentorMessage(text, item, options = {}) {
+      const t = state.selectedTraining;
+      const phase = t.phases?.[t.currentPhaseIndex] || {};
+      const missionId = item.type === 'ai-chat' ? (item.missionId || '') : (t.mentorMissionId || '');
+      if (!missionId) {
+        t.chatHistory.push({ from: 'bot', text: 'Mentor session is not configured with a Matcha mission.', time: new Date().toLocaleTimeString() });
+        persistUser(state.currentUser);
+        renderChat();
+        return;
+      }
+      state.mentorPending = true;
+      const sendBtn = el('send-btn');
+      if (sendBtn) sendBtn.disabled = true;
+      const pendingId = `mentor-pending-${Date.now()}`;
+      t.chatHistory.push({ from: 'bot', text: 'Preparing response, please wait...', time: new Date().toLocaleTimeString(), pending: true, id: pendingId });
+      persistUser(state.currentUser);
+      renderChat();
+      const extraMessages = options.autoKickoff
+        ? [{ role: 'user', content: options.kickoffText || 'Please begin the mentor session.' }]
+        : [];
+      const historyMessages = options.useHistory === false ? [] : null;
+      const payload = buildMentorPayload(item, phase, missionId, extraMessages, historyMessages);
+      lastMentorRequest = payload;
+      if (state.view === 'training') render();
+      try {
+        const res = await fetch(`${BASE_PATH}/api/matcha/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!res.ok) {
+          const errorText = await res.text();
+          throw new Error(`Mentor request failed (${res.status}): ${errorText}`);
+        }
+        const data = await res.json();
+        const reply = data.content || 'No response.';
+        const idx = t.chatHistory.findIndex(m => m.id === pendingId);
+        if (idx >= 0) t.chatHistory[idx] = { from: 'bot', text: reply, time: new Date().toLocaleTimeString() };
+        else t.chatHistory.push({ from: 'bot', text: reply, time: new Date().toLocaleTimeString() });
+        state.mentorPending = false;
+        if (sendBtn) sendBtn.disabled = false;
+        persistUser(state.currentUser);
+        renderChat();
+      } catch (err) {
+        const detail = err && err.message ? ` Error: ${err.message}` : '';
+        const idx = t.chatHistory.findIndex(m => m.id === pendingId);
+        const errorText = `Mentor service is unavailable right now.${detail}`;
+        if (idx >= 0) t.chatHistory[idx] = { from: 'bot', text: errorText, time: new Date().toLocaleTimeString() };
+        else t.chatHistory.push({ from: 'bot', text: errorText, time: new Date().toLocaleTimeString() });
+        state.mentorPending = false;
+        if (sendBtn) sendBtn.disabled = false;
+        persistUser(state.currentUser);
+        renderChat();
+      }
+    }
+
+    function autoStartMentorSession(item, force = false) {
+      if (!item || item.type !== 'ai-chat') return;
+      if (!force && item.autoMentorStarted) return;
+      item.autoMentorStarted = true;
+      persistUser(state.currentUser);
+      sendMentorMessage('', item, { autoKickoff: true, kickoffText: 'Please start the mentor session and provide the introduction for this phase. Do not ask the trainee to introduce themselves.' });
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    // Add training to existing user
+    function addTrainingToUser(role, trainingId) {
+      if (!role || !trainingId) return alert('Select a role and training.');
+      const user = state.currentUser;
+      if (user.trainings.some(t => t.id === trainingId)) return alert('Training already added.');
+      const newTraining = buildTrainingsFromTemplate(role, [trainingId])[0];
+      if (!newTraining) return alert('Training not found.');
+      user.trainings.push(newTraining); state.showAddPanel = false; persistUser(user); render();
+    }
+
+    // Admin helpers
+    const slugify = (str) => (str || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `training-${Date.now()}`;
+
+    function adminLogout() {
+      clearSession();
+      state.isAdmin = false;
+      state.currentUser = null;
+      state.view = 'login';
+      state.showAddPanel = false;
+      render();
+    }
+
+    // Admin renders
+    function renderAdminHome() {
+      document.body.innerHTML = `
+        <div class="page-shell">
+          ${adminNav('home')}
+          <div class="card" style="margin-top:16px;">
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div style="font-weight:700; font-size:18px;">Admin Console</div>
+              <div style="color:var(--muted);">Manage users and training templates for the platform.</div>
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button class="add-btn" style="background:#0c64f5;" onclick="gotoAdmin('admin-users')">${personIcon()} Manage Users</button>
+                <button class="add-btn" onclick="gotoAdmin('admin-trainings')">${bagIcon()} Manage Trainings</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      bindAdminNav();
+    }
+
+    window.gotoAdmin = (view) => { state.view = view; render(); };
+
+    function renderAdminUsers() {
+      if (!usersLoaded) {
+        document.body.innerHTML = `
+          <div class="page-shell">
+            ${adminNav('users')}
+            <div class="card" style="margin-top:16px;">
+              <div class="muted-box" style="min-height:120px;">Loading users...</div>
+            </div>
+          </div>
+        `;
+        bindAdminNav();
+        ensureUsersLoaded().then(renderAdminUsers);
+        return;
+      }
+      const users = loadUsers();
+      document.body.innerHTML = `
+        <div class="page-shell">
+          ${adminNav('users')}
+          <div class="card" style="margin-top:16px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <div style="font-weight:700; font-size:17px;">User Management</div>
+              <div style="color:var(--muted); font-size:13px;">${users.length} user${users.length!==1?'s':''}</div>
+            </div>
+            <div style="display:grid; gap:10px;">
+              ${users.map(u => `
+                <div class="training-row" style="grid-template-columns: 1fr auto;">
+                  <div>
+                    <div style="font-weight:700;">${u.name || u.employeeId}</div>
+                    <div class="training-desc">ID: ${u.employeeId} | Role: ${u.role || 'N/A'} | Title: ${u.title || 'N/A'}</div>
+                  </div>
+                  <div style="display:flex; gap:8px;">
+                    <button class="light-btn" onclick="editUser('${u.employeeId}')">Edit</button>
+                    <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="deleteUser('${u.employeeId}')">Delete</button>
+                  </div>
+                </div>
+              `).join('') || '<div class="muted-box">No users yet.</div>'}
+            </div>
+          </div>
+        </div>
+      `;
+      bindAdminNav();
+    }
+
+    function renderAdminTrainings() {
+      if (!librariesLoaded || !missionsLoaded) {
+        document.body.innerHTML = `
+          <div class="page-shell">
+            ${adminNav('trainings')}
+            <div class="card" style="margin-top:16px;">
+              <div style="font-weight:700; font-size:17px; margin-bottom:12px;">Training Management</div>
+              <div class="muted-box" style="min-height:120px;">Loading resources...</div>
+            </div>
+          </div>
+        `;
+        bindAdminNav();
+        ensureLibrariesLoaded();
+        ensureMissionsLoaded();
+        return;
+      }
+      const roles = getRoleList();
+      const editingLabel = adminDraftTraining.editingId ? `Editing: ${adminDraftTraining.name || 'Training'}` : 'Creating new training';
+      if (adminTrainingMentorMissionId) ensureFoldersLoaded(adminTrainingMentorMissionId);
+      document.body.innerHTML = `
+        <div class="page-shell">
+          ${adminNav('trainings')}
+          <div class="card" style="margin-top:16px;">
+            <div style="font-weight:700; font-size:17px; margin-bottom:12px;">Training Management</div>
+            <div class="training-desc" style="margin-bottom:10px;">${editingLabel}</div>
+            <div class="form-grid">
+              <div>
+                <label>Role (pick existing or type new)</label>
+                <div class="field">
+                  <span class="icon-mini">${bagIcon()}</span>
+                  <select id="admin-role-select">
+                    <option value="">-- Select role --</option>
+                    ${roles.map(r => `<option value="${r}" ${adminDraftTraining.roleSelect === r ? 'selected' : ''}>${r}</option>`).join('')}
+                  </select>
+                </div>
+                <div class="training-desc" style="margin-top:4px;">Or type a new role below</div>
+                <div class="field" style="margin-top:6px;"><input id="admin-role-new" placeholder="New role name" value="${adminDraftTraining.roleNew || ''}"></div>
+              </div>
+              <div>
+                <label>Training Name</label>
+                <div class="field"><input id="admin-train-name" placeholder="Training name" value="${adminDraftTraining.name || ''}"></div>
+              </div>
+              <div>
+                <label>Description</label>
+                <div class="field"><input id="admin-train-desc" placeholder="Short description" value="${adminDraftTraining.description || ''}"></div>
+              </div>
+            </div>
+            <div style="margin-top:12px;">
+              <label>Default Mentor Matcha Mission</label>
+              <div class="field">
+                <span class="icon-mini">${chatIcon()}</span>
+                <select id="admin-train-mentor">
+                  <option value="">Select Matcha mission</option>
+                  ${missionsCache.map(m => `<option value="${m.id}" ${String(adminTrainingMentorMissionId || '') === String(m.id) ? 'selected' : ''}>${m.name || `Mission ${m.id}`}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:12px;">
+              <label>Default Mentor Matcha Folder</label>
+              <div class="field">
+                <span class="icon-mini">${folderIcon()}</span>
+                <select id="admin-train-mentor-folder" ${adminTrainingMentorMissionId ? '' : 'disabled'}>
+                  <option value="">Select Matcha folder</option>
+                  ${(foldersByMission[adminTrainingMentorMissionId] || []).map(f => `<option value="${f.id}" ${String(adminTrainingMentorFolderId || '') === String(f.id) ? 'selected' : ''}>${f.name || `Folder ${f.id}`}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+            ${renderPhaseBuilder()}
+            <div style="display:flex; justify-content:flex-end; margin-top:12px; gap:8px;">
+              <button class="light-btn" id="clear-draft-btn" type="button">Clear Draft</button>
+              <button class="primary" style="width:220px;" onclick="addTemplateTraining()">${adminDraftTraining.editingId ? 'Update Training' : 'Add Training'}</button>
+            </div>
+          </div>
+
+          ${roles.map(role => {
+            const list = roleTrainingTemplates[role] || [];
+            return `
+              <div class="group-card" style="margin-top:14px;">
+                <div class="group-header">
+                  <div style="display:flex; align-items:center; gap:8px; font-weight:700;">${bagIcon()} ${role}</div>
+                  <div style="display:flex; gap:8px; align-items:center;">
+                    <div class="badge">${list.length} Training${list.length!==1?'s':''}</div>
+                    <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="deleteRole('${role}')">Delete Role</button>
+                  </div>
+                </div>
+                ${list.map(t => `
+                  <div class="training-row" style="margin-top:10px; grid-template-columns: 1fr auto;">
+                    <div>
+                      <div class="train-name">${t.name}</div>
+                      <div class="training-desc">${t.description || ''}</div>
+                      <div class="training-desc">${t.phases.length} phases</div>
+                    </div>
+                    <div style="display:flex; gap:8px;">
+                      <button class="light-btn" onclick="editTemplateTraining('${role}','${t.id}')">Edit</button>
+                      <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="deleteTemplateTraining('${role}','${t.id}')">Delete</button>
+                    </div>
+                  </div>
+                `).join('') || '<div class="muted-box" style="margin-top:10px;">No trainings for this role.</div>'}
+              </div>
+            `;
+          }).join('') || '<div class="muted-box" style="margin-top:14px;">No roles or trainings defined.</div>'}
+        </div>
+      `;
+      bindAdminNav();
+      bindAdminTrainingBuilder();
+    }
+
+    function renderPhaseBuilder() {
+      const phases = adminDraftTraining.phases || [];
+      return `
+        <div class="phase-builder">
+          <div class="phase-builder-header">
+            <div>
+              <div class="section-title">Phases & Activities</div>
+              <div class="training-desc">Add phases, then add activities inside each phase. Drag activities to reorder within a phase.</div>
+            </div>
+            <button class="light-btn" id="add-phase-btn" type="button">Add Phase</button>
+          </div>
+          <div id="phase-list">
+            ${phases.map((phase, idx) => `
+              <div class="phase-card" data-phase-index="${idx}">
+                <div class="phase-header">
+                  <div class="phase-title">
+                    <span class="badge">Phase ${idx + 1}</span>
+                    <input class="phase-name-input" data-phase-index="${idx}" value="${phase.name || ''}" placeholder="Phase name">
+                  </div>
+                  <button class="light-btn remove-phase-btn" data-phase-index="${idx}" type="button">Remove Phase</button>
+                </div>
+                <div class="training-desc">Add activities for this phase</div>
+                <div class="phase-tools" style="margin-top:8px;">
+                  ${ACTIVITY_TYPES.map(t => `<button class="chip-btn activity-add-btn" data-phase-index="${idx}" data-type="${t.type}" type="button">${t.label}</button>`).join('')}
+                </div>
+                <div style="margin-top:8px; display:flex; gap:8px;">
+                  <button class="light-btn phase-collapse-all" data-phase-index="${idx}" data-action="collapse" type="button">Minimize all</button>
+                  <button class="light-btn phase-collapse-all" data-phase-index="${idx}" data-action="expand" type="button">Maximize all</button>
+                </div>
+                <div class="phase-items" data-phase-index="${idx}">
+                  ${(phase.items || []).map((item, itemIdx) => `
+                    <div class="phase-item" draggable="true" data-phase-index="${idx}" data-item-index="${itemIdx}">
+                      <span class="drag-handle">::</span>
+                      <div class="phase-item-body ${item.collapsed ? 'is-collapsed' : ''}">
+                        <div class="phase-item-header">
+                          <span class="activity-chip">${activityLabel(item.type)}</span>
+                          <button class="collapse-btn item-collapse-toggle" data-phase-index="${idx}" data-item-index="${itemIdx}" type="button">${item.collapsed ? 'Maximize' : 'Minimize'}</button>
+                        </div>
+                        <div class="phase-item-config">
+                          ${(item.type === 'video' || item.type === 'doc') ? `
+                            <select class="item-source-select" data-phase-index="${idx}" data-item-index="${itemIdx}">
+                              <option value="">Select source</option>
+                              <option value="url" ${item.source === 'url' ? 'selected' : ''}>URL link</option>
+                              <option value="upload" ${item.source === 'upload' ? 'selected' : ''}>Upload ${(item.type === 'video' ? 'video' : 'PDF')}</option>
+                              <option value="library" ${item.source === 'library' ? 'selected' : ''}>Link existing ${(item.type === 'video' ? 'video' : 'PDF')}</option>
+                            </select>
+                            ${item.source === 'url' ? `
+                              <input class="item-url-input" data-phase-index="${idx}" data-item-index="${itemIdx}" placeholder="https://..." value="${item.url || ''}">
+                            ` : ''}
+                            ${item.source === 'upload' ? `
+                              <input class="item-upload-input" data-phase-index="${idx}" data-item-index="${itemIdx}" data-item-id="${item.id}" type="file" accept="${item.type === 'video' ? 'video/*' : 'application/pdf'}">
+                              ${!item.fileName ? `<button class="light-btn upload-file-btn" data-phase-index="${idx}" data-item-index="${itemIdx}" data-item-id="${item.id}" type="button" ${item.pendingFileName ? '' : 'disabled'}>Upload file</button>` : ''}
+                              <input class="file-name" disabled value="${item.pendingFileName || item.fileName || ''}" placeholder="No file selected">
+                              ${item.fileName ? `<a class="training-desc" href="${resourceUrl(item.type, item.fileName)}" target="_blank" rel="noreferrer">Linked: ${item.fileName}</a>` : ''}
+                            ` : ''}
+                            ${item.source === 'library' ? `
+                              <select class="item-library-select" data-phase-index="${idx}" data-item-index="${itemIdx}">
+                                <option value="">Select from ${item.type === 'video' ? 'Videos' : 'Documents'} folder</option>
+                                ${(item.type === 'video' ? videoLibrary : pdfLibrary).map(file => `
+                                  <option value="${file}" ${item.fileName === file ? 'selected' : ''}>${file}</option>
+                                `).join('')}
+                              </select>
+                              ${item.fileName ? `<a class="training-desc" href="${resourceUrl(item.type, item.fileName)}" target="_blank" rel="noreferrer">Linked: ${item.fileName}</a>` : ''}
+                            ` : ''}
+                          ` : ''}
+                          ${item.type === 'text' ? `
+                            <textarea class="item-text-input" data-phase-index="${idx}" data-item-index="${itemIdx}" rows="4" placeholder="Enter formatted text (basic HTML allowed)">${item.textContent || ''}</textarea>
+                          ` : ''}
+                          ${item.type === 'lms' ? `
+                            <input class="item-lms-link" data-phase-index="${idx}" data-item-index="${itemIdx}" placeholder="LMS/Workday course link" value="${item.lmsLink || ''}">
+                          ` : ''}
+                          ${item.type === 'handson' ? `
+                            <textarea class="item-handson-input" data-phase-index="${idx}" data-item-index="${itemIdx}" rows="4" placeholder="Describe the hands-on activity">${item.handsonText || ''}</textarea>
+                          ` : ''}
+                          ${item.type === 'assessment' ? renderAssessmentConfig(item, idx, itemIdx) : ''}
+                          ${item.type === 'ai-chat' ? `
+                            <select class="item-mission-id" data-phase-index="${idx}" data-item-index="${itemIdx}">
+                              <option value="">Select Matcha mission</option>
+                              ${missionsCache.map(m => `<option value="${m.id}" ${String(item.missionId) === String(m.id) ? 'selected' : ''}>${m.name || `Mission ${m.id}`}</option>`).join('')}
+                            </select>
+                            <input class="item-mentor-topic" data-phase-index="${idx}" data-item-index="${itemIdx}" placeholder="Mentor session topic" value="${item.mentorTopic || ''}">
+                          ` : ''}
+                        </div>
+                      </div>
+                      <button class="mini-btn remove-item-btn" data-phase-index="${idx}" data-item-index="${itemIdx}" type="button">Remove</button>
+                    </div>
+                  `).join('') || '<div class="training-desc">No activities yet.</div>'}
+                </div>
+              </div>
+            `).join('') || '<div class="muted-box" style="min-height:120px;">No phases yet. Add your first phase to begin.</div>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAssessmentConfig(item, phaseIdx, itemIdx) {
+      const assessment = item.assessment || { passingMarks: '', questions: [] };
+      const questions = assessment.questions || [];
+      return `
+        <div class="assessment-block">
+          <div class="assessment-header">
+            <div class="training-desc">Assessment questions</div>
+            <button class="light-btn add-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="button">Add Question</button>
+          </div>
+          ${questions.map((q, qIdx) => `
+            <div class="assessment-question" data-question-index="${qIdx}">
+              <div class="assessment-top">
+                <input class="assess-question-text" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" placeholder="Question" value="${q.text || ''}">
+                <button class="tiny-btn move-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-dir="up" type="button">Up</button>
+                <button class="tiny-btn move-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-dir="down" type="button">Down</button>
+                <button class="tiny-btn remove-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" type="button">Remove</button>
+              </div>
+              <div class="assessment-options">
+                ${(q.options || []).map((opt, optIdx) => `
+                  <div class="assessment-option">
+                    <input class="assess-option-text" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-option-index="${optIdx}" placeholder="Option text" value="${opt.text || ''}">
+                    <label class="training-desc">
+                      <input class="assess-option-correct" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-option-index="${optIdx}" type="checkbox" ${opt.correct ? 'checked' : ''}>
+                      Correct
+                    </label>
+                    <button class="tiny-btn remove-option-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-option-index="${optIdx}" type="button">Remove</button>
+                  </div>
+                `).join('')}
+                <button class="light-btn add-option-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" type="button">Add Option</button>
+              </div>
+            </div>
+          `).join('') || '<div class="training-desc" style="margin-top:6px;">No questions yet.</div>'}
+          <input class="item-assess-pass" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" min="0" placeholder="Passing marks" value="${assessment.passingMarks || ''}">
+          <input class="item-assess-duration" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" min="0" placeholder="Assessment duration (minutes)" value="${assessment.durationMinutes || ''}">
+        </div>
+      `;
+    }
+
+    function bindAdminTrainingBuilder() {
+      const roleSelect = el('admin-role-select');
+      const roleNew = el('admin-role-new');
+      const nameEl = el('admin-train-name');
+      const descEl = el('admin-train-desc');
+      const mentorSel = el('admin-train-mentor');
+      const mentorFolderSel = el('admin-train-mentor-folder');
+      const clearBtn = el('clear-draft-btn');
+      if (roleSelect) roleSelect.onchange = () => adminDraftTraining.roleSelect = roleSelect.value;
+      if (roleNew) roleNew.oninput = () => adminDraftTraining.roleNew = roleNew.value;
+      if (nameEl) nameEl.oninput = () => adminDraftTraining.name = nameEl.value;
+      if (descEl) descEl.oninput = () => adminDraftTraining.description = descEl.value;
+      if (mentorSel) mentorSel.onchange = () => {
+        adminTrainingMentorMissionId = mentorSel.value;
+        adminTrainingMentorFolderId = '';
+        renderAdminTrainings();
+      };
+      if (mentorFolderSel) mentorFolderSel.onchange = () => adminTrainingMentorFolderId = mentorFolderSel.value;
+      if (clearBtn) clearBtn.onclick = () => { clearAdminDraft(); renderAdminTrainings(); };
+
+      const addPhaseBtn = el('add-phase-btn');
+      if (addPhaseBtn) addPhaseBtn.onclick = () => {
+        adminDraftTraining.phases.push({ id: `phase-${Date.now()}`, name: `Phase ${adminDraftTraining.phases.length + 1}`, items: [] });
+        renderAdminTrainings();
+      };
+
+      document.querySelectorAll('.phase-name-input').forEach(input => {
+        input.oninput = () => {
+          const idx = Number(input.dataset.phaseIndex);
+          if (adminDraftTraining.phases[idx]) adminDraftTraining.phases[idx].name = input.value;
+        };
+      });
+
+      document.querySelectorAll('.remove-phase-btn').forEach(btn => {
+        btn.onclick = () => {
+          const idx = Number(btn.dataset.phaseIndex);
+          adminDraftTraining.phases.splice(idx, 1);
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.activity-add-btn').forEach(btn => {
+        btn.onclick = () => {
+          const idx = Number(btn.dataset.phaseIndex);
+          const type = btn.dataset.type;
+          if (!adminDraftTraining.phases[idx]) return;
+          adminDraftTraining.phases[idx].items.push({
+            id: `${type}-${Date.now()}`,
+            type,
+            source: '',
+            url: '',
+            fileName: '',
+            pendingFileName: '',
+            textContent: '',
+            assessment: { passingMarks: '', questions: [] },
+            missionId: '',
+            mentorTopic: '',
+            collapsed: false
+          });
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.remove-item-btn').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const items = adminDraftTraining.phases[phaseIdx]?.items || [];
+          const itemId = items[itemIdx]?.id;
+          items.splice(itemIdx, 1);
+          if (itemId && pendingUploadFiles[itemId]) delete pendingUploadFiles[itemId];
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.item-collapse-toggle').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.collapsed = !item.collapsed;
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.phase-collapse-all').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const action = btn.dataset.action;
+          const items = adminDraftTraining.phases[phaseIdx]?.items || [];
+          const collapse = action === 'collapse';
+          items.forEach(item => { item.collapsed = collapse; });
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.item-source-select').forEach(select => {
+        select.onchange = () => {
+          const phaseIdx = Number(select.dataset.phaseIndex);
+          const itemIdx = Number(select.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.source = select.value;
+          if (item.source !== 'url') item.url = '';
+          if (item.source !== 'upload' && item.source !== 'library') item.fileName = '';
+          if (item.source !== 'upload') item.pendingFileName = '';
+          if (item.source !== 'upload' && pendingUploadFiles[item.id]) delete pendingUploadFiles[item.id];
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.item-url-input').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (item) item.url = input.value;
+        };
+      });
+
+      document.querySelectorAll('.item-library-select').forEach(select => {
+        select.onchange = () => {
+          const phaseIdx = Number(select.dataset.phaseIndex);
+          const itemIdx = Number(select.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.fileName = select.value;
+        };
+      });
+
+      document.querySelectorAll('.item-text-input').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (item) item.textContent = input.value;
+        };
+      });
+
+      document.querySelectorAll('.item-lms-link').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (item) item.lmsLink = input.value;
+        };
+      });
+
+      document.querySelectorAll('.item-handson-input').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (item) item.handsonText = input.value;
+        };
+      });
+
+      document.querySelectorAll('.item-mission-id').forEach(select => {
+        select.onchange = () => {
+          const phaseIdx = Number(select.dataset.phaseIndex);
+          const itemIdx = Number(select.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (item) item.missionId = select.value;
+        };
+      });
+
+      document.querySelectorAll('.item-mentor-topic').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (item) item.mentorTopic = input.value;
+        };
+      });
+
+
+      document.querySelectorAll('.add-question-btn').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.assessment = item.assessment || { passingMarks: '', questions: [] };
+          item.assessment.questions.push({ text: '', type: 'single', options: [] });
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.remove-question-btn').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const qIdx = Number(btn.dataset.questionIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item || !item.assessment) return;
+          item.assessment.questions.splice(qIdx, 1);
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.move-question-btn').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const qIdx = Number(btn.dataset.questionIndex);
+          const dir = btn.dataset.dir;
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item || !item.assessment) return;
+          const list = item.assessment.questions || [];
+          const nextIdx = dir === 'up' ? qIdx - 1 : qIdx + 1;
+          if (nextIdx < 0 || nextIdx >= list.length) return;
+          const temp = list[qIdx];
+          list[qIdx] = list[nextIdx];
+          list[nextIdx] = temp;
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.assess-question-text').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const qIdx = Number(input.dataset.questionIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          const question = item?.assessment?.questions?.[qIdx];
+          if (question) question.text = input.value;
+        };
+      });
+
+
+      document.querySelectorAll('.add-option-btn').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const qIdx = Number(btn.dataset.questionIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          const question = item?.assessment?.questions?.[qIdx];
+          if (!question) return;
+          question.options.push({ text: '', correct: false });
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.remove-option-btn').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const qIdx = Number(btn.dataset.questionIndex);
+          const optIdx = Number(btn.dataset.optionIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          const question = item?.assessment?.questions?.[qIdx];
+          if (!question) return;
+          question.options.splice(optIdx, 1);
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.assess-option-text').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const qIdx = Number(input.dataset.questionIndex);
+          const optIdx = Number(input.dataset.optionIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          const option = item?.assessment?.questions?.[qIdx]?.options?.[optIdx];
+          if (option) option.text = input.value;
+        };
+      });
+
+      document.querySelectorAll('.assess-option-correct').forEach(input => {
+        input.onchange = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const qIdx = Number(input.dataset.questionIndex);
+          const optIdx = Number(input.dataset.optionIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          const question = item?.assessment?.questions?.[qIdx];
+          if (!question) return;
+          question.options[optIdx].correct = input.checked;
+          const correctCount = question.options.filter(opt => opt.correct).length;
+          question.multi = correctCount > 1;
+        };
+      });
+
+      document.querySelectorAll('.item-assess-pass').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.assessment = item.assessment || { passingMarks: '', questions: [] };
+          item.assessment.passingMarks = input.value;
+        };
+      });
+
+      document.querySelectorAll('.item-assess-duration').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.assessment = item.assessment || { passingMarks: '', durationMinutes: '', questions: [] };
+          item.assessment.durationMinutes = input.value;
+        };
+      });
+
+      document.querySelectorAll('.item-upload-input').forEach(input => {
+        input.onchange = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          const file = input.files && input.files[0];
+          if (!item || !file) return;
+          item.pendingFileName = file.name;
+          pendingUploadFiles[item.id] = file;
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.upload-file-btn').forEach(btn => {
+        btn.onclick = async () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item || !item.pendingFileName) return;
+          const file = pendingUploadFiles[item.id];
+          if (!file) return alert('Please choose a file first.');
+          const isVideo = item.type === 'video';
+          try {
+            const result = await uploadResource(isVideo ? 'video' : 'document', file);
+            const storedName = result.fileName || item.pendingFileName;
+            item.fileName = storedName;
+            item.pendingFileName = '';
+            delete pendingUploadFiles[item.id];
+            const list = isVideo ? videoLibrary : pdfLibrary;
+            if (!list.includes(storedName)) list.push(storedName);
+            saveLibrary(isVideo ? VIDEO_LIBRARY_KEY : PDF_LIBRARY_KEY, list);
+            alert(`${isVideo ? 'Video' : 'Document'} uploaded and linked.`);
+            renderAdminTrainings();
+          } catch {
+            alert('Upload failed. Please try again.');
+          }
+        };
+      });
+
+      document.querySelectorAll('.phase-item').forEach(itemEl => {
+        itemEl.ondragstart = (e) => {
+          dragState = { phaseIndex: Number(itemEl.dataset.phaseIndex), itemIndex: Number(itemEl.dataset.itemIndex) };
+          itemEl.classList.add('dragging');
+          if (e.dataTransfer) e.dataTransfer.effectAllowed = 'move';
+        };
+        itemEl.ondragend = () => {
+          itemEl.classList.remove('dragging');
+          dragState = null;
+        };
+      });
+
+      document.querySelectorAll('.phase-items').forEach(listEl => {
+        listEl.ondragover = (e) => {
+          e.preventDefault();
+          if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+        };
+        listEl.ondrop = (e) => {
+          e.preventDefault();
+          if (!dragState) return;
+          const targetPhase = Number(listEl.dataset.phaseIndex);
+          if (dragState.phaseIndex !== targetPhase) return;
+          const items = adminDraftTraining.phases[targetPhase]?.items || [];
+          if (!items.length) return;
+          const itemEls = Array.from(listEl.querySelectorAll('.phase-item'));
+          const targetIndex = getDropIndex(itemEls, e.clientY);
+          const [moved] = items.splice(dragState.itemIndex, 1);
+          const insertIndex = targetIndex > dragState.itemIndex ? targetIndex - 1 : targetIndex;
+          items.splice(insertIndex, 0, moved);
+          renderAdminTrainings();
+        };
+      });
+    }
+
+    function getDropIndex(itemEls, clientY) {
+      if (!itemEls.length) return 0;
+      const matchIndex = itemEls.findIndex(el => clientY < el.getBoundingClientRect().top + el.offsetHeight / 2);
+      return matchIndex === -1 ? itemEls.length : matchIndex;
+    }
+
+    function clearAdminDraft() {
+      adminDraftTraining = { editingId: '', originalRole: '', roleSelect: '', roleNew: '', name: '', description: '', phases: [] };
+      adminTrainingMentorMissionId = '';
+      adminTrainingMentorFolderId = '';
+      Object.keys(pendingUploadFiles).forEach(key => delete pendingUploadFiles[key]);
+    }
+
+    function adminNav(active) {
+      return `
+        <div class="nav">
+          <div class="nav-left">
+            <div class="home-icon">${homeIcon()}</div>
+            <div>
+              <div class="nav-title">APAC AI Training Platform Admin</div>
+              <div class="nav-sub">${active === 'home' ? 'Admin console' : active === 'users' ? 'User management' : 'Training management'}</div>
+            </div>
+          </div>
+          <div class="nav-actions">
+            <button class="link-btn${active==='home'?' active':''}" onclick="gotoAdmin('admin-home')">${homeSmallIcon()} Home</button>
+            <button class="link-btn${active==='users'?' active':''}" onclick="gotoAdmin('admin-users')">${personIcon()} Users</button>
+            <button class="link-btn${active==='trainings'?' active':''}" onclick="gotoAdmin('admin-trainings')">${bagIcon()} Trainings</button>
+            <button class="link-btn logout" onclick="adminLogout()">${logoutIcon()} Logout</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindAdminNav() {
+      // placeholder for future shared admin nav behavior
+    }
+
+    // Admin actions
+    window.editUser = async (empId) => {
+      await ensureUsersLoaded();
+      const u = loadUsers().find(x => x.employeeId === empId);
+      if (!u) return alert('User not found.');
+      const name = prompt('Name', u.name || '') ?? u.name;
+      const title = prompt('Title', u.title || '') ?? u.title;
+      const role = prompt('Role', u.role || '') ?? u.role;
+      const managerEmployeeId = prompt('Manager Employee ID (optional)', u.managerEmployeeId || '') ?? u.managerEmployeeId;
+      u.name = name; u.title = title; u.role = role; u.managerEmployeeId = managerEmployeeId;
+      try {
+        await updateUser(u);
+        render();
+      } catch {
+        alert('User update failed.');
+      }
+    };
+    window.deleteUser = async (empId) => {
+      if (!confirm('Delete this user?')) return;
+      try {
+        await removeUser(empId);
+        render();
+      } catch {
+        alert('User delete failed.');
+      }
+    };
+
+    window.addTemplateTraining = () => {
+      const role = (adminDraftTraining.roleNew || adminDraftTraining.roleSelect || '').trim();
+      if (!role) return alert('Enter or select a role.');
+      const name = (adminDraftTraining.name || '').trim();
+      if (!name) return alert('Enter a training name.');
+      const phases = (adminDraftTraining.phases || []).map(phase => ({
+        id: phase.id || `phase-${Date.now()}`,
+        name: (phase.name || '').trim(),
+        items: (phase.items || []).map(item => ({
+          id: item.id || `item-${Date.now()}`,
+          type: item.type,
+          source: item.source || '',
+          url: item.url || '',
+          fileName: item.fileName || '',
+          textContent: item.textContent || '',
+          lmsLink: item.lmsLink || '',
+          handsonText: item.handsonText || '',
+          missionId: item.missionId || '',
+          mentorTopic: item.mentorTopic || '',
+          assessment: normalizeAssessment(item.assessment),
+          collapsed: !!item.collapsed
+        }))
+      })).filter(phase => phase.name);
+      if (!phases.length) return alert('Enter at least one phase with a name.');
+      const missingMediaConfig = phases.some(phase => (phase.items || []).some(item => {
+        if (item.type !== 'video' && item.type !== 'doc') return false;
+        if (!item.source) return true;
+        if (item.source === 'url' && !item.url) return true;
+        if (item.source === 'upload' && !item.fileName) return true;
+        if (item.source === 'library' && !item.fileName) return true;
+        return false;
+      }));
+      if (missingMediaConfig) return alert('Video and documentation items need a source and link or file selection.');
+      const missingLmsLink = phases.some(phase => (phase.items || []).some(item => item.type === 'lms' && !item.lmsLink));
+      if (missingLmsLink) return alert('LMS/Workday items need a course link.');
+      const missingHandson = phases.some(phase => (phase.items || []).some(item => item.type === 'handson' && !item.handsonText));
+      if (missingHandson) return alert('Hands-on items need a description.');
+      const missingMentorSession = phases.some(phase => (phase.items || []).some(item => item.type === 'ai-chat' && (!item.missionId || !item.mentorTopic)));
+      if (missingMentorSession) return alert('Mentor session items need a Matcha mission and topic.');
+      const desc = (adminDraftTraining.description || '').trim();
+      const id = adminDraftTraining.editingId || slugify(`${role}-${name}`);
+      const list = roleTrainingTemplates[role] || [];
+      if (adminDraftTraining.editingId && adminDraftTraining.originalRole && adminDraftTraining.originalRole !== role) {
+        const originalList = (roleTrainingTemplates[adminDraftTraining.originalRole] || []).filter(t => t.id !== adminDraftTraining.editingId);
+        roleTrainingTemplates[adminDraftTraining.originalRole] = originalList;
+      }
+      const existing = list.find(t => t.id === id);
+      const mentorMissionId = adminTrainingMentorMissionId || '';
+      const mentorFolderId = adminTrainingMentorFolderId || '';
+      if (existing) {
+        existing.name = name; existing.description = desc; existing.phases = phases; existing.mentorMissionId = mentorMissionId; existing.mentorFolderId = mentorFolderId;
+      } else {
+        list.push({ id, name, description: desc, phases, mentorMissionId, mentorFolderId });
+      }
+      const updated = { ...roleTrainingTemplates, [role]: list };
+      saveTemplates(updated);
+      clearAdminDraft();
+      render();
+    };
+
+    window.editTemplateTraining = (role, id) => {
+      const list = roleTrainingTemplates[role] || [];
+      const t = list.find(x => x.id === id);
+      if (!t) return alert('Training not found.');
+      adminDraftTraining = {
+        editingId: t.id,
+        originalRole: role,
+        roleSelect: role,
+        roleNew: '',
+        name: t.name || '',
+        description: t.description || '',
+        phases: (t.phases || []).map(phase => ({
+          id: phase.id || `phase-${Date.now()}`,
+          name: phase.name || '',
+          items: (phase.items || []).map(item => ({
+            id: item.id || `item-${Date.now()}`,
+            type: item.type || 'doc',
+            source: item.source || '',
+            url: item.url || '',
+            fileName: item.fileName || '',
+            pendingFileName: '',
+            textContent: item.textContent || '',
+            lmsLink: item.lmsLink || '',
+            handsonText: item.handsonText || '',
+            missionId: item.missionId || '',
+            mentorTopic: item.mentorTopic || '',
+            assessment: normalizeAssessment(item.assessment),
+            collapsed: !!item.collapsed
+          }))
+        }))
+      };
+      adminTrainingMentorMissionId = t.mentorMissionId || '';
+      adminTrainingMentorFolderId = t.mentorFolderId || '';
+      renderAdminTrainings();
+      window.scrollTo(0, 0);
+    };
+
+    window.deleteTemplateTraining = (role, id) => {
+      if (!confirm('Delete this training?')) return;
+      const list = (roleTrainingTemplates[role] || []).filter(t => t.id !== id);
+      const updated = { ...roleTrainingTemplates, [role]: list };
+      saveTemplates(updated);
+      render();
+    };
+
+    window.deleteRole = (role) => {
+      if (!confirm('Delete this role and its trainings?')) return;
+      const updated = { ...roleTrainingTemplates };
+      delete updated[role];
+      saveTemplates(updated);
+      render();
+    };
+
+    // Render root
+    function render() {
+      if (!templatesLoaded) {
+        ensureTemplatesLoaded().then(render);
+        document.body.innerHTML = `
+          <div class="page-shell">
+            <div class="card" style="margin-top:16px;">
+              <div class="muted-box" style="min-height:120px;">Loading trainings...</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      const session = loadSession();
+      if (session && !usersLoaded) {
+        ensureUsersLoaded().then(render);
+        document.body.innerHTML = `
+          <div class="page-shell">
+            <div class="card" style="margin-top:16px;">
+              <div class="muted-box" style="min-height:120px;">Loading users...</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      if (!usersLoaded && state.view !== 'login' && state.view !== 'register') {
+        ensureUsersLoaded().then(render);
+        document.body.innerHTML = `
+          <div class="page-shell">
+            <div class="card" style="margin-top:16px;">
+              <div class="muted-box" style="min-height:120px;">Loading users...</div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+      if (!state.currentUser && !state.isAdmin && session) {
+        if (session.admin) { state.isAdmin = true; state.view = 'admin-home'; }
+        else if (session.employeeId) {
+          const u = findUser(session.employeeId); if (u) { state.currentUser = u; state.view = 'dashboard'; }
+        }
+      }
+      if (state.isAdmin) {
+        if (state.view === 'admin-users') return renderAdminUsers();
+        if (state.view === 'admin-trainings') return renderAdminTrainings();
+        return renderAdminHome();
+      }
+      if (state.view === 'login') return renderAuth('login');
+      if (state.view === 'register') return renderAuth('register');
+      if (state.view === 'dashboard') return renderDashboard();
+      if (state.view === 'training') return renderTraining();
+    }
+
+    // Auth render
+    function renderAuth(mode) {
+      const isLogin = mode === 'login';
+      const authFields = isLogin ? `
+        <div class="form-grid single">
+          ${authField('Employee ID','employeeId','e.g., EMP001','person')}
+          ${authField('AITP Password','password','Your password','lock', false, 'password')}
+        </div>
+      ` : `
+        <div class="form-grid">
+          ${authField('Employee ID','employeeId','e.g., EMP001','person')}
+          ${authField('Name','name','e.g., Jane Doe','person')}
+          ${authField('Role','role','Select a role','bag', true)}
+          ${authField('Title','title','e.g., Senior Developer','idcard')}
+          <div><label>Manager Employee ID (optional)</label><div class="field"><span class="icon-mini">${personIcon()}</span><input name="managerEmployeeId" placeholder="e.g., MGR001"></div></div>
+          ${authField('AITP Password','password','Create password','lock', false, 'password')}
+          ${authField('Confirm Password','confirm','Confirm password','lock', false, 'password')}
+        </div>
+      `;
+      document.body.innerHTML = `<div class="auth-wrap"><div class="auth-card"><div class="auth-header"><div class="icon-circle">${isLogin ? lockIcon() : userAddIcon()}</div><div class="auth-title">APAC AI Training Platform</div><div class="auth-sub">${isLogin ? 'Sign in to continue your learning journey' : 'Register to start your AI learning journey'}</div></div><form id="auth-form">${authFields}${!isLogin ? trainingSelectBlock() : ''}<button class="primary" type="submit" ${isLogin ? 'style="margin-top:14px;"' : ''}>${isLogin ? 'Sign In' : 'Register & Start Training'}</button></form><div class="footer-text">${isLogin ? "New user? <a href='#' id='toggle-link'>Register here</a>" : "Already have an account? <a href='#' id='toggle-link'>Sign in here</a>"}</div></div></div>`;
+      const toggle = document.getElementById('toggle-link'); if (toggle) toggle.onclick = (e) => { e.preventDefault(); state.view = isLogin ? 'register' : 'login'; render(); };
+      if (!isLogin) initRoleSelector();
+      document.getElementById('auth-form').onsubmit = async (e) => {
+        e.preventDefault(); const data = Object.fromEntries(new FormData(e.target).entries());
+        if (isLogin) return handleLogin(data);
+        const selected = Array.from(document.querySelectorAll('.training-item.selected')).map(c => c.dataset.id);
+        await handleRegister(data, selected);
+      };
+    }
+
+    function authField(label, name, placeholder, icon, isSelect=false, type='text') {
+      if (isSelect) {
+        const options = Object.keys(roleTrainingTemplates).map(r => `<option value="${r}">${r}</option>`).join('');
+        return `<div><label>${label}</label><div class="field"><span class="icon-mini">${bagIcon()}</span><select name="${name}" id="role-select"><option value="">Select a role</option>${options}</select></div></div>`;
+      }
+      return `<div><label>${label}</label><div class="field"><span class="icon-mini">${icon === 'person' ? personIcon() : icon === 'idcard' ? idIcon() : lockIcon()}</span><input name="${name}" placeholder="${placeholder}" type="${type}" required></div></div>`;
+    }
+
+    function trainingSelectBlock() {
+      return `<div style="margin:10px 0 6px;"><label>Select A Training <span style="color:#7c88a6; font-size:12px;">(Please select a role first)</span></label><div id="training-block" class="training-panel"><div id="training-placeholder" class="muted-box">${bagLargeIcon()}<div style="margin-top:6px;">Please select your role to view available trainings</div></div><div id="training-options" class="training-list" style="display:none;"></div></div></div>`;
+    }
+
+    function initRoleSelector() {
+      const roleSel = document.getElementById('role-select');
+      const placeholder = document.getElementById('training-placeholder');
+      const list = document.getElementById('training-options');
+      const block = document.getElementById('training-block');
+      roleSel.onchange = () => {
+        const role = roleSel.value; list.innerHTML = '';
+        if (!role) { placeholder.style.display = 'grid'; list.style.display = 'none'; block.classList.add('muted-box'); return; }
+        const trainings = roleTrainingTemplates[role] || [];
+        placeholder.style.display = 'none'; list.style.display = 'grid'; block.classList.remove('muted-box');
+        list.innerHTML = trainings.map(t => `<div class="training-item" data-id="${t.id}" tabindex="0"><div><div style="font-weight:700;">${t.name}</div><div class="training-desc">${t.description || ''}</div><div class="training-desc">${t.phases.length} phases</div></div></div>`).join('');
+        const items = Array.from(list.querySelectorAll('.training-item'));
+        const selectOne = (target) => {
+          items.forEach(el => el.classList.remove('selected'));
+          target.classList.add('selected');
+        };
+        items.forEach(item => {
+          item.onclick = () => selectOne(item);
+          item.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectOne(item); } };
+        });
+      };
+    }
+
+    // Dashboard render
+    function renderDashboard() {
+      const user = state.currentUser;
+      document.body.innerHTML = `<div class="page-shell"><div class="nav"><div class="nav-left"><div class="home-icon">${homeIcon()}</div><div><div class="nav-title">APAC AI Training Platform</div><div class="nav-sub">Welcome back, ${user.name || user.employeeId}</div></div></div><div class="nav-actions"><button class="link-btn" id="edit-profile">${personIcon()} Edit Profile</button><button class="link-btn" id="change-pass">${lockIcon()} Change Password</button><button class="link-btn logout" id="logout">${logoutIcon()} Logout</button></div></div><div style="margin-top:16px;" class="profile-card"><div class="profile-meta"><div class="label">Employee Profile</div><div style="font-weight:700;">Name: ${user.name || 'N/A'}</div><div style="font-weight:700;">Employee ID: ${user.employeeId}</div><div style="font-weight:700;">Title: ${user.title || 'N/A'}</div><div style="font-weight:700;">Manager ID: ${user.managerEmployeeId || 'N/A'}</div></div><div><div class="label" style="text-align:right;">Total Trainings</div><div class="big-count">${user.trainings.length}</div></div></div><div id="approvals-section"></div><div class="section-row"><div class="section-title">My Trainings</div><button class="add-btn" id="toggle-add">${plusIcon()} Add New Training</button></div>${state.showAddPanel ? addTrainingPanel() : ''}<div id="groups"></div></div>`;
+      el('logout').onclick = () => { clearSession(); state.currentUser = null; state.isAdmin = false; state.view = 'login'; state.showAddPanel = false; render(); };
+      el('edit-profile').onclick = () => editProfile();
+      el('change-pass').onclick = () => alert('Password change flow not implemented in this demo.');
+      el('toggle-add').onclick = () => { state.showAddPanel = !state.showAddPanel; render(); };
+      if (state.showAddPanel) initAddTraining();
+      renderGroups();
+      renderApprovals();
+    }
+
+    function addTrainingPanel() {
+      return `<div class="card add-row"><div style="font-weight:700; margin-bottom:10px;">Add New Training</div><div class="form-grid"><div><label>Select Role</label><div class="field select-role"><span class="icon-mini">${bagIcon()}</span><select id="add-role"><option value="">Select a role</option>${Object.keys(roleTrainingTemplates).map(r => `<option value="${r}">${r}</option>`).join('')}</select></div></div></div><div id="add-training-placeholder" class="muted-box" style="margin-top:12px;">${bagLargeIcon()}<div style="margin-top:6px;">Please select a role to view available trainings</div></div><div id="add-training-list" class="training-list" style="display:none; margin-top:12px;"></div><div style="display:flex; justify-content:flex-end;"><button class="primary" style="width:220px;" id="add-training-btn">Add Training</button></div></div>`;
+    }
+
+    function initAddTraining() {
+      const roleSel = el('add-role'); const placeholder = el('add-training-placeholder'); const list = el('add-training-list'); const btn = el('add-training-btn');
+      let selectedTrainingId = '';
+      roleSel.onchange = () => {
+        const role = roleSel.value; list.innerHTML = ''; selectedTrainingId = '';
+        if (!role) { placeholder.style.display = 'grid'; list.style.display = 'none'; return; }
+        const trainings = roleTrainingTemplates[role] || [];
+        placeholder.style.display = 'none'; list.style.display = 'grid';
+        list.innerHTML = trainings.map(t => `<label class="training-item" style="cursor:pointer;"><input type="radio" name="addTrainingChoice" value="${t.id}"><div><div style="font-weight:700;">${t.name}</div><div class="training-desc">${t.description || ''}</div><div class="training-desc">${t.phases.length} phases</div></div></label>`).join('');
+        list.querySelectorAll('input').forEach(inp => inp.onchange = () => selectedTrainingId = inp.value);
+      };
+      btn.onclick = () => addTrainingToUser(roleSel.value, selectedTrainingId);
+    }
+
+    function renderGroups() {
+      const container = el('groups'); const groups = groupByRole(state.currentUser.trainings);
+      container.innerHTML = groups.map(g => `<div class="group-card" style="margin-top:14px;"><div class="group-header"><div style="display:flex; align-items:center; gap:8px; font-weight:700;">${bagIcon()} ${g.role}</div><div class="badge">${g.items.length} Training${g.items.length>1?'s':''}</div></div>${g.items.map(renderTrainingRow).join('')}</div>`).join('');
+    }
+
+    function groupByRole(list) {
+      const map = {};
+      list.forEach(t => { map[t.role] = map[t.role] || []; map[t.role].push(t); });
+      return Object.keys(map).map(role => ({ role, items: map[role] }));
+    }
+
+    function renderTrainingRow(t) {
+      const s = statusLabel(t.status); const pct = progressPct(t);
+      let actions = '';
+      if (!t.started && t.status !== 'completed') {
+        actions = `<button class="start-btn" onclick="startTrainingFlow('${t.id}','start')">Start</button>`;
+      } else if (t.status === 'completed') {
+        actions = `<button class="start-btn" onclick="startTrainingFlow('${t.id}','restart')">Restart</button>`;
+      } else {
+        actions = `
+          <button class="start-btn" onclick="startTrainingFlow('${t.id}','resume')">Resume</button>
+          <button class="light-btn" onclick="startTrainingFlow('${t.id}','restart')">Restart</button>
+        `;
+      }
+      return `<div class="training-row" data-id="${t.id}"><div><div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span>${bookIcon()}</span><div class="train-name">${t.name}</div></div><div class="progress-wrap"><span>Progress</span><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div><span>${t.currentPhaseIndex}/${t.phases.length}</span><span class="status-chip ${s.cls}">${statusDot()} ${s.text}</span></div></div><div style="display:flex; align-items:center; gap:10px;">${actions}</div></div>`;
+    }
+
+    window.startTrainingFlow = (id, mode) => {
+      const user = state.currentUser;
+      const t = user.trainings.find(x => x.id === id);
+      if (!t) return;
+      ensureTrainingState(t);
+      syncTrainingMetadata(t);
+        if (mode === 'restart') {
+          t.currentPhaseIndex = 0;
+          t.currentItemIndex = 0;
+          t.started = false;
+          t.status = 'not-started';
+          t.completedItemIds = [];
+          t.lastAutoMentorItemId = '';
+          (t.phases || []).forEach(phase => {
+            (phase.items || []).forEach(item => {
+              if (item && item.type === 'assessment') {
+                item.assessmentState = { index: 0, answers: [], completed: false, passed: false, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false };
+              }
+              if (item && item.type === 'ai-chat') {
+                item.autoMentorStarted = false;
+              }
+            });
+          });
+          if (Array.isArray(user.approvals)) {
+            user.approvals = user.approvals.filter(req => req.trainingId !== t.id);
+          }
+        t.chatHistory = [{ from: 'bot', text: `Welcome to ${t.name}! We'll be going through ${t.phases.length} phases together. Currently, you're in Phase 1: ${getPhaseName(t.phases[0])}. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.`, time: new Date().toLocaleTimeString() }];
+      } else if (mode === 'resume') {
+        t.started = true;
+        t.status = t.status === 'completed' ? 'completed' : 'in-progress';
+      }
+      state.selectedTraining = t;
+      state.view = 'training';
+      state.showMentor = false;
+      render();
+    };
+
+    // Training view render
+    function renderTraining() {
+      const t = ensureTrainingState(state.selectedTraining);
+      syncTrainingMetadata(t);
+      ensureCurrentItem(t);
+      const phaseNum = Math.min(t.currentPhaseIndex + 1, t.phases.length);
+      const total = t.phases.length || 1;
+      const percent = progressPct(t);
+      const currentPhase = t.phases[t.currentPhaseIndex] || { name: 'Phase 1', items: [] };
+      const currentItem = (currentPhase.items || [])[t.currentItemIndex] || null;
+      const entryKey = `${t.currentPhaseIndex}:${t.currentItemIndex}`;
+      if (currentItem && currentItem.type === 'assessment' && t.lastAssessmentEntryKey !== entryKey) {
+        const stateObj = currentItem.assessmentState || {};
+        const hasScore = stateObj.completed || stateObj.passed || stateObj.scorePct > 0;
+        if (hasScore) {
+          currentItem.assessmentState = { index: 0, answers: [], completed: false, passed: false, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false };
+        } else {
+          const answersList = Array.isArray(stateObj.answers) ? stateObj.answers : [];
+          const hasAnyAnswer = answersList.some(a => (Array.isArray(a) ? a.length > 0 : a !== undefined && a !== null));
+          if (!hasAnyAnswer && stateObj.index > 0) {
+            stateObj.index = 0;
+          }
+        }
+        t.lastAssessmentEntryKey = entryKey;
+      } else if (t.lastAssessmentEntryKey !== entryKey) {
+        t.lastAssessmentEntryKey = entryKey;
+      }
+      const overviewHtml = renderTrainingOverview(t);
+      const forceMentor = t.started && currentItem && currentItem.type === 'ai-chat';
+      const showMentor = forceMentor || state.showMentor;
+      const itemHtml = t.started ? renderCurrentItem(t, currentPhase, currentItem) : '';
+      if (currentItem && currentItem.type === 'ai-chat' && t.lastAutoMentorItemId !== currentItem.id) {
+        t.lastAutoMentorItemId = currentItem.id;
+        autoStartMentorSession(currentItem, true);
+      }
+      document.body.innerHTML = `
+        <div class="page-shell">
+          <div class="nav">
+            <div class="nav-left">
+              <div class="home-icon">${homeIcon()}</div>
+              <div>
+                <div class="nav-title">${t.name}</div>
+                <div class="nav-sub">Phase ${phaseNum} of ${total}</div>
+              </div>
+            </div>
+            <div class="nav-actions">
+              <button class="link-btn" id="back-dash">${homeSmallIcon()} Dashboard</button>
+              <button class="link-btn logout" id="logout">${logoutIcon()} Logout</button>
+            </div>
+          </div>
+          <div class="card training-layout">
+            <div class="training-top">
+              <div class="home-icon" style="width:42px; height:42px;">${bookIcon()}</div>
+              <div>
+                <div style="font-size:14px; color:var(--muted);">Overall Progress</div>
+                <div class="progress-bar" style="width:240px; margin-top:4px;"><div class="progress-fill" style="width:${percent}%;"></div></div>
+                <div style="font-size:12px; color:#4b556b; margin-top:4px;">${t.currentPhaseIndex}/${total} phases</div>
+              </div>
+            </div>
+            <div class="phase-tabs">${t.phases.map((p,i)=>`<div class="phase-tab ${i===t.currentPhaseIndex ? 'current' : i < t.currentPhaseIndex ? 'done' : ''}"><span>${i+1}. ${getPhaseName(p)}</span></div>`).join('')}</div>
+            ${!t.started ? `
+              <div class="card" style="margin-top:12px;">
+                <div style="font-weight:700; margin-bottom:6px;">How this training will progress</div>
+                ${overviewHtml}
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:10px;">
+                  ${t.mentorMissionId ? `<button class="link-btn" id="mentor-btn">${chatIcon()} Get My Mentor</button>` : '<span></span>'}
+                  <button class="primary" style="width:220px;" id="start-training-btn">Start Training</button>
+                </div>
+              </div>
+            ` : itemHtml}
+            ${showMentor ? `
+              <div class="chat-shell" style="margin-top:12px;">
+                <div class="chat-box" id="chat-box"></div>
+                <div class="chat-input">
+                  <input id="chat-input" placeholder="Type your message or answer here..." autocomplete="off">
+                  <button id="send-btn">Send</button>
+                </div>
+              </div>
+              <div class="card" style="margin-top:12px;">
+                <div style="font-weight:700; margin-bottom:8px;">Last Matcha Request Payload</div>
+                <pre style="margin:0; white-space:pre-wrap; font-size:12px; color:#2f3c60;">${escapeHtml(JSON.stringify(lastMentorRequest || { info: 'No mentor payload yet. Send a message to see it.' }, null, 2))}</pre>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+      el('logout').onclick = () => { clearSession(); state.currentUser = null; state.isAdmin = false; state.view = 'login'; state.showAddPanel = false; render(); };
+      el('back-dash').onclick = () => { state.view = 'dashboard'; state.selectedTraining = null; state.showMentor = false; state.mentorReason = ''; render(); };
+        const mentorBtn = el('mentor-btn');
+        if (mentorBtn) mentorBtn.onclick = () => {
+          const item = currentItem || getCurrentTrainingItem() || {};
+          state.mentorReason = `User requested mentor support during ${activityLabel(item.type || 'activity')}.`;
+          if (state.selectedTraining) state.selectedTraining.chatHistory = [];
+          state.showMentor = true;
+          sendMentorMessage('', item, { autoKickoff: true, kickoffText: `Do you need help with ${activityLabel(item.type || 'this activity')}?`, useHistory: false });
+          render();
+        };
+      const startBtn = el('start-training-btn');
+      if (startBtn) startBtn.onclick = () => startTraining(t);
+        const completeBtn = el('complete-item-btn');
+        if (completeBtn) completeBtn.onclick = () => handleCompleteItem(t, currentPhase, currentItem);
+        setupAssessmentTimer(t, currentItem);
+        if (showMentor) {
+          renderChat();
+          el('send-btn').onclick = () => { const val = el('chat-input').value; sendMessage(val); el('chat-input').value=''; };
+          el('chat-input').addEventListener('keyup', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); el('send-btn').click(); }});
+          autoStartMentorSession(currentItem);
+        }
+      }
+
+    function renderTrainingOverview(t) {
+      const phases = t.phases || [];
+      return phases.map((phase, idx) => {
+        const items = (phase.items || []).map(item => {
+          if (item.type === 'doc' && (item.fileName || item.url)) return `Document (${item.fileName || 'link'})`;
+          if (item.type === 'video' && (item.fileName || item.url)) return `Video (${item.fileName || 'link'})`;
+          if (item.type === 'lms' && item.lmsLink) return 'LMS/Workday course';
+          if (item.type === 'handson') return 'Hands-on activity';
+          if (item.type === 'assessment') return 'Assessment';
+          if (item.type === 'text') return 'Formatted text';
+          if (item.type === 'ai-chat') return `Mentor session${item.mentorTopic ? ` (${item.mentorTopic})` : ''}`;
+          return activityLabel(item.type);
+        }).join(', ') || 'No activities yet.';
+        return `<div class="training-desc" style="margin-top:6px;"><strong>Phase ${idx + 1}: ${getPhaseName(phase)}</strong><div>${items}</div></div>`;
+      }).join('');
+    }
+
+    function renderCurrentItem(training, phase, item) {
+      if (!item) {
+        return `<div class="card" style="margin-top:12px;"><div class="muted-box">No items found for this phase.</div></div>`;
+      }
+      const approvalReq = getApprovalRequest(state.currentUser, training.id, item.id);
+      const pending = approvalReq && approvalReq.status === 'pending';
+      const approved = approvalReq && approvalReq.status === 'approved';
+      const rejected = approvalReq && approvalReq.status === 'rejected';
+      const requires = requiresApproval(item);
+      const details = renderItemDetails(training, item);
+      const buttonLabel = requires && approved ? 'Continue' : getCompleteLabel(item);
+      const disableComplete = requires && !!pending;
+      const allowMentor = item.type !== 'ai-chat' && item.type !== 'assessment' && !!training.mentorMissionId;
+      const showCompleteButton = item.type !== 'assessment';
+      const approvalNote = requires ? `<div class="training-desc" style="margin-top:6px;">Manager approval required to proceed.</div>` : '';
+      const pendingNote = pending ? `<div class="training-desc" style="margin-top:6px; color:#c62828;">Awaiting manager approval.</div>` : '';
+      const approvedNote = approved ? `<div class="training-desc" style="margin-top:6px; color:#1c8c4a;">Congratulations, your manager has approved.</div>` : '';
+      const rejectedNote = rejected ? `<div class="training-desc" style="margin-top:6px; color:#c62828;">Sorry, your manager has rejected the outcome, please try again.</div>` : '';
+      const actionsRow = (allowMentor || showCompleteButton) ? `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:10px;">
+            ${allowMentor ? `<button class="link-btn" id="mentor-btn">${chatIcon()} Get My Mentor</button>` : '<span></span>'}
+            ${showCompleteButton ? `<button class="primary ${disableComplete ? 'is-disabled' : ''}" style="width:320px;" id="complete-item-btn" ${disableComplete ? 'disabled aria-disabled="true"' : ''}>${buttonLabel}</button>` : '<span></span>'}
+          </div>
+      ` : '';
+      return `
+        <div class="card" style="margin-top:12px;">
+          <div style="font-weight:700;">Phase ${training.currentPhaseIndex + 1}: ${getPhaseName(phase)}</div>
+          <div class="training-desc" style="margin-top:4px;">Current activity: ${activityLabel(item.type)}</div>
+          ${details}
+          ${approvalNote}
+          ${pendingNote}
+          ${approvedNote}
+          ${rejectedNote}
+          ${actionsRow}
+        </div>
+      `;
+    }
+
+    function renderItemDetails(training, item) {
+      if (item.type === 'doc') {
+        const link = item.fileName ? resourceUrl(item.type, item.fileName) : item.url;
+        return link ? `<div class="training-desc" style="margin-top:8px;">Document: <a href="${link}" target="_blank" rel="noreferrer">${item.fileName || item.url}</a></div>` : '<div class="training-desc" style="margin-top:8px;">No document explained yet.</div>';
+      }
+      if (item.type === 'video') {
+        const link = item.fileName ? resourceUrl(item.type, item.fileName) : item.url;
+        return link ? `<div class="training-desc" style="margin-top:8px;">Video: <a href="${link}" target="_blank" rel="noreferrer">${item.fileName || item.url}</a></div>` : '<div class="training-desc" style="margin-top:8px;">No video linked yet.</div>';
+      }
+      if (item.type === 'lms') {
+        return item.lmsLink ? `<div class="training-desc" style="margin-top:8px;">Course link: <a href="${item.lmsLink}" target="_blank" rel="noreferrer">${item.lmsLink}</a></div>` : '<div class="training-desc" style="margin-top:8px;">No course link provided.</div>';
+      }
+      if (item.type === 'handson') {
+        return `<div class="training-desc" style="margin-top:8px;">${item.handsonText || 'No hands-on instructions provided yet.'}</div>`;
+      }
+      if (item.type === 'text') {
+        return `<div class="training-desc" style="margin-top:8px;">${item.textContent || 'No formatted text provided yet.'}</div>`;
+      }
+      if (item.type === 'assessment') {
+        return renderAssessment(training, item);
+      }
+      if (item.type === 'ai-chat') {
+        const next = getNextItemSummary(training);
+        return `<div class="training-desc" style="margin-top:8px;">Mentor session placeholder. Continue chatting until you're ready to proceed.</div>${next ? `<div class="training-desc" style="margin-top:6px;">Next up: ${next}</div>` : ''}`;
+      }
+      return '';
+    }
+
+    function normalizePassingMarks(value) {
+      const num = Number.parseFloat(value);
+      return Number.isFinite(num) ? num : 0;
+    }
+
+    function isMultiSelectQuestion(question) {
+      if (!question) return false;
+      if (question.multi) return true;
+      if (question.type === 'multi') return true;
+      const correctCount = (question.options || []).filter(opt => opt && opt.correct).length;
+      return correctCount > 1;
+    }
+
+    function formatTime(seconds) {
+      const clamped = Math.max(0, Math.floor(seconds || 0));
+      const mins = Math.floor(clamped / 60);
+      const secs = clamped % 60;
+      return `${mins}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function getAssessmentState(item) {
+      if (!item.assessmentState || typeof item.assessmentState !== 'object') {
+        item.assessmentState = {
+          index: 0,
+          answers: [],
+          completed: false,
+          passed: false,
+          scorePct: 0,
+          startedAt: 0,
+          endsAt: 0,
+          remainingSeconds: 0,
+          timedOut: false
+        };
+      }
+      return item.assessmentState;
+    }
+
+    function getItemById(training, itemId) {
+      const phases = training.phases || [];
+      for (const phase of phases) {
+        const found = (phase.items || []).find(i => i.id === itemId);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function renderAssessment(training, item) {
+      const assessment = item.assessment || {};
+      const questions = Array.isArray(assessment.questions) ? assessment.questions : [];
+      if (!questions.length) {
+        return '<div class="training-desc" style="margin-top:8px;">No questions added yet.</div>';
+      }
+      const state = getAssessmentState(item);
+      const durationMinutes = Number(assessment.durationMinutes || 0);
+      if (!state.startedAt && !state.completed) {
+        state.index = 0;
+        state.answers = [];
+        state.startedAt = Date.now();
+        if (durationMinutes > 0) {
+          state.endsAt = state.startedAt + (durationMinutes * 60000);
+        } else {
+          state.endsAt = 0;
+        }
+      }
+      if (!state.completed) {
+        if (state.index >= questions.length) state.index = 0;
+        const answersList = Array.isArray(state.answers) ? state.answers : [];
+        const hasAnyAnswer = answersList.some(a => (Array.isArray(a) ? a.length > 0 : a !== undefined && a !== null));
+        if (!hasAnyAnswer) state.index = 0;
+      }
+      const total = questions.length;
+      const idx = Math.min(Math.max(state.index, 0), total - 1);
+      const q = questions[idx] || {};
+      const isMulti = isMultiSelectQuestion(q);
+      const selected = state.answers[idx] ?? (isMulti ? [] : null);
+      const passing = normalizePassingMarks(assessment.passingMarks || 0);
+      const timeRemaining = durationMinutes
+        ? (() => {
+            const endsAt = state.endsAt || (state.startedAt ? state.startedAt + (durationMinutes * 60000) : 0);
+            const remaining = endsAt ? Math.max(0, Math.ceil((endsAt - Date.now()) / 1000)) : Math.round(durationMinutes * 60);
+            state.remainingSeconds = remaining;
+            return `<div class="training-desc" id="assessment-timer-${item.id}" style="margin-top:6px;">Time remaining: ${formatTime(remaining)}</div>`;
+          })()
+        : '';
+      const resultNote = state.completed
+        ? (state.passed
+          ? `<div class="training-desc" style="margin-top:8px; color:#1c8c4a;">Passed (${state.scorePct}% >= ${passing}%).</div>`
+          : `<div class="training-desc" style="margin-top:8px; color:#c62828;">${state.timedOut ? 'Time expired. ' : ''}Failed (${state.scorePct}% < ${passing}%). Please try again.</div>`)
+        : '';
+      const retryBtn = state.completed && !state.passed
+        ? `<button class="light-btn" onclick="retryAssessment('${training.id}','${item.id}')">Retry assessment</button>`
+        : '';
+      const canNext = isMulti ? Array.isArray(selected) && selected.length > 0 : selected !== undefined && selected !== null;
+      const isLast = idx === total - 1;
+      const actionBtn = state.completed
+        ? ''
+        : isLast
+          ? `<button class="primary" style="width:200px;" ${canNext ? '' : 'disabled'} onclick="submitAssessment('${training.id}','${item.id}')">End Test</button>`
+          : `<button class="primary" style="width:200px;" ${canNext ? '' : 'disabled'} onclick="nextAssessmentQuestion('${training.id}','${item.id}')">Next</button>`;
+      return `
+        <div class="training-desc" style="margin-top:8px;"><strong>Question ${idx + 1} of ${total}</strong></div>
+        <div class="training-desc" style="margin-top:6px;"><strong>Q${idx + 1}.</strong> ${q.text || 'Untitled question'}</div>
+        ${isMulti ? '<div class="training-desc" style="margin-top:4px;">Select all that apply.</div>' : ''}
+        <div style="display:grid; gap:8px; margin-top:8px;">
+          ${(q.options || []).map((opt, optIdx) => `
+            <button class="assess-option ${isMulti ? (Array.isArray(selected) && selected.includes(optIdx) ? 'selected' : '') : (selected === optIdx ? 'selected' : '')}" onclick="selectAssessmentOption('${training.id}','${item.id}',${optIdx})">${opt.text || 'Option'}</button>
+          `).join('')}
+        </div>
+        ${timeRemaining}
+        ${resultNote}
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
+          ${retryBtn}
+          ${actionBtn}
+        </div>
+        ${state.completed && state.passed ? `<div style="display:flex; justify-content:flex-end; margin-top:10px;"><button class="primary" style="width:220px;" onclick="completeAssessment('${training.id}','${item.id}')">Continue to next section</button></div>` : ''}
+      `;
+    }
+
+    function getNextItemSummary(training) {
+      const phases = training.phases || [];
+      let phaseIdx = training.currentPhaseIndex;
+      let itemIdx = training.currentItemIndex + 1;
+      while (phaseIdx < phases.length) {
+        const items = phases[phaseIdx]?.items || [];
+        if (itemIdx < items.length) {
+          const nextItem = items[itemIdx];
+          return `Phase ${phaseIdx + 1} • ${activityLabel(nextItem.type)}`;
+        }
+        phaseIdx += 1;
+        itemIdx = 0;
+      }
+      return '';
+    }
+
+    function getCompleteLabel(item) {
+      if (item.type === 'doc') return 'I have completed reading the document';
+      if (item.type === 'video') return 'I have completed watching the video';
+      if (item.type === 'lms') return 'I have completed the LMS/Workday course';
+      if (item.type === 'handson') return 'I have completed the hands-on activity';
+      if (item.type === 'assessment') return 'I have completed the assessment';
+      if (item.type === 'ai-chat') return 'I am ready for next section';
+      return 'I have completed this activity';
+    }
+
+    function startTraining(training) {
+      training.started = true;
+      training.currentPhaseIndex = 0;
+      training.currentItemIndex = 0;
+      training.status = 'in-progress';
+      ensureCurrentItem(training);
+      preloadTrainingDocs(training);
+      persistUser(state.currentUser);
+      render();
+    }
+
+    async function preloadTrainingDocs(training) {
+      const folderId = training.mentorFolderId;
+      if (!folderId) return;
+      const files = [];
+      (training.phases || []).forEach(phase => {
+        (phase.items || []).forEach(item => {
+          if (item.type === 'doc' && item.fileName) files.push(item.fileName);
+        });
+      });
+      const uniqueFiles = Array.from(new Set(files));
+      if (!uniqueFiles.length) return;
+      try {
+        await fetch(`${BASE_PATH}/api/matcha/preload-docs`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folderId, files: uniqueFiles })
+        });
+      } catch {
+        // ignore preload errors, user can still proceed
+      }
+    }
+
+    function handleCompleteItem(training, phase, item) {
+      if (!item) return;
+      if (requiresApproval(item)) {
+        const approvalReq = getApprovalRequest(state.currentUser, training.id, item.id);
+        if (approvalReq && approvalReq.status === 'approved') {
+          completeItemAndAdvance(training, item);
+          training.status = training.currentPhaseIndex >= training.phases.length ? 'completed' : 'in-progress';
+          if (item.type !== 'ai-chat') state.showMentor = false;
+          if (training.chatHistory) training.chatHistory = [];
+          persistUser(state.currentUser);
+          render();
+          return;
+        }
+        if (!state.currentUser.managerEmployeeId) {
+          return alert('Manager approval required. Please add a manager Employee ID in your profile.');
+        }
+        requestApproval(state.currentUser, training, training.currentPhaseIndex, training.currentItemIndex, item);
+        persistUser(state.currentUser);
+        render();
+        return;
+      }
+      completeItemAndAdvance(training, item);
+      training.status = training.currentPhaseIndex >= training.phases.length ? 'completed' : 'in-progress';
+      if (item.type !== 'ai-chat') state.showMentor = false;
+      if (training.chatHistory) training.chatHistory = [];
+      persistUser(state.currentUser);
+      render();
+    }
+
+      window.selectAssessmentOption = (trainingId, itemId, optionIndex) => {
+        const training = state.selectedTraining;
+        if (!training || training.id !== trainingId) return;
+        const item = getItemById(training, itemId);
+        if (!item) return;
+        const stateObj = getAssessmentState(item);
+        if (stateObj.completed) return;
+        const questions = Array.isArray(item.assessment?.questions) ? item.assessment.questions : [];
+        const question = questions[stateObj.index];
+        const isMulti = isMultiSelectQuestion(question);
+        if (isMulti) {
+          const current = Array.isArray(stateObj.answers[stateObj.index]) ? [...stateObj.answers[stateObj.index]] : [];
+          const idx = current.indexOf(optionIndex);
+          if (idx >= 0) current.splice(idx, 1);
+          else current.push(optionIndex);
+          stateObj.answers[stateObj.index] = current;
+        } else {
+          stateObj.answers[stateObj.index] = optionIndex;
+        }
+        persistUser(state.currentUser);
+        render();
+      };
+
+      window.nextAssessmentQuestion = (trainingId, itemId) => {
+        const training = state.selectedTraining;
+        if (!training || training.id !== trainingId) return;
+        const item = getItemById(training, itemId);
+        if (!item) return;
+        const stateObj = getAssessmentState(item);
+        const questions = Array.isArray(item.assessment?.questions) ? item.assessment.questions : [];
+        const question = questions[stateObj.index];
+        const isMulti = isMultiSelectQuestion(question);
+        const currentAnswer = stateObj.answers[stateObj.index];
+        if (isMulti ? !(Array.isArray(currentAnswer) && currentAnswer.length) : currentAnswer === undefined) return;
+        stateObj.index = Math.min(stateObj.index + 1, (item.assessment?.questions || []).length - 1);
+        persistUser(state.currentUser);
+        render();
+      };
+
+      function isAnswerCorrect(question, chosen) {
+        const options = question?.options || [];
+        const correctIndices = options.map((opt, idx) => (opt && opt.correct ? idx : -1)).filter(idx => idx >= 0);
+        if (!correctIndices.length) return false;
+        const isMulti = isMultiSelectQuestion(question);
+        if (isMulti) {
+          const chosenArr = Array.isArray(chosen) ? chosen : (chosen === undefined || chosen === null ? [] : [chosen]);
+          if (chosenArr.length !== correctIndices.length) return false;
+          const chosenSet = new Set(chosenArr);
+          return correctIndices.every(idx => chosenSet.has(idx));
+        }
+        return chosen === correctIndices[0];
+      }
+
+      function finalizeAssessment(training, item, opts = {}) {
+        const questions = Array.isArray(item.assessment?.questions) ? item.assessment.questions : [];
+        if (!questions.length) return;
+        const stateObj = getAssessmentState(item);
+        const passing = normalizePassingMarks(item.assessment?.passingMarks || 0);
+        let correct = 0;
+        questions.forEach((q, qIdx) => {
+          const chosen = stateObj.answers[qIdx];
+          if (isAnswerCorrect(q, chosen)) correct += 1;
+        });
+        const scorePct = Math.round((correct / questions.length) * 100);
+        stateObj.completed = true;
+        stateObj.passed = scorePct >= passing;
+        stateObj.scorePct = scorePct;
+        if (opts.timedOut) stateObj.timedOut = true;
+        const timerKey = `${training.id}::${item.id}`;
+        const timerId = assessmentTimers.get(timerKey);
+        if (timerId) clearInterval(timerId);
+        assessmentTimers.delete(timerKey);
+        persistUser(state.currentUser);
+        render();
+      }
+
+      window.submitAssessment = (trainingId, itemId) => {
+        const training = state.selectedTraining;
+        if (!training || training.id !== trainingId) return;
+        const item = getItemById(training, itemId);
+        if (!item) return;
+        const stateObj = getAssessmentState(item);
+        const questions = Array.isArray(item.assessment?.questions) ? item.assessment.questions : [];
+        const question = questions[stateObj.index];
+        const isMulti = isMultiSelectQuestion(question);
+        const currentAnswer = stateObj.answers[stateObj.index];
+        if (isMulti ? !(Array.isArray(currentAnswer) && currentAnswer.length) : currentAnswer === undefined) return;
+        finalizeAssessment(training, item);
+      };
+
+      window.completeAssessment = (trainingId, itemId) => {
+        const training = state.selectedTraining;
+        if (!training || training.id !== trainingId) return;
+        const item = getItemById(training, itemId);
+        if (!item) return;
+        const stateObj = getAssessmentState(item);
+        if (!stateObj.completed || !stateObj.passed) return;
+        completeItemAndAdvance(training, item);
+        training.status = training.currentPhaseIndex >= training.phases.length ? 'completed' : 'in-progress';
+        persistUser(state.currentUser);
+        render();
+      };
+
+      window.retryAssessment = (trainingId, itemId) => {
+        const training = state.selectedTraining;
+        if (!training || training.id !== trainingId) return;
+        const item = getItemById(training, itemId);
+        if (!item) return;
+        const timerKey = `${training.id}::${item.id}`;
+        const timerId = assessmentTimers.get(timerKey);
+        if (timerId) clearInterval(timerId);
+        assessmentTimers.delete(timerKey);
+        item.assessmentState = { index: 0, answers: [], completed: false, passed: false, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false };
+        persistUser(state.currentUser);
+        render();
+      };
+
+      function setupAssessmentTimer(training, item) {
+        const key = item && item.type === 'assessment' ? `${training.id}::${item.id}` : '';
+        if (activeAssessmentKey && activeAssessmentKey !== key) {
+          const oldTimer = assessmentTimers.get(activeAssessmentKey);
+          if (oldTimer) clearInterval(oldTimer);
+          assessmentTimers.delete(activeAssessmentKey);
+        }
+        activeAssessmentKey = key;
+        if (!item || item.type !== 'assessment') return;
+        const durationMinutes = Number(item.assessment?.durationMinutes || 0);
+        if (!durationMinutes || durationMinutes <= 0) return;
+        const stateObj = getAssessmentState(item);
+        if (stateObj.completed) return;
+        if (!stateObj.startedAt) {
+          stateObj.startedAt = Date.now();
+          stateObj.endsAt = stateObj.startedAt + (durationMinutes * 60000);
+        }
+        if (!stateObj.endsAt) stateObj.endsAt = stateObj.startedAt + (durationMinutes * 60000);
+        const tick = () => {
+          const remaining = Math.max(0, Math.ceil((stateObj.endsAt - Date.now()) / 1000));
+          stateObj.remainingSeconds = remaining;
+          const timerEl = document.getElementById(`assessment-timer-${item.id}`);
+          if (timerEl) timerEl.textContent = `Time remaining: ${formatTime(remaining)}`;
+          if (remaining <= 0) {
+            const timerId = assessmentTimers.get(key);
+            if (timerId) clearInterval(timerId);
+            assessmentTimers.delete(key);
+            if (!stateObj.completed) finalizeAssessment(training, item, { timedOut: true });
+          }
+        };
+        tick();
+        if (!assessmentTimers.get(key)) {
+          assessmentTimers.set(key, setInterval(tick, 1000));
+        }
+      }
+
+    function sanitizeHtml(raw) {
+      const allowedTags = new Set(['b','strong','em','i','u','br','p','ul','ol','li','h1','h2','h3','h4','pre','code','span','div','hr']);
+      const template = document.createElement('template');
+      template.innerHTML = String(raw || '');
+      const walker = document.createTreeWalker(template.content, NodeFilter.SHOW_ELEMENT, null);
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach(node => {
+        const tag = node.tagName.toLowerCase();
+        if (!allowedTags.has(tag)) {
+          const text = document.createTextNode(node.textContent || '');
+          node.replaceWith(text);
+          return;
+        }
+        [...node.attributes].forEach(attr => {
+          const name = attr.name.toLowerCase();
+          if (name.startsWith('on') || name === 'style' || name === 'href' || name === 'src') {
+            node.removeAttribute(attr.name);
+          }
+        });
+      });
+      return template.innerHTML;
+    }
+
+    function formatMessage(text) {
+      const raw = String(text || '');
+      if (raw.includes('<') && raw.includes('>')) {
+        return sanitizeHtml(raw);
+      }
+      const lines = escapeHtml(raw).split('\n');
+      let out = '';
+      let inOl = false;
+      let inUl = false;
+      const closeLists = () => {
+        if (inOl) { out += '</ol>'; inOl = false; }
+        if (inUl) { out += '</ul>'; inUl = false; }
+      };
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+        const olMatch = trimmed.match(/^(\d+)\.\s+(.*)$/);
+        const ulMatch = trimmed.match(/^[-*]\s+(.*)$/);
+        if (olMatch) {
+          if (inUl) { out += '</ul>'; inUl = false; }
+          if (!inOl) { out += '<ol>'; inOl = true; }
+          out += `<li>${olMatch[2]}</li>`;
+          return;
+        }
+        if (ulMatch) {
+          if (inOl) { out += '</ol>'; inOl = false; }
+          if (!inUl) { out += '<ul>'; inUl = true; }
+          out += `<li>${ulMatch[1]}</li>`;
+          return;
+        }
+        closeLists();
+        out += trimmed ? `${trimmed}<br>` : '<br>';
+      });
+      closeLists();
+      return out;
+    }
+
+    function renderChat() {
+      const box = el('chat-box'); if (!box || !state.selectedTraining) return;
+      box.innerHTML = state.selectedTraining.chatHistory.map(m => `<div class="msg ${m.from}">${formatMessage(m.text)}<span class="timestamp">${m.time || ''}</span></div>`).join('');
+      box.scrollTop = box.scrollHeight;
+    }
+
+    // Icons
+    function lockIcon() { return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 1 1 8 0v3"></path></svg>`; }
+    function userAddIcon() { return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="16" y1="11" x2="22" y2="11"></line></svg>`; }
+    function personIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>`; }
+    function idIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="7" x2="7" y2="7"></line><line x1="7" y1="11" x2="13" y2="11"></line><line x1="7" y1="15" x2="11" y2="15"></line></svg>`; }
+    function bagIcon() { return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V6a4 4 0 0 1 8 0v1"></path><rect x="4" y="7" width="16" height="13" rx="2"></rect></svg>`; }
+    function bagLargeIcon() { return `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V6a4 4 0 0 1 8 0v1"></path><rect x="4" y="7" width="16" height="13" rx="2"></rect></svg>`; }
+    function homeIcon() { return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`; }
+    function homeSmallIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`; }
+    function bookIcon() { return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 17A2.5 2.5 0 0 0 4 14.5V5.5A2.5 2.5 0 0 1 6.5 3H20v14H6.5z"></path></svg>`; }
+    function chatIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path></svg>`; }
+    function folderIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>`; }
+    function logoutIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`; }
+    function statusDot() { return `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"></circle></svg>`; }
+    function plusIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>`; }
+
+    // Initialize
+    clearExistingDataOnce();
+    render();
+  </script>
+</body>
+</html>

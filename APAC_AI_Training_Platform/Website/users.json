@@ -1,0 +1,1913 @@
+[
+  {
+    "employeeId": "700775q",
+    "name": "Prateek Srivastava",
+    "title": "Director Technical Services",
+    "role": "Integration Consulting",
+    "password": "112233",
+    "managerEmployeeId": "1",
+    "approvals": [
+      {
+        "id": "req-1768149732433",
+        "trainingId": "ic-onboard",
+        "trainingName": "Onboarding Professional Services Integration Consultant",
+        "phaseIndex": 1,
+        "itemIndex": 3,
+        "itemId": "handson-1768146848717",
+        "itemLabel": "Hands-on activity",
+        "type": "handson",
+        "status": "rejected",
+        "requestedAt": "1/11/2026, 10:12:12 PM",
+        "resolvedAt": "1/11/2026, 10:13:25 PM"
+      },
+      {
+        "id": "req-1768149811884",
+        "trainingId": "ic-onboard",
+        "trainingName": "Onboarding Professional Services Integration Consultant",
+        "phaseIndex": 1,
+        "itemIndex": 3,
+        "itemId": "handson-1768146848717",
+        "itemLabel": "Hands-on activity",
+        "type": "handson",
+        "status": "approved",
+        "requestedAt": "1/11/2026, 10:13:31 PM",
+        "resolvedAt": "1/12/2026, 6:02:49 AM"
+      }
+    ],
+    "trainings": [
+      {
+        "id": "ic-onboard",
+        "name": "Onboarding Professional Services Integration Consultant",
+        "description": "Complete onboarding program for Integration Consultants",
+        "role": "Integration Consulting",
+        "phases": [
+          {
+            "id": "ic-onboard-phase-0",
+            "name": "Introduction & Overview",
+            "items": [
+              {
+                "id": "ai-chat-1768133189701",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Introduction & Overview",
+                "assessment": {
+                  "passingMarks": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "doc-1768146215198",
+                "type": "doc",
+                "source": "library",
+                "url": "",
+                "fileName": "SCM_ISS_ELINK_standard_overview.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-1",
+            "name": "ISS Administrator",
+            "items": [
+              {
+                "id": "ai-chat-1768146240016",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Overview of ISS Portal",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "ai-chat-1768146824603",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Types of interfaces and Queues in ISS",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "doc-1768148238635",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "ConfigurationAndUserGuide_22.1_SunriseInterfaceSubsystem.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768146848717",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will log in to the Interface Solution Suite (ISS) in an internal APAC environment and work through the end-to-end creation of a simple HL7 interface. You will define a new interface, configure the source and destination systems, select the appropriate message type (for example, ADT or ORM), and apply basic field-level mappings using the provided specifications. You will then validate the interface by processing sample messages, reviewing logs, and troubleshooting any errors identified during testing. This activity is intended to strengthen your practical understanding of interface configuration, message flow and validation steps that you are expected to perform as an integration consultant during real-world implementations.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768147120423",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will work with Rejected and Suspended messages in the Interface Solution Suite (ISS) in an internal APAC environment to understand common interface failure scenarios. You will review sample messages that have been intentionally rejected or suspended, analyze error details and processing statuses, and identify the root cause based on validation rules, mappings, or destination responses. You will then take corrective actions such as updating mappings, correcting message content, or reprocessing messages, and verify successful delivery after resolution. This activity is designed to help you build confidence in monitoring interface health, troubleshooting message issues, and performing recovery steps that are routinely required during live integration support.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768147120768",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will use the logging and monitoring features in the Interface Solution Suite (ISS) to diagnose and troubleshoot interface issues. You will review different types of logs, including inbound, outbound, transformation, and error logs, to understand how messages are processed through each stage of the interface. You will practice tracing a message end-to-end using message identifiers, interpreting log entries to identify failures or performance issues, and correlating errors with configuration or data problems. You will then apply appropriate corrective actions and confirm resolution by reprocessing messages and validating successful outcomes, reinforcing a structured and methodical approach to interface troubleshooting.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-2",
+            "name": "ELink Administrator",
+            "items": [
+              {
+                "id": "ai-chat-1768147229569",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Overview of elink Portal, Designer and Windows Console",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768147244896",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and navigate to the interface configuration section. Identify an existing interface or create a new one, and first determine whether it is inbound, outbound, or bidirectional based on the direction of message flow. Open the interface details and review the associated queues, noting the receive, processing, error, and outbound queues. Send or load sample messages into the inbound queue and observe how they move through each queue. Pause or suspend processing to see how messages accumulate, then resume processing and confirm message flow. Move a message to the error queue intentionally (for example, by using an invalid value) and practice requeuing it after correction. Use the queue monitoring screens to check message counts and statuses, and ensure you understand how each queue is used to control and troubleshoot interface processing.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768147392891",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and open an existing interface. Navigate to the monitoring or logging section and locate the inbound, outbound, transformation, and error logs for that interface. Select a specific message and note its message ID or control number, then use this identifier to trace the message across different log views. Review the log entries in sequence to understand where processing succeeds or fails. When an error is encountered, read the detailed error description and identify whether it is related to message structure, data values, mappings, or destination connectivity. Make a small corrective change, such as fixing a mapping or updating a test message, and reprocess the message. Confirm successful processing by verifying updated log entries and ensuring the message reaches the final destination without errors.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-3",
+            "name": "ELink Developer",
+            "items": [
+              {
+                "id": "ai-chat-1768147480039",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "How to create Interfaces in elink designer",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "doc-1768148490144",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "UserGuide_18.4_eLink.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768147500838",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and create a new custom interface from scratch. Configure the interface to perform basic field-level mappings using the provided specifications, then define and apply translation tables to transform incoming values as required. Create and reference an INI file to externalize configurable parameters, and implement logic to loop through repeating segments to auto-populate single and repeating fields correctly. Set up a database connection, execute a simple query or lookup as part of the interface logic, and add appropriate error-handling to manage connection or data failures gracefully. Finally, run test messages through the interface, use debugging tools and logs to trace message flow, identify issues, and resolve mapping or logic errors, ensuring the interface processes successfully end to end.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "ai-chat-1768147548293",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "How to create Interfaces in elink Portal",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768147561330",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and create two interfaces—one using the standard Mapper and another using the Advanced Mapper. Configure the first interface with basic field-level mappings using the Mapper, then create the second interface using the Advanced Mapper to apply conditional logic and more complex transformations. Set up a TCP/IP Server interface to act as the receiver and a TCP/IP Client interface to act as the sender. Configure host, port, and communication parameters, then start the server and validate that it is listening for incoming messages. Send test messages from the TCP/IP client, monitor message transmission and receipt, and verify correct mapping and transformation in both interfaces. Review logs to confirm successful connectivity and data flow, and troubleshoot any connection, mapping, or transmission issues encountered during testing.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "ai-chat-1768147595721",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "SIM Interfaces (standard Interfaces)",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "doc-1768148017418",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "SunriseIntegrationModule_22.1_InstallationAndConfigurationGuide.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "handson-1768147606928",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and navigate to the SIM Interfaces section. Create and configure a standard SIM interface by defining the sender and receiver endpoints, then set up a router to control message routing based on predefined rules. Connect the interface to the SIMConfig database and verify that configuration and routing data can be read correctly. Start the interface and use test messages to validate end-to-end flow from sender to receiver. Use the monitoring devices to observe message processing, routing decisions, and interface status, and confirm that messages are delivered to the correct destination. Review monitoring output and logs to identify and resolve any configuration or routing issues before reprocessing messages.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-4",
+            "name": "Best Practices",
+            "items": [
+              {
+                "id": "ai-chat-1768147658282",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Best Practices",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              }
+            ]
+          },
+          {
+            "id": "phase-1768146136589",
+            "name": "Important Documents",
+            "items": [
+              {
+                "id": "doc-1768147685381",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "ReferenceGuideHL7MappingInterface_22.1_SunriseClinicalManager.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              }
+            ]
+          }
+        ],
+        "currentPhaseIndex": 1,
+        "currentItemIndex": 1,
+        "started": true,
+        "completedItemIds": [
+          "ai-chat-1768133189701",
+          "doc-1768146215198",
+          "handson-1768146848717"
+        ],
+        "status": "in-progress",
+        "chatHistory": [
+          {
+            "from": "bot",
+            "text": "Welcome to Onboarding Professional Services Integration Consultant! We'll be going through 6 phases together. Currently, you're in Phase 1: Introduction & Overview. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.",
+            "time": "10:14:21 PM"
+          },
+          {
+            "from": "user",
+            "text": "my name is Prateek",
+            "time": "10:14:30 PM"
+          },
+          {
+            "from": "bot",
+            "text": "<html>\n  <body>\n    <h2>Welcome, Prateek!</h2>\n    <p>\n      As we start your onboarding for Integration Consulting at Altera Digital Health, let me introduce a few foundational concepts you'll build on throughout the program.\n    </p>\n\n    <h3>Altera Digital Health Flagship Products in APAC</h3>\n    <ul>\n      <li><strong>Sunrise Enterprise</strong> – Our flagship product, widely deployed across the APAC region.</li>\n      <li><strong>Opal</strong> – Another key product used by several major health organizations.</li>\n    </ul>\n    <p>\n      <strong>Major Sunrise customers in APAC:</strong> <br/>\n      Singapore Health Services (SingHealth), South Australia Health (SA Health), St. Lukes Medical Center (Philippines), Guam Regional Medical City (Guam), Mount Alvernia Health (Singapore), Gippsland Health Alliance (Victoria, Australia).\n    </p>\n    <p>\n      <strong>Major Opal customers in APAC:</strong> <br/>\n      Western Australia Health (WA Health, largest), Epworth, Barwon, RVEEH, Western Health (WH).\n    </p>\n\n    <h3>Integration Focus</h3>\n    <ul>\n      <li>Sunrise integration is primarily accomplished using the <strong>eLink</strong> platform.</li>\n      <li>Integration work generally includes upgrades, new interface development, and updates to existing configurations.</li>\n    </ul>\n\n    <p>Let me know if you've read and are happy to proceed for more info, or if you have any questions on what I've shared!</p>\n  </body>\n</html>",
+            "time": "10:14:34 PM"
+          },
+          {
+            "from": "user",
+            "text": "proceed",
+            "time": "10:14:43 PM"
+          },
+          {
+            "from": "bot",
+            "text": "<html>\n  <body>\n    <h2>Great! Let’s Dive Deeper into Integration with Sunrise</h2>\n    \n    <h3>About Sunrise Integration in APAC</h3>\n    <p>\n      Integration with <strong>Sunrise Enterprise</strong> across APAC is managed mainly through the \n      <strong>eLink</strong> platform. \n      eLink facilitates various healthcare data exchange methods and supports multiple protocols, including HL7 2.3.1, which is critical for interoperability in clinical environments.\n    </p>\n    \n    <h4>Key Components of Sunrise Integration via eLink</h4>\n    <ul>\n      <li>\n        <strong>HL7 Messaging (2.3.1):</strong> Used to manage interoperability with external healthcare systems (such as laboratories, radiology, EMRs, etc.).\n      </li>\n      <li>\n        <strong>Interface Types:</strong> ADT (Admission/Discharge/Transfer), ORM (Orders), ORU (Results), and others based on clinical workflows.\n      </li>\n      <li>\n        <strong>Integration Work:</strong> Common tasks include upgrades to newer Sunrise or HL7 versions, onboarding new integration partners, and troubleshooting/optimizing existing interfaces.\n      </li>\n      <li>\n        <strong>Security & Compliance:</strong> Integrations are designed to meet local and international security standards, especially patient data privacy.\n      </li>\n    </ul>\n\n    <p>\n      Are you happy to continue for more details about the daily integration work, or do you have any specific questions about these concepts?\n    </p>\n  </body>\n</html>",
+            "time": "10:14:47 PM"
+          },
+          {
+            "from": "user",
+            "text": "proceed",
+            "time": "10:14:53 PM"
+          },
+          {
+            "from": "bot",
+            "text": "<html>\n  <body>\n    <h2>Day-to-Day Integration Work for APAC Customers</h2>\n    \n    <h3>Common Activities in Integration Consulting</h3>\n    <ul>\n      <li>\n        <strong>New Integration Projects:</strong><br/>\n        <ul>\n          <li>Working with hospitals (like SingHealth, SA Health) to connect Sunrise with third-party systems (LIS, RIS, PACS, national registries).</li>\n          <li>Requirements gathering and designing HL7 interface specifications.</li>\n        </ul>\n      </li>\n      <li>\n        <strong>Upgrades:</strong><br/>\n        <ul>\n          <li>Moving to newer releases of Sunrise or the eLink platform.</li>\n          <li>Mapping and testing interfaces with updated HL7 or clinical data standards.</li>\n        </ul>\n      </li>\n      <li>\n        <strong>Updating Integration:</strong><br/>\n        <ul>\n          <li>Modification to existing workflows (e.g., adding new message segments, adapting to changing clinical requirements).</li>\n          <li>Troubleshooting, root cause analysis, and documentation updates.</li>\n        </ul>\n      </li>\n      <li>\n        <strong>Working with Opal Installations:</strong><br/>\n        <ul>\n          <li>Helping WA Health (largest Opal customer), Epworth, Barwon, etc., with their own integration challenges.</li>\n        </ul>\n      </li>\n    </ul>\n    \n    <h3>Integration Stakeholders</h3>\n    <p>\n      You’ll interact directly with customer tech teams, clinicians, Altera product managers, and third-party vendors—aligning on requirements and ensuring successful interoperability.\n    </p>\n\n    <p>\n      Would you like a closer look at HL7 2.3.1 messaging used in eLink/Sunrise integration, or do you have any questions on this day-to-day work overview?\n    </p>\n  </body>\n</html>",
+            "time": "10:14:57 PM"
+          },
+          {
+            "from": "user",
+            "text": "help with the document",
+            "time": "10:15:18 PM"
+          },
+          {
+            "from": "bot",
+            "text": "<html>\n<body>\n<h2>Understanding the SCM_ISS_ELINK_standard_overview.pdf Document</h2>\n\n<p>\nAs we dive into the SCM_ISS_ELINK_standard_overview.pdf document, let's break down the key components and how they relate to your role as an Integration Consultant in APAC.\n</p>\n\n<h3>Document Overview</h3>\n\n<p>\nThis document provides a comprehensive overview of the eLink standard for integration with Sunrise Enterprise. It covers the technical specifications, architecture, and best practices for implementing eLink interfaces.\n</p>\n\n<h4>Key Sections to Focus On</h4>\n\n<ul>\n<li>\n<strong>eLink Architecture:</strong> Understand the overall architecture of eLink and how it integrates with Sunrise Enterprise. This section will help you visualize the data flow and interactions between systems.\n</li>\n<li>\n<strong>HL7 Messaging (2.3.1):</strong> Review the HL7 messaging standards used in eLink, including the message structure, segments, and fields. This is crucial for understanding how data is exchanged between systems.\n</li>\n<li>\n<strong>Interface Types:</strong> Familiarize yourself with the different types of interfaces supported by eLink, such as ADT, ORM, and ORU. This will help you understand the various use cases and workflows.\n</li>\n</ul>\n\n<h3>Relevance to Your Role</h3>\n\n<p>\nAs an Integration Consultant, you'll work closely with customers to design, implement, and troubleshoot eLink interfaces. This document will serve as a valuable resource for understanding the technical aspects of eLink and ensuring successful integrations.\n</p>\n\n<p>\nDo you have any specific questions about the document or would you like me to elaborate on any of the sections mentioned above?\n</p>\n\n</body>\n</html>",
+            "time": "10:15:45 PM"
+          }
+        ],
+        "mentorMissionId": "4108",
+        "mentorFolderId": "14000"
+      }
+    ]
+  },
+  {
+    "employeeId": "1",
+    "name": "Manager",
+    "title": "Vice President Professional Services",
+    "role": "Systems Engineering",
+    "password": "112233",
+    "managerEmployeeId": "APAC",
+    "approvals": [],
+    "trainings": [
+      {
+        "id": "se-onboard",
+        "name": "Onboarding Professional Services Systems Engineer",
+        "description": "Complete onboarding program for Systems Engineers",
+        "role": "Systems Engineering",
+        "phases": [
+          {
+            "id": "se-onboard-phase-0",
+            "name": "Intro & Overview",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-1",
+            "name": "Architecture Basics",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-2",
+            "name": "Tooling",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-3",
+            "name": "Deployment",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-4",
+            "name": "Certification",
+            "items": []
+          }
+        ],
+        "currentPhaseIndex": 0,
+        "currentItemIndex": 0,
+        "started": false,
+        "completedItemIds": [],
+        "mentorMissionId": "",
+        "mentorFolderId": "",
+        "status": "not-started",
+        "chatHistory": [
+          {
+            "from": "bot",
+            "text": "Welcome to Onboarding Professional Services Systems Engineer! We'll be going through 5 phases together. Currently, you're in Phase 1: Intro & Overview. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.",
+            "time": "9:55:02 PM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "employeeId": "700775",
+    "name": "Prateek Srivastava",
+    "title": "Director Technical Services",
+    "role": "Integration Consulting",
+    "password": "112233",
+    "managerEmployeeId": "1",
+    "approvals": [],
+    "trainings": [
+      {
+        "id": "ic-onboard",
+        "name": "Onboarding Professional Services Integration Consultant",
+        "description": "Complete onboarding program for Integration Consultants",
+        "role": "Integration Consulting",
+        "phases": [
+          {
+            "id": "ic-onboard-phase-0",
+            "name": "Introduction & Overview",
+            "items": [
+              {
+                "id": "ai-chat-1768133189701",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Introduction & Overview",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "doc-1768146215198",
+                "type": "doc",
+                "source": "library",
+                "url": "",
+                "fileName": "SCM_ISS_ELINK_standard_overview.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "assessment-1772076969513",
+                "type": "assessment",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "80",
+                  "durationMinutes": "10",
+                  "questions": [
+                    {
+                      "text": "Select Option B",
+                      "options": [
+                        {
+                          "text": "A",
+                          "correct": false
+                        },
+                        {
+                          "text": "B",
+                          "correct": true
+                        },
+                        {
+                          "text": "C",
+                          "correct": false
+                        },
+                        {
+                          "text": "D",
+                          "correct": false
+                        }
+                      ]
+                    },
+                    {
+                      "text": "Select Option A and C",
+                      "options": [
+                        {
+                          "text": "A",
+                          "correct": true
+                        },
+                        {
+                          "text": "B",
+                          "correct": false
+                        },
+                        {
+                          "text": "C",
+                          "correct": true
+                        },
+                        {
+                          "text": "D",
+                          "correct": false
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "collapsed": false,
+                "assessmentState": {
+                  "index": 0,
+                  "answers": [],
+                  "completed": false,
+                  "passed": false,
+                  "scorePct": 0,
+                  "startedAt": 0,
+                  "endsAt": 0,
+                  "remainingSeconds": 0,
+                  "timedOut": false
+                }
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-1",
+            "name": "ISS Administrator",
+            "items": [
+              {
+                "id": "ai-chat-1768146240016",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Overview of ISS Portal",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": false
+              },
+              {
+                "id": "ai-chat-1768146824603",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Types of interfaces and Queues in ISS",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": false
+              },
+              {
+                "id": "doc-1768148238635",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "ConfigurationAndUserGuide_22.1_SunriseInterfaceSubsystem.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768146848717",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will log in to the Interface Solution Suite (ISS) in an internal APAC environment and work through the end-to-end creation of a simple HL7 interface. You will define a new interface, configure the source and destination systems, select the appropriate message type (for example, ADT or ORM), and apply basic field-level mappings using the provided specifications. You will then validate the interface by processing sample messages, reviewing logs, and troubleshooting any errors identified during testing. This activity is intended to strengthen your practical understanding of interface configuration, message flow and validation steps that you are expected to perform as an integration consultant during real-world implementations.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147120423",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will work with Rejected and Suspended messages in the Interface Solution Suite (ISS) in an internal APAC environment to understand common interface failure scenarios. You will review sample messages that have been intentionally rejected or suspended, analyze error details and processing statuses, and identify the root cause based on validation rules, mappings, or destination responses. You will then take corrective actions such as updating mappings, correcting message content, or reprocessing messages, and verify successful delivery after resolution. This activity is designed to help you build confidence in monitoring interface health, troubleshooting message issues, and performing recovery steps that are routinely required during live integration support.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147120768",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will use the logging and monitoring features in the Interface Solution Suite (ISS) to diagnose and troubleshoot interface issues. You will review different types of logs, including inbound, outbound, transformation, and error logs, to understand how messages are processed through each stage of the interface. You will practice tracing a message end-to-end using message identifiers, interpreting log entries to identify failures or performance issues, and correlating errors with configuration or data problems. You will then apply appropriate corrective actions and confirm resolution by reprocessing messages and validating successful outcomes, reinforcing a structured and methodical approach to interface troubleshooting.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-2",
+            "name": "ELink Administrator",
+            "items": [
+              {
+                "id": "ai-chat-1768147229569",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Overview of elink Portal, Designer and Windows Console",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": false
+              },
+              {
+                "id": "handson-1768147244896",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and navigate to the interface configuration section. Identify an existing interface or create a new one, and first determine whether it is inbound, outbound, or bidirectional based on the direction of message flow. Open the interface details and review the associated queues, noting the receive, processing, error, and outbound queues. Send or load sample messages into the inbound queue and observe how they move through each queue. Pause or suspend processing to see how messages accumulate, then resume processing and confirm message flow. Move a message to the error queue intentionally (for example, by using an invalid value) and practice requeuing it after correction. Use the queue monitoring screens to check message counts and statuses, and ensure you understand how each queue is used to control and troubleshoot interface processing.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147392891",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and open an existing interface. Navigate to the monitoring or logging section and locate the inbound, outbound, transformation, and error logs for that interface. Select a specific message and note its message ID or control number, then use this identifier to trace the message across different log views. Review the log entries in sequence to understand where processing succeeds or fails. When an error is encountered, read the detailed error description and identify whether it is related to message structure, data values, mappings, or destination connectivity. Make a small corrective change, such as fixing a mapping or updating a test message, and reprocess the message. Confirm successful processing by verifying updated log entries and ensuring the message reaches the final destination without errors.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-3",
+            "name": "ELink Developer",
+            "items": [
+              {
+                "id": "ai-chat-1768147480039",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "How to create Interfaces in elink designer",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": false
+              },
+              {
+                "id": "doc-1768148490144",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "UserGuide_18.4_eLink.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147500838",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and create a new custom interface from scratch. Configure the interface to perform basic field-level mappings using the provided specifications, then define and apply translation tables to transform incoming values as required. Create and reference an INI file to externalize configurable parameters, and implement logic to loop through repeating segments to auto-populate single and repeating fields correctly. Set up a database connection, execute a simple query or lookup as part of the interface logic, and add appropriate error-handling to manage connection or data failures gracefully. Finally, run test messages through the interface, use debugging tools and logs to trace message flow, identify issues, and resolve mapping or logic errors, ensuring the interface processes successfully end to end.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "ai-chat-1768147548293",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "How to create Interfaces in elink Portal",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": false
+              },
+              {
+                "id": "handson-1768147561330",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and create two interfaces—one using the standard Mapper and another using the Advanced Mapper. Configure the first interface with basic field-level mappings using the Mapper, then create the second interface using the Advanced Mapper to apply conditional logic and more complex transformations. Set up a TCP/IP Server interface to act as the receiver and a TCP/IP Client interface to act as the sender. Configure host, port, and communication parameters, then start the server and validate that it is listening for incoming messages. Send test messages from the TCP/IP client, monitor message transmission and receipt, and verify correct mapping and transformation in both interfaces. Review logs to confirm successful connectivity and data flow, and troubleshoot any connection, mapping, or transmission issues encountered during testing.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "ai-chat-1768147595721",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "SIM Interfaces (standard Interfaces)",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": false
+              },
+              {
+                "id": "doc-1768148017418",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "SunriseIntegrationModule_22.1_InstallationAndConfigurationGuide.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147606928",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and navigate to the SIM Interfaces section. Create and configure a standard SIM interface by defining the sender and receiver endpoints, then set up a router to control message routing based on predefined rules. Connect the interface to the SIMConfig database and verify that configuration and routing data can be read correctly. Start the interface and use test messages to validate end-to-end flow from sender to receiver. Use the monitoring devices to observe message processing, routing decisions, and interface status, and confirm that messages are delivered to the correct destination. Review monitoring output and logs to identify and resolve any configuration or routing issues before reprocessing messages.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-4",
+            "name": "Best Practices",
+            "items": [
+              {
+                "id": "ai-chat-1768147658282",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Best Practices",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": false
+              }
+            ]
+          },
+          {
+            "id": "phase-1768146136589",
+            "name": "Important Documents",
+            "items": [
+              {
+                "id": "doc-1768147685381",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "ReferenceGuideHL7MappingInterface_22.1_SunriseClinicalManager.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          }
+        ],
+        "mentorMissionId": "4108",
+        "mentorFolderId": "14000",
+        "currentPhaseIndex": 0,
+        "currentItemIndex": 1,
+        "started": true,
+        "completedItemIds": [
+          "ai-chat-1768133189701"
+        ],
+        "status": "in-progress",
+        "chatHistory": [
+          {
+            "from": "bot",
+            "text": "<h3>Documentation Reading Assistance</h3>\n\nHello Prateek, I'm here to help you with your documentation reading. You are currently reading the SCM_ISS_ELINK_standard_overview.pdf document. \n\nPlease let me know if you have any questions or need clarification on any of the content in the document. I'll be happy to assist you.\n\nHave you read the document so far and would you like me to explain any specific section, or would you like to proceed with reading and ask questions as you go along?",
+            "time": "1:25:58 PM"
+          }
+        ],
+        "lastAssessmentEntryKey": "0:1",
+        "lastAutoMentorItemId": "ai-chat-1768133189701"
+      },
+      {
+        "id": "integration-consulting-test-training",
+        "name": "Test Training",
+        "description": "For testing purposes",
+        "phases": [
+          {
+            "id": "phase-1768178132107",
+            "name": "Introduction",
+            "items": [
+              {
+                "id": "ai-chat-1768178188110",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Introduction to Opal Integration",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "doc-1768178152150",
+                "type": "doc",
+                "source": "library",
+                "url": "",
+                "fileName": "CureMD.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "video-1768178247412",
+                "type": "video",
+                "source": "upload",
+                "url": "",
+                "fileName": "INC21585073-20250113-OPAL22.1-MultiWindow-Error _1_.mp4",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "text-1768178320436",
+                "type": "text",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "dfdfdf",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": false
+              },
+              {
+                "id": "assessment-1768178333805",
+                "type": "assessment",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "1",
+                  "durationMinutes": "10",
+                  "questions": [
+                    {
+                      "text": "Question 1",
+                      "options": [
+                        {
+                          "text": "Option 1",
+                          "correct": false
+                        },
+                        {
+                          "text": "Option 2",
+                          "correct": true
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "collapsed": false,
+                "assessmentState": {
+                  "index": 0,
+                  "answers": [
+                    1
+                  ],
+                  "completed": false,
+                  "passed": false,
+                  "scorePct": 0
+                }
+              }
+            ]
+          }
+        ],
+        "mentorMissionId": "4108",
+        "mentorFolderId": "14000",
+        "role": "Integration Consulting",
+        "currentPhaseIndex": 0,
+        "currentItemIndex": 4,
+        "started": true,
+        "completedItemIds": [
+          "ai-chat-1768178188110",
+          "doc-1768178152150",
+          "video-1768178247412",
+          "text-1768178320436"
+        ],
+        "status": "in-progress",
+        "chatHistory": [
+          {
+            "from": "bot",
+            "text": "Welcome to Test Training! We'll be going through 1 phases together. Currently, you're in Phase 1: Introduction. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.",
+            "time": "6:16:51 AM"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "employeeId": "123123",
+    "name": "Jane Doe",
+    "title": "Director Tech Serv",
+    "role": "Integration Consulting",
+    "password": "1111",
+    "managerEmployeeId": "700775",
+    "approvals": [],
+    "trainings": [
+      {
+        "id": "ic-opal",
+        "name": "Deep Dive into Opal Integration",
+        "description": "Comprehensive training on Opal integration solutions",
+        "role": "Integration Consulting",
+        "phases": [
+          {
+            "id": "ic-opal-phase-0",
+            "name": "Opal Overview",
+            "items": []
+          },
+          {
+            "id": "ic-opal-phase-1",
+            "name": "Data Contracts",
+            "items": []
+          },
+          {
+            "id": "ic-opal-phase-2",
+            "name": "Security & Compliance",
+            "items": []
+          },
+          {
+            "id": "ic-opal-phase-3",
+            "name": "Integration Patterns",
+            "items": []
+          },
+          {
+            "id": "ic-opal-phase-4",
+            "name": "Validation & Handoff",
+            "items": []
+          }
+        ],
+        "currentPhaseIndex": 0,
+        "currentItemIndex": 0,
+        "started": false,
+        "completedItemIds": [],
+        "mentorMissionId": "",
+        "mentorFolderId": "",
+        "status": "not-started",
+        "chatHistory": [
+          {
+            "from": "bot",
+            "text": "Welcome to Deep Dive into Opal Integration! We'll be going through 5 phases together. Currently, you're in Phase 1: Opal Overview. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.",
+            "time": "7:55:26 AM"
+          }
+        ]
+      },
+      {
+        "id": "se-onboard",
+        "name": "Onboarding Professional Services Systems Engineer",
+        "description": "Complete onboarding program for Systems Engineers",
+        "role": "Systems Engineering",
+        "phases": [
+          {
+            "id": "se-onboard-phase-0",
+            "name": "Intro & Overview",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-1",
+            "name": "Architecture Basics",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-2",
+            "name": "Tooling",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-3",
+            "name": "Deployment",
+            "items": []
+          },
+          {
+            "id": "se-onboard-phase-4",
+            "name": "Certification",
+            "items": []
+          }
+        ],
+        "currentPhaseIndex": 0,
+        "currentItemIndex": 0,
+        "started": false,
+        "completedItemIds": [],
+        "mentorMissionId": "",
+        "mentorFolderId": "",
+        "status": "not-started",
+        "chatHistory": [
+          {
+            "from": "bot",
+            "text": "Welcome to Onboarding Professional Services Systems Engineer! We'll be going through 5 phases together. Currently, you're in Phase 1: Intro & Overview. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.",
+            "time": "7:56:22 AM"
+          }
+        ]
+      },
+      {
+        "id": "ic-onboard",
+        "name": "Onboarding Professional Services Integration Consultant",
+        "description": "Complete onboarding program for Integration Consultants",
+        "role": "Integration Consulting",
+        "phases": [
+          {
+            "id": "ic-onboard-phase-0",
+            "name": "Introduction & Overview",
+            "items": [
+              {
+                "id": "ai-chat-1768133189701",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Introduction & Overview",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "doc-1768146215198",
+                "type": "doc",
+                "source": "library",
+                "url": "",
+                "fileName": "SCM_ISS_ELINK_standard_overview.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-1",
+            "name": "ISS Administrator",
+            "items": [
+              {
+                "id": "ai-chat-1768146240016",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Overview of ISS Portal",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "ai-chat-1768146824603",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Types of interfaces and Queues in ISS",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "doc-1768148238635",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "ConfigurationAndUserGuide_22.1_SunriseInterfaceSubsystem.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768146848717",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will log in to the Interface Solution Suite (ISS) in an internal APAC environment and work through the end-to-end creation of a simple HL7 interface. You will define a new interface, configure the source and destination systems, select the appropriate message type (for example, ADT or ORM), and apply basic field-level mappings using the provided specifications. You will then validate the interface by processing sample messages, reviewing logs, and troubleshooting any errors identified during testing. This activity is intended to strengthen your practical understanding of interface configuration, message flow and validation steps that you are expected to perform as an integration consultant during real-world implementations.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147120423",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will work with Rejected and Suspended messages in the Interface Solution Suite (ISS) in an internal APAC environment to understand common interface failure scenarios. You will review sample messages that have been intentionally rejected or suspended, analyze error details and processing statuses, and identify the root cause based on validation rules, mappings, or destination responses. You will then take corrective actions such as updating mappings, correcting message content, or reprocessing messages, and verify successful delivery after resolution. This activity is designed to help you build confidence in monitoring interface health, troubleshooting message issues, and performing recovery steps that are routinely required during live integration support.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147120768",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "As part of this hands-on exercise, you will use the logging and monitoring features in the Interface Solution Suite (ISS) to diagnose and troubleshoot interface issues. You will review different types of logs, including inbound, outbound, transformation, and error logs, to understand how messages are processed through each stage of the interface. You will practice tracing a message end-to-end using message identifiers, interpreting log entries to identify failures or performance issues, and correlating errors with configuration or data problems. You will then apply appropriate corrective actions and confirm resolution by reprocessing messages and validating successful outcomes, reinforcing a structured and methodical approach to interface troubleshooting.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-2",
+            "name": "ELink Administrator",
+            "items": [
+              {
+                "id": "ai-chat-1768147229569",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Overview of elink Portal, Designer and Windows Console",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "handson-1768147244896",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and navigate to the interface configuration section. Identify an existing interface or create a new one, and first determine whether it is inbound, outbound, or bidirectional based on the direction of message flow. Open the interface details and review the associated queues, noting the receive, processing, error, and outbound queues. Send or load sample messages into the inbound queue and observe how they move through each queue. Pause or suspend processing to see how messages accumulate, then resume processing and confirm message flow. Move a message to the error queue intentionally (for example, by using an invalid value) and practice requeuing it after correction. Use the queue monitoring screens to check message counts and statuses, and ensure you understand how each queue is used to control and troubleshoot interface processing.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147392891",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and open an existing interface. Navigate to the monitoring or logging section and locate the inbound, outbound, transformation, and error logs for that interface. Select a specific message and note its message ID or control number, then use this identifier to trace the message across different log views. Review the log entries in sequence to understand where processing succeeds or fails. When an error is encountered, read the detailed error description and identify whether it is related to message structure, data values, mappings, or destination connectivity. Make a small corrective change, such as fixing a mapping or updating a test message, and reprocess the message. Confirm successful processing by verifying updated log entries and ensuring the message reaches the final destination without errors.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-3",
+            "name": "ELink Developer",
+            "items": [
+              {
+                "id": "ai-chat-1768147480039",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "How to create Interfaces in elink designer",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "doc-1768148490144",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "UserGuide_18.4_eLink.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147500838",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and create a new custom interface from scratch. Configure the interface to perform basic field-level mappings using the provided specifications, then define and apply translation tables to transform incoming values as required. Create and reference an INI file to externalize configurable parameters, and implement logic to loop through repeating segments to auto-populate single and repeating fields correctly. Set up a database connection, execute a simple query or lookup as part of the interface logic, and add appropriate error-handling to manage connection or data failures gracefully. Finally, run test messages through the interface, use debugging tools and logs to trace message flow, identify issues, and resolve mapping or logic errors, ensuring the interface processes successfully end to end.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "ai-chat-1768147548293",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "How to create Interfaces in elink Portal",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "handson-1768147561330",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and create two interfaces—one using the standard Mapper and another using the Advanced Mapper. Configure the first interface with basic field-level mappings using the Mapper, then create the second interface using the Advanced Mapper to apply conditional logic and more complex transformations. Set up a TCP/IP Server interface to act as the receiver and a TCP/IP Client interface to act as the sender. Configure host, port, and communication parameters, then start the server and validate that it is listening for incoming messages. Send test messages from the TCP/IP client, monitor message transmission and receipt, and verify correct mapping and transformation in both interfaces. Review logs to confirm successful connectivity and data flow, and troubleshoot any connection, mapping, or transmission issues encountered during testing.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "ai-chat-1768147595721",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "SIM Interfaces (standard Interfaces)",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              },
+              {
+                "id": "doc-1768148017418",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "SunriseIntegrationModule_22.1_InstallationAndConfigurationGuide.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              },
+              {
+                "id": "handson-1768147606928",
+                "type": "handson",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "Log in to the eLink training environment and navigate to the SIM Interfaces section. Create and configure a standard SIM interface by defining the sender and receiver endpoints, then set up a router to control message routing based on predefined rules. Connect the interface to the SIMConfig database and verify that configuration and routing data can be read correctly. Start the interface and use test messages to validate end-to-end flow from sender to receiver. Use the monitoring devices to observe message processing, routing decisions, and interface status, and confirm that messages are delivered to the correct destination. Review monitoring output and logs to identify and resolve any configuration or routing issues before reprocessing messages.",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          },
+          {
+            "id": "ic-onboard-phase-4",
+            "name": "Best Practices",
+            "items": [
+              {
+                "id": "ai-chat-1768147658282",
+                "type": "ai-chat",
+                "source": "",
+                "url": "",
+                "fileName": "",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "4108",
+                "mentorTopic": "Best Practices",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true,
+                "autoMentorStarted": true
+              }
+            ]
+          },
+          {
+            "id": "phase-1768146136589",
+            "name": "Important Documents",
+            "items": [
+              {
+                "id": "doc-1768147685381",
+                "type": "doc",
+                "source": "upload",
+                "url": "",
+                "fileName": "ReferenceGuideHL7MappingInterface_22.1_SunriseClinicalManager.pdf",
+                "pendingFileName": "",
+                "textContent": "",
+                "lmsLink": "",
+                "handsonText": "",
+                "missionId": "",
+                "mentorTopic": "",
+                "assessment": {
+                  "passingMarks": "",
+                  "durationMinutes": "",
+                  "questions": []
+                },
+                "collapsed": true
+              }
+            ]
+          }
+        ],
+        "mentorMissionId": "4108",
+        "mentorFolderId": "14000",
+        "currentPhaseIndex": 0,
+        "currentItemIndex": 0,
+        "started": true,
+        "completedItemIds": [],
+        "status": "in-progress",
+        "chatHistory": [
+          {
+            "from": "bot",
+            "text": "Welcome to Onboarding Professional Services Integration Consultant! We'll be going through 6 phases together. Currently, you're in Phase 1: Introduction & Overview. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.",
+            "time": "8:21:51 AM"
+          },
+          {
+            "from": "user",
+            "text": "My name is Prateek. I have newly joined as Director tech services and I want to learn the Sunrise integration aspect",
+            "time": "8:22:42 AM"
+          },
+          {
+            "from": "bot",
+            "text": "Mentor service is unavailable right now. Error: Mentor request failed (500): {\"error\":\"Matcha request failed\",\"details\":\"<!doctype html>\\n<html lang=en>\\n<title>404 Not Found</title>\\n<h1>Not Found</h1>\\n<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>\\n\"}",
+            "time": "8:22:44 AM"
+          },
+          {
+            "from": "user",
+            "text": "again",
+            "time": "8:23:05 AM"
+          },
+          {
+            "from": "bot",
+            "text": "Mentor service is unavailable right now. Error: Mentor request failed (500): {\"error\":\"Matcha request failed\",\"details\":\"<!doctype html>\\n<html lang=en>\\n<title>404 Not Found</title>\\n<h1>Not Found</h1>\\n<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>\\n\"}",
+            "time": "8:23:06 AM"
+          },
+          {
+            "from": "user",
+            "text": "again",
+            "time": "8:23:57 AM"
+          },
+          {
+            "from": "bot",
+            "text": "Mentor service is unavailable right now. Error: Mentor request failed (500): {\"error\":\"Matcha request failed\",\"details\":\"<!doctype html>\\n<html lang=en>\\n<title>404 Not Found</title>\\n<h1>Not Found</h1>\\n<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>\\n\"}",
+            "time": "8:23:58 AM"
+          },
+          {
+            "from": "user",
+            "text": "efdf",
+            "time": "8:46:59 AM"
+          },
+          {
+            "from": "bot",
+            "text": "Mentor service is unavailable right now. Error: Mentor request failed (500): {\"error\":\"Matcha request failed\",\"details\":\"<!doctype html>\\n<html lang=en>\\n<title>404 Not Found</title>\\n<h1>Not Found</h1>\\n<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p>\\n\"}",
+            "time": "8:47:01 AM"
+          }
+        ]
+      }
+    ]
+  }
+]

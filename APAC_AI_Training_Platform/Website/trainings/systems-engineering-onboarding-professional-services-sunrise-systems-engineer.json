@@ -1,0 +1,35 @@
+{
+  "id": "systems-engineering-onboarding-professional-services-sunrise-systems-engineer",
+  "name": "Onboarding Professional Services Sunrise Systems Engineer",
+  "description": "Onboarding Professional Services Sunrise Systems Engineer",
+  "phases": [
+    {
+      "id": "phase-1774587630877",
+      "name": "Introduction",
+      "items": [
+        {
+          "id": "ai-chat-1774587635377",
+          "type": "ai-chat",
+          "source": "",
+          "url": "",
+          "fileName": "",
+          "pendingFileName": "",
+          "textContent": "",
+          "lmsLink": "",
+          "handsonText": "",
+          "missionId": "4108",
+          "mentorTopic": "Introduction to Altera and APAC",
+          "assessment": {
+            "passingMarks": "",
+            "durationMinutes": "",
+            "questions": []
+          },
+          "collapsed": false
+        }
+      ]
+    }
+  ],
+  "mentorMissionId": "4108",
+  "mentorFolderId": "14000",
+  "role": "Systems Engineering"
+}
