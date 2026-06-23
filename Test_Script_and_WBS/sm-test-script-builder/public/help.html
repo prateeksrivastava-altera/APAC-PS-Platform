@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Script Builder — Help</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <style>
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Roboto', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #1c1b1f;
+      background: #f7f2fa;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ── */
+    .help-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #c9c5ca;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .help-header__title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1c1b1f;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .help-header__title .material-symbols-outlined {
+      font-size: 24px;
+      color: #1a73e8;
+    }
+    .help-header__back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1a73e8;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      transition: background 0.15s ease;
+    }
+    .help-header__back:hover {
+      background: rgba(26,115,232,0.08);
+    }
+    .help-header__back .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* ── Layout ── */
+    .help-layout {
+      display: flex;
+      flex: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    /* ── Sidebar ── */
+    .help-sidebar {
+      position: sticky;
+      top: 57px;
+      width: 240px;
+      min-width: 240px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+      padding: 24px 16px;
+      border-right: 1px solid #e0dce0;
+      background: #ffffff;
+    }
+    .help-sidebar__heading {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #79747e;
+      margin-bottom: 12px;
+      padding-left: 8px;
+    }
+    .help-sidebar__link {
+      display: block;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: #49454f;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+      line-height: 1.4;
+    }
+    .help-sidebar__link:hover {
+      background: rgba(26,115,232,0.08);
+      color: #1a73e8;
+    }
+
+    /* ── Main Content ── */
+    .help-main {
+      flex: 1;
+      max-width: 820px;
+      padding: 40px 40px 60px;
+    }
+
+    /* ── Section Styles ── */
+    .help-section {
+      margin-bottom: 48px;
+    }
+    .help-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #1c1b1f;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e8def8;
+    }
+    .help-section h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #49454f;
+      margin: 24px 0 8px;
+    }
+    .help-section p {
+      margin-bottom: 12px;
+      color: #49454f;
+    }
+    .help-section ul, .help-section ol {
+      margin: 8px 0 16px 24px;
+      color: #49454f;
+    }
+    .help-section li {
+      margin-bottom: 6px;
+    }
+    .help-section strong {
+      color: #1c1b1f;
+    }
+    .help-section code {
+      font-family: 'Roboto Mono', 'Consolas', 'Courier New', monospace;
+      font-size: 13px;
+      background: #f3edf7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #6750a4;
+    }
+
+    /* ── Steps List ── */
+    .steps-list {
+      counter-reset: step;
+      list-style: none;
+      margin: 16px 0;
+      padding: 0;
+    }
+    .steps-list li {
+      counter-increment: step;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e8def8;
+    }
+    .steps-list li::before {
+      content: counter(step);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #1a73e8;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    /* ── Callouts ── */
+    .callout {
+      padding: 14px 16px;
+      border-radius: 8px;
+      margin: 16px 0;
+      border-left: 4px solid;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .callout__title {
+      font-weight: 700;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .callout__title .material-symbols-outlined { font-size: 18px; }
+    .callout--tip {
+      border-left-color: #1a73e8;
+      background: rgba(26,115,232,0.06);
+    }
+    .callout--tip .callout__title { color: #1a73e8; }
+    .callout--warning {
+      border-left-color: #b3261e;
+      background: rgba(179,38,30,0.06);
+    }
+    .callout--warning .callout__title { color: #b3261e; }
+    .callout--info {
+      border-left-color: #1e8e3e;
+      background: rgba(30,142,62,0.06);
+    }
+    .callout--info .callout__title { color: #1e8e3e; }
+
+    /* ── Tables ── */
+    .help-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      font-size: 13px;
+    }
+    .help-table th {
+      text-align: left;
+      padding: 10px 12px;
+      background: #f3edf7;
+      font-weight: 700;
+      color: #1c1b1f;
+      border-bottom: 2px solid #e8def8;
+    }
+    .help-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e8def8;
+      color: #49454f;
+      vertical-align: top;
+    }
+    .help-table tr:last-child td { border-bottom: none; }
+    .help-table tr:hover td { background: rgba(103,80,164,0.03); }
+
+    /* ── Pipeline Diagram ── */
+    .pipeline-diagram {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 16px 0;
+      padding: 16px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e8def8;
+    }
+    .pipeline-stage {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      background: #f3edf7;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6750a4;
+    }
+    .pipeline-stage .material-symbols-outlined { font-size: 18px; }
+    .pipeline-arrow {
+      font-size: 18px;
+      color: #c9c5ca;
+    }
+
+    /* ── Card Anatomy ── */
+    .card-anatomy {
+      margin: 16px 0;
+      padding: 20px;
+      background: #ffffff;
+      border-radius: 12px;
+      border: 1px solid #e8def8;
+    }
+    .card-anatomy__header {
+      font-weight: 700;
+      font-size: 15px;
+      color: #1c1b1f;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e8def8;
+      margin-bottom: 12px;
+    }
+    .card-anatomy__row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .card-anatomy__label {
+      font-weight: 700;
+      color: #49454f;
+      min-width: 120px;
+    }
+    .card-anatomy__value {
+      color: #79747e;
+    }
+
+    /* ── Keyboard Shortcut ── */
+    kbd {
+      display: inline-block;
+      padding: 2px 8px;
+      font-family: 'Roboto Mono', monospace;
+      font-size: 12px;
+      background: #f3edf7;
+      border: 1px solid #c9c5ca;
+      border-radius: 4px;
+      box-shadow: 0 1px 0 #c9c5ca;
+      color: #49454f;
+    }
+
+    /* ── Priority Badges ── */
+    .priority-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    .priority-badge--high { background: #fce8e6; color: #b3261e; }
+    .priority-badge--medium { background: #fef7e0; color: #e37400; }
+    .priority-badge--low { background: #e6f4ea; color: #1e8e3e; }
+
+    /* ── Footer ── */
+    .help-footer {
+      text-align: center;
+      padding: 20px 24px;
+      font-size: 12px;
+      color: #79747e;
+      background: #ffffff;
+      border-top: 1px solid #c9c5ca;
+    }
+
+    /* ── Responsive: Tablet (900px) ── */
+    @media (max-width: 900px) {
+      .help-main { padding: 24px 20px 40px; }
+      .help-sidebar { width: 200px; min-width: 200px; padding: 20px 12px; }
+    }
+
+    /* ── Responsive: Mobile (640px) ── */
+    @media (max-width: 640px) {
+      .help-sidebar { display: none; }
+      .help-main { padding: 20px 16px 40px; max-width: 100%; }
+      .help-header { padding: 10px 16px; }
+      .help-header__title { font-size: 15px; }
+      .help-section h2 { font-size: 20px; }
+      .pipeline-diagram { flex-direction: column; align-items: stretch; }
+      .pipeline-arrow { transform: rotate(90deg); text-align: center; }
+      .help-table { display: block; overflow-x: auto; }
+    }
+
+    /* ── Responsive: Small Mobile (480px) ── */
+    @media (max-width: 480px) {
+      .help-main { padding: 16px 12px 32px; }
+      .help-header__title { font-size: 14px; gap: 6px; }
+      .help-header__title .material-symbols-outlined { font-size: 20px; }
+      .help-header__back { padding: 6px 12px; font-size: 13px; }
+      .help-section h2 { font-size: 18px; }
+      .steps-list li { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="help-header">
+    <div class="help-header__title">
+      <span class="material-symbols-outlined">menu_book</span>
+      Test Script Builder &mdash; Help
+    </div>
+    <a href="/" class="help-header__back">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Back to App
+    </a>
+  </header>
+
+  <!-- LAYOUT -->
+  <div class="help-layout">
+
+    <!-- SIDEBAR -->
+    <nav class="help-sidebar" aria-label="Help navigation">
+      <div class="help-sidebar__heading">Contents</div>
+      <a class="help-sidebar__link" href="#getting-started">Getting Started</a>
+      <a class="help-sidebar__link" href="#uploading-documents">Uploading Documents</a>
+      <a class="help-sidebar__link" href="#section-picker">Content Selection</a>
+      <a class="help-sidebar__link" href="#ai-pipeline">The AI Pipeline</a>
+      <a class="help-sidebar__link" href="#reading-results">Reading Results</a>
+      <a class="help-sidebar__link" href="#downloading-excel">Downloading Excel Reports</a>
+      <a class="help-sidebar__link" href="#raw-json">Raw JSON &amp; Sent Text</a>
+      <a class="help-sidebar__link" href="#tips">Tips &amp; Best Practices</a>
+      <a class="help-sidebar__link" href="#troubleshooting">Troubleshooting</a>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="help-main">
+
+      <!-- 1. Getting Started -->
+      <section class="help-section" id="getting-started">
+        <h2>Getting Started</h2>
+        <p>The Test Script Builder is an AI-powered tool that transforms your requirements documentation into structured, comprehensive test scripts. It uses a four-stage pipeline powered by Matcha AI to decompose documents, identify expected outcomes, build test flows, and compile a final test report.</p>
+
+        <h3>Quick Start</h3>
+        <ol class="steps-list">
+          <li>
+            <div>
+              <strong>Upload your document</strong><br />
+              Drag and drop (or click to browse) a <code>.docx</code>, <code>.pdf</code>, <code>.txt</code>, or <code>.csv</code> file containing your requirements or specifications.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Select the content to test</strong><br />
+              Choose which content to include — by headings, pages, or free-form text selection.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Review and edit the prompt</strong><br />
+              The assembled prompt is shown for your review. Toggle into edit mode to customise it before sending.
+            </div>
+          </li>
+          <li>
+            <div>
+              <strong>Generate and download</strong><br />
+              Click <strong>Generate Tests</strong> to run the AI pipeline. When complete, review the scenario cards and export to Excel or Azure DevOps format.
+            </div>
+          </li>
+        </ol>
+
+        <div class="callout callout--tip">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">lightbulb</span> Tip
+          </div>
+          You can navigate back to any completed step using the stepper bar at the top. Your selections and edits are preserved.
+        </div>
+      </section>
+
+      <!-- 2. Uploading Documents -->
+      <section class="help-section" id="uploading-documents">
+        <h2>Uploading Documents</h2>
+        <p>Step 1 lets you upload the requirements document that will be parsed and fed into the AI pipeline. The tool supports several common document formats.</p>
+
+        <h3>Supported File Types</h3>
+        <table class="help-table">
+          <thead>
+            <tr><th>Format</th><th>Extension</th><th>Parser</th><th>Notes</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Word Document</td>
+              <td><code>.docx</code></td>
+              <td>Mammoth.js</td>
+              <td>Extracts headings (H1/H2) and body text. Best format for structured docs.</td>
+            </tr>
+            <tr>
+              <td>PDF Document</td>
+              <td><code>.pdf</code></td>
+              <td>PDF.js</td>
+              <td>Extracts text by page. Heading detection uses font-size heuristics.</td>
+            </tr>
+            <tr>
+              <td>Plain Text</td>
+              <td><code>.txt</code></td>
+              <td>Built-in</td>
+              <td>Treated as a single section. Best for short specs or notes.</td>
+            </tr>
+            <tr>
+              <td>CSV Spreadsheet</td>
+              <td><code>.csv</code></td>
+              <td>Built-in</td>
+              <td>Treated as a single section with tabular content.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Upload Methods</h3>
+        <ul>
+          <li><strong>Drag and drop</strong> &mdash; Drag a file from your desktop or file explorer directly onto the upload zone.</li>
+          <li><strong>Click to browse</strong> &mdash; Click the upload zone or the <strong>Browse Files</strong> button to open the file picker.</li>
+        </ul>
+
+        <div class="callout callout--warning">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">warning</span> Size Limit
+          </div>
+          Selected content must stay within the 400,000 character limit. Very large documents may require selecting less content in Step 2.
+        </div>
+
+        <div class="callout callout--info">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">info</span> Note
+          </div>
+          After a successful upload, the tool automatically advances to Step 2 (Content Selection). You can return to Step 1 to upload a different file at any time.
+        </div>
+      </section>
+
+      <!-- 3. Content Selection -->
+      <section class="help-section" id="section-picker">
+        <h2>Content Selection</h2>
+        <p>Step 2 offers three ways to select which content from your document is sent to the AI pipeline. A tab bar at the top lets you switch between modes.</p>
+
+        <h3>Selection Modes</h3>
+        <table class="help-table">
+          <thead>
+            <tr><th>Mode</th><th>Icon</th><th>Description</th><th>Available When</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Headers</strong></td>
+              <td>checklist</td>
+              <td>Select sections by their H1/H2 heading structure. Best for well-structured DOCX and PDF files.</td>
+              <td>Document has detectable headings</td>
+            </tr>
+            <tr>
+              <td><strong>Pages</strong></td>
+              <td>auto_stories</td>
+              <td>Select individual pages or a range of pages. For PDFs these are real pages; for other formats they are approximate blocks.</td>
+              <td>PDF files (always) or documents without headings</td>
+            </tr>
+            <tr>
+              <td><strong>Text</strong></td>
+              <td>text_select</td>
+              <td>Highlight and capture specific portions of text directly from the document.</td>
+              <td>Always available for all file types</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout--info">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">info</span> Note
+          </div>
+          The tool automatically selects the best default mode based on your document. Greyed-out tabs indicate that mode is not available for this file type.
+        </div>
+
+        <h3>Headers Mode</h3>
+        <ul>
+          <li>Each section is displayed with a checkbox, its heading level (H1 or H2), and a character count.</li>
+          <li>Checking an <strong>H1</strong> heading automatically checks all its child H2 sections beneath it.</li>
+          <li>Use <strong>Select All</strong> / <strong>Deselect All</strong> for quick batch operations.</li>
+        </ul>
+
+        <h3>Pages Mode</h3>
+        <ul>
+          <li>Use the <strong>page range selector</strong> at the top to quickly select a "from" and "to" range, then click <strong>Select Range</strong>.</li>
+          <li>Individual pages can also be toggled on/off with their checkboxes.</li>
+          <li>Each page shows its character count to help you stay within the limit.</li>
+        </ul>
+
+        <h3>Text Mode</h3>
+        <ul>
+          <li>The full document text is displayed in a scrollable panel.</li>
+          <li><strong>Click and drag</strong> to highlight a region of text, then click <strong>Add Selection</strong> to capture it.</li>
+          <li>Multiple selections can be added — overlapping selections are merged automatically.</li>
+          <li>Each captured selection appears as a chip below the text area with a preview and a remove button.</li>
+        </ul>
+
+        <h3>Character Limit</h3>
+        <p>Across all modes, the total selected content must remain below <strong>400,000 characters</strong>. If you exceed this limit, the character counter turns red and the Continue button is disabled.</p>
+
+        <div class="callout callout--tip">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">lightbulb</span> Tip
+          </div>
+          For best results, select content that contains functional requirements rather than appendices, glossaries, or boilerplate. Switching between modes preserves your selections in each mode independently.
+        </div>
+      </section>
+
+      <!-- 4. The AI Pipeline -->
+      <section class="help-section" id="ai-pipeline">
+        <h2>The AI Pipeline</h2>
+        <p>Step 4 runs your assembled prompt through a four-stage AI pipeline. Each stage is a specialised Matcha AI mission that builds on the output of the previous stage.</p>
+
+        <h3>Pipeline Stages</h3>
+        <div class="pipeline-diagram">
+          <div class="pipeline-stage">
+            <span class="material-symbols-outlined">account_tree</span>
+            Identifying Test Areas
+          </div>
+          <span class="pipeline-arrow">&rarr;</span>
+          <div class="pipeline-stage">
+            <span class="material-symbols-outlined">checklist</span>
+            Defining Expected Outcomes
+          </div>
+          <span class="pipeline-arrow">&rarr;</span>
+          <div class="pipeline-stage">
+            <span class="material-symbols-outlined">route</span>
+            Creating Test Flows
+          </div>
+          <span class="pipeline-arrow">&rarr;</span>
+          <div class="pipeline-stage">
+            <span class="material-symbols-outlined">summarize</span>
+            Compiling Test Report
+          </div>
+        </div>
+
+        <table class="help-table">
+          <thead>
+            <tr><th>Stage</th><th>Mission</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><strong>Identifying Test Areas</strong></td>
+              <td>Decomposes the document into testable functional areas and user-facing behaviours.</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><strong>Defining Expected Outcomes</strong></td>
+              <td>Cross-references the original document to define expected results for each test area. Anti-hallucination rules ensure outputs are grounded in the source material.</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><strong>Creating Test Flows</strong></td>
+              <td>Builds structured test scenarios with step-by-step flows, preconditions, and validation criteria.</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><strong>Compiling Test Report</strong></td>
+              <td>Materialises the final output as a structured JSON report containing all test scenarios and their details.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3>Progress Indicators</h3>
+        <ul>
+          <li><strong>Spinner icon</strong> &mdash; The currently running stage displays a spinning icon with a blue background.</li>
+          <li><strong>Checkmark icon</strong> &mdash; Completed stages display a green checkmark.</li>
+          <li><strong>Progress bar</strong> &mdash; A horizontal bar fills from 0% to 100% as each stage completes (25% per stage).</li>
+        </ul>
+
+        <div class="callout callout--info">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">info</span> Note
+          </div>
+          The pipeline typically takes 2 to 5 minutes depending on document size. Do not close the browser tab while it is running.
+        </div>
+      </section>
+
+      <!-- 5. Reading Results -->
+      <section class="help-section" id="reading-results">
+        <h2>Reading Results</h2>
+        <p>Step 5 displays the generated test scenarios as individual cards. Each card represents one test scenario from the AI output.</p>
+
+        <h3>Scenario Card Structure</h3>
+        <div class="card-anatomy">
+          <div class="card-anatomy__header">Example: SC-001 &mdash; Login with valid credentials</div>
+          <div class="card-anatomy__row">
+            <span class="card-anatomy__label">Scenario ID</span>
+            <span class="card-anatomy__value">Unique identifier (e.g. SC-001)</span>
+          </div>
+          <div class="card-anatomy__row">
+            <span class="card-anatomy__label">Title</span>
+            <span class="card-anatomy__value">Short description of the scenario</span>
+          </div>
+          <div class="card-anatomy__row">
+            <span class="card-anatomy__label">Priority</span>
+            <span class="card-anatomy__value">
+              <span class="priority-badge priority-badge--high">High</span>
+              <span class="priority-badge priority-badge--medium">Medium</span>
+              <span class="priority-badge priority-badge--low">Low</span>
+            </span>
+          </div>
+          <div class="card-anatomy__row">
+            <span class="card-anatomy__label">Category</span>
+            <span class="card-anatomy__value">Functional grouping (e.g. Authentication, Navigation)</span>
+          </div>
+        </div>
+
+        <h3>Test Steps Table</h3>
+        <p>Each scenario card contains a 7-column table of test steps:</p>
+        <table class="help-table">
+          <thead>
+            <tr><th>Column</th><th>Description</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>#</strong></td><td>Step number</td></tr>
+            <tr><td><strong>Action</strong></td><td>The action to perform</td></tr>
+            <tr><td><strong>Data</strong></td><td>Test data or inputs required</td></tr>
+            <tr><td><strong>Expected Result</strong></td><td>What should happen after the action</td></tr>
+            <tr><td><strong>Precondition</strong></td><td>Conditions that must be true before this step</td></tr>
+            <tr><td><strong>Postcondition</strong></td><td>Conditions that should be true after this step</td></tr>
+            <tr><td><strong>Notes</strong></td><td>Additional comments (editable in the results view)</td></tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout--tip">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">lightbulb</span> Tip
+          </div>
+          The Notes column in each scenario card is editable. Click on any Notes cell to add your own annotations before exporting to Excel.
+        </div>
+      </section>
+
+      <!-- 6. Downloading Excel Reports -->
+      <section class="help-section" id="downloading-excel">
+        <h2>Downloading Excel Reports</h2>
+        <p>The results toolbar offers two export formats: a standard Excel report and an Azure DevOps (AZDO) formatted export.</p>
+
+        <h3>Standard Excel Export</h3>
+        <p>Click the <strong>Export Excel</strong> button to download a <code>.xlsx</code> file with the following structure:</p>
+        <ul>
+          <li>Each scenario is placed on its own worksheet, named by the scenario ID and title.</li>
+          <li>The 7-column format matches the on-screen table (Step, Action, Data, Expected Result, Precondition, Postcondition, Notes).</li>
+          <li>Headers are styled with a purple background and white text.</li>
+          <li>Alternating row shading for readability.</li>
+          <li>Auto-fitted column widths.</li>
+        </ul>
+
+        <h3>Azure DevOps Export</h3>
+        <p>Click the <strong>Export AZDO</strong> button to generate a multi-sheet Excel file formatted for Azure DevOps import:</p>
+        <ul>
+          <li>You will be prompted to enter an <strong>Area Path</strong> for the test plan.</li>
+          <li>Each scenario produces a worksheet with 9 columns including AZDO-specific fields (Work Item Type, Area Path).</li>
+          <li>The file can be imported directly into Azure DevOps Test Plans.</li>
+        </ul>
+
+        <h3>File Naming</h3>
+        <p>Downloaded files follow the naming convention:<br />
+        <code>Test_Scenarios_YYYY-MM-DD_HH-MM.xlsx</code> (standard) or<br />
+        <code>AZDO_Test_Scenarios_YYYY-MM-DD_HH-MM.xlsx</code> (Azure DevOps).</p>
+
+        <div class="callout callout--info">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">info</span> Note
+          </div>
+          Both export formats use the <code>xlsx-js-style</code> library to apply professional formatting including coloured headers, borders, and column sizing.
+        </div>
+      </section>
+
+      <!-- 7. Raw JSON & Sent Text -->
+      <section class="help-section" id="raw-json">
+        <h2>Raw JSON &amp; Sent Text</h2>
+        <p>The results view includes collapsible sections that let you inspect the raw data behind the generated test scenarios.</p>
+
+        <h3>Raw JSON Output</h3>
+        <p>Expand the <strong>Raw JSON</strong> toggle to see the complete JSON response from the AI pipeline. This is useful for:</p>
+        <ul>
+          <li>Debugging when scenario cards are missing or incomplete.</li>
+          <li>Copying the raw output for use in other tools or workflows.</li>
+          <li>Verifying that the AI produced valid, well-structured output.</li>
+        </ul>
+
+        <h3>Sent Text</h3>
+        <p>Expand the <strong>Sent Text</strong> toggle to review the exact prompt that was sent to the AI pipeline. This includes:</p>
+        <ul>
+          <li>The system prompt (QA analyst instructions).</li>
+          <li>Your selected document sections.</li>
+          <li>Any manual edits you made in Step 3.</li>
+        </ul>
+
+        <div class="callout callout--tip">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">lightbulb</span> Tip
+          </div>
+          If the results seem off, check the Sent Text to ensure the right sections were included and the prompt was not inadvertently modified.
+        </div>
+      </section>
+
+      <!-- 8. Tips & Best Practices -->
+      <section class="help-section" id="tips">
+        <h2>Tips &amp; Best Practices</h2>
+
+        <h3>Document Preparation</h3>
+        <ol>
+          <li><strong>Use structured headings.</strong> Documents with clear H1/H2 heading hierarchy produce the best section parsing results, especially in <code>.docx</code> format.</li>
+          <li><strong>Keep sections focused.</strong> Each section should cover a single feature or functional area. Avoid combining unrelated content under one heading.</li>
+          <li><strong>Prefer DOCX over PDF.</strong> Word documents preserve heading structure more reliably. PDF heading detection relies on font-size heuristics which can be imprecise.</li>
+        </ol>
+
+        <h3>Content Selection</h3>
+        <ol start="4">
+          <li><strong>Be selective.</strong> Including too much content produces longer processing times and may dilute test quality. Focus on content containing functional requirements.</li>
+          <li><strong>Watch the character count.</strong> Stay well below the 400K limit for best results. Smaller, focused inputs generally produce higher quality tests.</li>
+        </ol>
+
+        <h3>Prompt Editing</h3>
+        <ol start="6">
+          <li><strong>Review before generating.</strong> Always check the assembled prompt in Step 3 before running the pipeline. Ensure the system prompt and document content look correct.</li>
+        </ol>
+
+        <h3>Keyboard Shortcuts</h3>
+        <table class="help-table">
+          <thead>
+            <tr><th>Shortcut</th><th>Action</th><th>Context</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><kbd>Ctrl</kbd> + <kbd>Enter</kbd></td>
+              <td>Continue to next step</td>
+              <td>Steps 2 &amp; 3</td>
+            </tr>
+            <tr>
+              <td><kbd>Esc</kbd></td>
+              <td>Close dialog</td>
+              <td>Confirm/Input dialogs</td>
+            </tr>
+            <tr>
+              <td><kbd>Enter</kbd></td>
+              <td>Confirm dialog action</td>
+              <td>Confirm/Input dialogs</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 9. Troubleshooting -->
+      <section class="help-section" id="troubleshooting">
+        <h2>Troubleshooting</h2>
+        <p>Common issues and their solutions:</p>
+
+        <table class="help-table">
+          <thead>
+            <tr><th>Issue</th><th>Possible Cause</th><th>Solution</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>File upload fails</td>
+              <td>Unsupported file type or corrupted file</td>
+              <td>Ensure the file is a <code>.docx</code>, <code>.pdf</code>, <code>.txt</code>, or <code>.csv</code>. Try re-saving the file.</td>
+            </tr>
+            <tr>
+              <td>No sections found after upload</td>
+              <td>Document has no headings or uses non-standard formatting</td>
+              <td>Add H1/H2 headings to your Word document. For PDFs, ensure text is selectable (not a scanned image).</td>
+            </tr>
+            <tr>
+              <td>Character limit exceeded</td>
+              <td>Too much content selected</td>
+              <td>Deselect content that is less relevant to testing, such as appendices or glossaries.</td>
+            </tr>
+            <tr>
+              <td>Pipeline stalls or times out</td>
+              <td>Network issues or API overload</td>
+              <td>Wait a moment and click <strong>Regenerate</strong>. If persistent, check your internet connection and try again.</td>
+            </tr>
+            <tr>
+              <td>Incomplete or missing scenarios</td>
+              <td>Input too large or ambiguous for the AI</td>
+              <td>Try with less, more focused content. Check the Raw JSON output to see what the AI returned.</td>
+            </tr>
+            <tr>
+              <td>Excel file is empty or malformed</td>
+              <td>JSON output was not in the expected format</td>
+              <td>View the Raw JSON to confirm valid output. Try regenerating the tests.</td>
+            </tr>
+            <tr>
+              <td>AZDO export missing area path</td>
+              <td>Dialog was cancelled or left blank</td>
+              <td>Click <strong>Export AZDO</strong> again and enter the area path when prompted (e.g. <code>Project\Team\Sprint</code>).</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout callout--warning">
+          <div class="callout__title">
+            <span class="material-symbols-outlined">warning</span> Important
+          </div>
+          If the pipeline fails repeatedly, check that the server is running (<code>npm start</code>) and that the <code>MATCHA_API_KEY</code> environment variable is correctly set in your <code>.env</code> file.
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="help-footer">
+    Test Script Builder &mdash; APAC Services Team / Matcha AI
+  </footer>
+
+</body>
+</html>

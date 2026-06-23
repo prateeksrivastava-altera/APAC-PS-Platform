@@ -1,0 +1,14 @@
+{
+  "name": "sm-apac-design-system",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Material Design 3 component bundle (Material Web Components) shared by the APAC services apps.",
+  "scripts": {
+    "build": "node build.js"
+  },
+  "devDependencies": {
+    "@material/web": "^2.4.1",
+    "esbuild": "^0.28.0"
+  }
+}

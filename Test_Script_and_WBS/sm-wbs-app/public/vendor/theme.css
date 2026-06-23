@@ -1,0 +1,93 @@
+/* Material Design 3 theme tokens — shared by the APAC services apps.
+ *
+ * Material Web Components read these `--md-sys-*` custom properties directly,
+ * so the whole component library inherits the brand from this one file.
+ * Light scheme, seeded from the brand primary #1a73e8.
+ *
+ * Generated/vendored by design-system/build.js — edit the source there, then
+ * `npm run build`, rather than editing the per-app vendored copy.
+ */
+
+:root {
+  /* ---- Primary ---- */
+  --md-sys-color-primary: #1a73e8;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #d3e3fd;
+  --md-sys-color-on-primary-container: #062e6f;
+  --md-sys-color-inverse-primary: #a8c7fa;
+
+  /* ---- Secondary ---- */
+  --md-sys-color-secondary: #565e71;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #dae2f9;
+  --md-sys-color-on-secondary-container: #131c2b;
+
+  /* ---- Tertiary ---- */
+  --md-sys-color-tertiary: #705575;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #fad8fd;
+  --md-sys-color-on-tertiary-container: #28132e;
+
+  /* ---- Error ---- */
+  --md-sys-color-error: #b3261e;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #f9dedc;
+  --md-sys-color-on-error-container: #410e0b;
+
+  /* ---- Surfaces ---- */
+  --md-sys-color-background: #ffffff;
+  --md-sys-color-on-background: #1f1f1f;
+  --md-sys-color-surface: #ffffff;
+  --md-sys-color-on-surface: #1f1f1f;
+  --md-sys-color-surface-variant: #e1e3e6;
+  --md-sys-color-on-surface-variant: #444746;
+  --md-sys-color-surface-dim: #f8f9fa;
+  --md-sys-color-surface-bright: #ffffff;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #f8f9fa;
+  --md-sys-color-surface-container: #f1f3f4;
+  --md-sys-color-surface-container-high: #e8eaed;
+  --md-sys-color-surface-container-highest: #e1e3e6;
+  --md-sys-color-surface-tint: #1a73e8;
+
+  /* ---- Outline / inverse / misc ---- */
+  --md-sys-color-outline: #74777f;
+  --md-sys-color-outline-variant: #c4c7c5;
+  --md-sys-color-inverse-surface: #303030;
+  --md-sys-color-inverse-on-surface: #f2f2f2;
+  --md-sys-color-shadow: #000000;
+  --md-sys-color-scrim: #000000;
+
+  /* ---- Shape scale ---- */
+  --md-sys-shape-corner-none: 0px;
+  --md-sys-shape-corner-extra-small: 4px;
+  --md-sys-shape-corner-small: 8px;
+  --md-sys-shape-corner-medium: 12px;
+  --md-sys-shape-corner-large: 16px;
+  --md-sys-shape-corner-extra-large: 28px;
+  --md-sys-shape-corner-full: 9999px;
+  /* Legacy aliases still referenced by the apps' hand-rolled CSS */
+  --md-sys-shape-corner-sm: 8px;
+  --md-sys-shape-corner-md: 12px;
+  --md-sys-shape-corner-lg: 16px;
+
+  /* ---- Non-MD3 status accents kept for the apps' custom elements
+   *      (chips, toast) — these have no MD3 role. ---- */
+  --md-sys-color-success: #1e8e3e;
+  --md-sys-color-success-container: #ceead6;
+  --md-sys-color-warning: #e37400;
+  --md-sys-color-warning-container: #fef7e0;
+
+  /* ---- Typeface ---- */
+  --md-ref-typeface-brand: 'Roboto', 'Segoe UI', sans-serif;
+  --md-ref-typeface-plain: 'Roboto', 'Segoe UI', sans-serif;
+
+  /* ---- Component sizing — a touch larger than the 40px MD3 default so
+   *      labels sit comfortably with room to breathe. ---- */
+  --md-filled-button-container-height: 44px;
+  --md-outlined-button-container-height: 44px;
+  --md-text-button-container-height: 44px;
+  --md-filled-tonal-button-container-height: 44px;
+  --md-elevated-button-container-height: 44px;
+}
+

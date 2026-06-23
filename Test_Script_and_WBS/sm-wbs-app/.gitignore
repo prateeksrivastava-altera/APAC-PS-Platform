@@ -1,0 +1,5 @@
+node_modules/
+*.log
+# Local Postgres dumps / backups (e.g. pre-migration safety dumps)
+*.dump
+*.sql.bak

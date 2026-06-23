@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New project — APAC WBS Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="vendor/theme.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="session-guard.js"></script>
+  <script type="module" src="vendor/material-web.js"></script>
+</head>
+<body class="wbs-page">
+  <header class="proj-header">
+    <a class="proj-header__back" href="index.html" title="Cancel"><span class="material-symbols-outlined">arrow_back</span></a>
+    <h1 class="proj-header__title">New project</h1>
+    <span class="proj-header__spacer"></span>
+    <div class="wizard-steps">
+      <span class="wizard-step wizard-step--active" id="step1Lbl">1. Info</span>
+      <span class="wizard-step" id="step2Lbl">2. Template & resources</span>
+    </div>
+  </header>
+
+  <main class="wbs-main">
+    <!-- Step 1 -->
+    <section class="status-card" id="step1">
+      <div class="status-card__head">
+        <span class="material-symbols-outlined">info</span>
+        <h2>Project info</h2>
+      </div>
+      <form id="step1Form" class="form-grid form-grid--single" autocomplete="off" onsubmit="return false;">
+        <md-outlined-text-field id="clientNameField" name="clientName" label="Client" required></md-outlined-text-field>
+        <md-outlined-text-field name="projectName" label="Project name" required></md-outlined-text-field>
+        <md-outlined-text-field name="sowOrTaskId" label="SOW / Task ID" required></md-outlined-text-field>
+        <md-outlined-select name="productId" label="Product">
+          <md-select-option value="" selected><div slot="headline">— None —</div></md-select-option>
+        </md-outlined-select>
+        <md-outlined-select name="solutionId" label="Solution">
+          <md-select-option value="" selected><div slot="headline">— None —</div></md-select-option>
+        </md-outlined-select>
+        <md-outlined-select name="moduleId" label="Module">
+          <md-select-option value="" selected><div slot="headline">— None —</div></md-select-option>
+        </md-outlined-select>
+      </form>
+      <md-menu id="clientMenu" anchor="clientNameField" positioning="popover"></md-menu>
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+        <a href="index.html"><md-text-button>Cancel</md-text-button></a>
+        <button type="button" class="md-btn md-btn--filled" id="nextBtn">Next <span class="material-symbols-outlined">arrow_forward</span></button>
+      </div>
+    </section>
+
+    <!-- Step 2 -->
+    <section class="status-card" id="step2" hidden>
+      <div class="status-card__head">
+        <span class="material-symbols-outlined">layers</span>
+        <h2>Template & resources</h2>
+      </div>
+      <div class="form-grid form-grid--single">
+        <md-outlined-select id="templatePicker" label="Start from template">
+          <md-select-option value="" selected><div slot="headline">— Blank (no preset tasks) —</div></md-select-option>
+        </md-outlined-select>
+      </div>
+      <div id="templatePreview" style="margin-top:20px; padding:16px; background: var(--md-sys-color-surface-container); border-radius:8px; display:none;">
+        <div style="font-weight:500; margin-bottom:12px; font-size:14px; color: var(--md-sys-color-on-surface);">Preview</div>
+        <div id="previewContent" style="font-size:13px; line-height:1.6;"></div>
+      </div>
+      <div style="display:flex; justify-content:space-between; gap:8px; margin-top:16px;">
+        <button type="button" class="md-btn md-btn--text" id="backBtn"><span class="material-symbols-outlined">arrow_back</span> Back</button>
+        <div style="display:flex; gap:8px;">
+          <a href="index.html"><md-text-button>Cancel</md-text-button></a>
+          <button type="button" class="md-btn md-btn--filled" id="createBtn">
+            <span class="material-symbols-outlined">add</span> Create project
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="md-upgrade.js"></script>
+  <script>
+    function escapeHtml(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+    function showToast(msg, kind="ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = `toast toast--${kind}`;
+      el.hidden = false;
+      setTimeout(() => el.hidden = true, 3500);
+    }
+
+    const state = { clients: [], templates: [], resources: [], selectedResources: new Set(),
+                    products: [], solutions: [], modules: [] };
+
+    function step(n) {
+      document.getElementById("step1").hidden = n !== 1;
+      document.getElementById("step2").hidden = n !== 2;
+      document.getElementById("step1Lbl").classList.toggle("wizard-step--active", n === 1);
+      document.getElementById("step2Lbl").classList.toggle("wizard-step--active", n === 2);
+    }
+
+
+    (async () => {
+      const [cliR, tplR, resR, prodR, solR, modR] = await Promise.all([
+        fetch("api/clients").then(r => r.json()).catch(() => []),
+        fetch("api/templates").then(r => r.json()).catch(() => []),
+        fetch("api/resources").then(r => r.json()).catch(() => []),
+        fetch("api/products").then(r => r.json()).catch(() => []),
+        fetch("api/solutions").then(r => r.json()).catch(() => []),
+        fetch("api/modules").then(r => r.json()).catch(() => []),
+      ]);
+      state.clients = cliR; state.templates = tplR; state.resources = resR;
+      state.products = prodR; state.solutions = solR; state.modules = modR;
+      // Client suggestions feed the combobox menu (wired below).
+      document.getElementById("templatePicker").innerHTML =
+        `<md-select-option value="" selected><div slot="headline">— Blank (no preset tasks) —</div></md-select-option>` +
+        state.templates.map((t) => `<md-select-option value="${t.templateId}"><div slot="headline">${escapeHtml(t.templateName)}</div></md-select-option>`).join("");
+      // Product / Solution / Module dropdowns
+      const fillSelect = (name, rows) => {
+        document.querySelector(`md-outlined-select[name="${name}"]`).innerHTML =
+          `<md-select-option value="" selected><div slot="headline">— None —</div></md-select-option>` +
+          rows.map((r) => `<md-select-option value="${r.id}"><div slot="headline">${escapeHtml(r.name)}</div></md-select-option>`).join("");
+      };
+      fillSelect("productId", state.products);
+      fillSelect("solutionId", state.solutions);
+      fillSelect("moduleId", state.modules);
+
+      // Client combobox — filter client names into the anchored md-menu.
+      const clientField = document.getElementById("clientNameField");
+      const clientMenu = document.getElementById("clientMenu");
+
+      function updateClientMenu() {
+        const q = clientField.value.trim().toLowerCase();
+        const matches = q
+          ? state.clients.map((c) => c.name)
+              .filter((n) => n.toLowerCase().includes(q) && n.toLowerCase() !== q)
+              .slice(0, 8)
+          : state.clients.map((c) => c.name).slice(0, 8);
+        clientMenu.innerHTML = matches
+          .map((n) => `<md-menu-item><div slot="headline">${escapeHtml(n)}</div></md-menu-item>`)
+          .join("");
+        clientMenu.open = matches.length > 0;
+      }
+
+      clientField.addEventListener("focus", updateClientMenu);
+      clientField.addEventListener("input", updateClientMenu);
+      clientMenu.addEventListener("click", (e) => {
+        const item = e.target.closest("md-menu-item");
+        if (!item) return;
+        clientField.value = item.textContent.trim();
+        clientMenu.open = false;
+      });
+
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        const f = document.getElementById("step1Form");
+        if (!f.checkValidity()) { f.reportValidity(); return; }
+        step(2);
+      });
+      document.getElementById("backBtn").addEventListener("click", () => step(1));
+
+      // Template preview
+      const defaultLevelOneTasks = ["Initiate", "Design", "Build", "Testing", "Activate", "Close"];
+      async function updateTemplatePreview() {
+        const previewEl = document.getElementById("templatePreview");
+        const contentEl = document.getElementById("previewContent");
+        const tplId = document.getElementById("templatePicker").value;
+
+        if (!tplId) {
+          // Blank template: show default level 1 tasks with resources and hours
+          const resources = state.resources || [];
+          const resourceHeaders = resources.length > 0
+            ? resources.map(r => `<th style="font-size:11px; padding:4px 2px; text-align:center; width:40px; border-right:1px solid var(--md-sys-color-outline-variant);">${escapeHtml(r.shortCode)}</th>`).join("")
+            : "";
+
+          const rows = defaultLevelOneTasks.map(name => {
+            const resourceCells = resources.length > 0
+              ? resources.map(_ => `<td style="font-size:11px; padding:2px; text-align:center; border-right:1px solid var(--md-sys-color-outline-variant);">—</td>`).join("")
+              : "";
+            return `<tr><td style="padding:2px 4px; font-size:11px;">• ${escapeHtml(name)}</td><td style="font-size:11px; padding:2px; text-align:center; border-right:1px solid var(--md-sys-color-outline-variant);">—</td>${resourceCells}</tr>`;
+          }).join("");
+
+          const table = resources.length > 0
+            ? `<table style="width:100%; font-size:11px; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:4px 2px; border-right:1px solid var(--md-sys-color-outline-variant);">Task</th><th style="font-size:11px; padding:4px 2px; text-align:center; width:40px; border-right:1px solid var(--md-sys-color-outline-variant);">Hrs</th>${resourceHeaders}</tr></thead><tbody>${rows}</tbody></table>`
+            : `<table style="width:100%; font-size:11px; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:4px 2px; border-right:1px solid var(--md-sys-color-outline-variant);">Task</th><th style="font-size:11px; padding:4px 2px; text-align:center; width:40px; border-right:1px solid var(--md-sys-color-outline-variant);">Hrs</th></tr></thead><tbody>${defaultLevelOneTasks.map(name => `<tr><td style="padding:2px 4px; font-size:11px;">• ${escapeHtml(name)}</td><td style="font-size:11px; padding:2px; text-align:center; border-right:1px solid var(--md-sys-color-outline-variant);">—</td></tr>`).join("")}</tbody></table>`;
+
+          contentEl.innerHTML = table;
+          previewEl.style.display = "block";
+          return;
+        }
+
+        // Fetch specific template
+        try {
+          const r = await fetch(`api/templates/${tplId}`);
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          const data = await r.json();
+          const tasks = data.tasks || [];
+          const resources = data.resources || [];
+
+          if (tasks.length === 0) {
+            contentEl.innerHTML = `<div style="color: var(--md-sys-color-on-surface-variant);">No tasks defined</div>`;
+          } else {
+            // Sort tasks in DFS order
+            const taskMap = new Map(tasks.map(t => [t.templateTaskId, t]));
+            const dfs = [];
+            const walk = (pid) => {
+              const children = tasks.filter(t => (t.parentTemplateTaskId ?? 0) === pid).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+              for (const c of children) { dfs.push(c); walk(c.templateTaskId); }
+            };
+            walk(0);
+
+            // Render as table with resources and hours if available
+            if (resources.length > 0) {
+              const resourceHeaders = resources.map(r => `<th style="font-size:11px; padding:4px 2px; text-align:center; width:40px; border-right:1px solid var(--md-sys-color-outline-variant);">${escapeHtml(r.shortCode)}</th>`).join("");
+              const rows = dfs.map(t => {
+                const indent = (t.depth - 1) * 12;
+                const hours = t.hours ?? t.estimatedHours ?? "—";
+                const resourceCells = resources.map(_ => `<td style="font-size:11px; padding:2px; text-align:center; border-right:1px solid var(--md-sys-color-outline-variant);">—</td>`).join("");
+                return `<tr><td style="padding:2px 4px; font-size:11px; padding-left:${indent}px;">${"—".repeat(t.depth - 1)} ${escapeHtml(t.taskName)}</td><td style="font-size:11px; padding:2px; text-align:center; border-right:1px solid var(--md-sys-color-outline-variant);">${escapeHtml(String(hours))}</td>${resourceCells}</tr>`;
+              }).join("");
+              contentEl.innerHTML = `<table style="width:100%; font-size:11px; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:4px 2px; border-right:1px solid var(--md-sys-color-outline-variant);">Task</th><th style="font-size:11px; padding:4px 2px; text-align:center; width:40px; border-right:1px solid var(--md-sys-color-outline-variant);">Hrs</th>${resourceHeaders}</tr></thead><tbody>${rows}</tbody></table>`;
+            } else {
+              const rows = dfs.map(t => {
+                const indent = (t.depth - 1) * 12;
+                const hours = t.hours ?? t.estimatedHours ?? "—";
+                return `<tr><td style="padding:2px 4px; font-size:11px; padding-left:${indent}px;">${"—".repeat(t.depth - 1)} ${escapeHtml(t.taskName)}</td><td style="font-size:11px; padding:2px; text-align:center; border-right:1px solid var(--md-sys-color-outline-variant);">${escapeHtml(String(hours))}</td></tr>`;
+              }).join("");
+              contentEl.innerHTML = `<table style="width:100%; font-size:11px; border-collapse:collapse;"><thead><tr><th style="text-align:left; padding:4px 2px; border-right:1px solid var(--md-sys-color-outline-variant);">Task</th><th style="font-size:11px; padding:4px 2px; text-align:center; width:40px; border-right:1px solid var(--md-sys-color-outline-variant);">Hrs</th></tr></thead><tbody>${rows}</tbody></table>`;
+            }
+          }
+          previewEl.style.display = "block";
+        } catch (err) {
+          contentEl.innerHTML = `<div style="color: var(--md-sys-color-error);">Failed to load template</div>`;
+          previewEl.style.display = "block";
+        }
+      }
+
+      document.getElementById("templatePicker").addEventListener("change", updateTemplatePreview);
+      // Show blank template preview by default
+      updateTemplatePreview();
+
+      document.getElementById("createBtn").addEventListener("click", async () => {
+        const f = document.getElementById("step1Form");
+        const tpl = document.getElementById("templatePicker").value;
+        const body = {
+          clientName: f.clientName.value.trim(),
+          projectName: f.projectName.value.trim(),
+          sowOrTaskId: f.sowOrTaskId.value.trim(),
+          productId: f.productId.value ? Number(f.productId.value) : null,
+          solutionId: f.solutionId.value ? Number(f.solutionId.value) : null,
+          moduleId: f.moduleId.value ? Number(f.moduleId.value) : null,
+          templateId: tpl ? Number(tpl) : null,
+        };
+        const btn = document.getElementById("createBtn");
+        btn.disabled = true;
+        try {
+          const r = await fetch("api/projects", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body),
+          });
+          if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j.error || `HTTP ${r.status}`); }
+          const j = await r.json();
+          window.location.href = `project.html?id=${j.projectId}`;
+        } catch (err) {
+          showToast(`Create failed: ${err.message}`, "err");
+          btn.disabled = false;
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

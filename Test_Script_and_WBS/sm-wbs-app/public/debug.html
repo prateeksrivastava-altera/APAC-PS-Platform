@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WBS — Debug</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="wbs-page">
+  <header class="wbs-header">
+    <div class="wbs-header__brand">
+      <img src="images/Altera_logo_rgb_graphicmark.svg" alt="Altera" class="wbs-header__logo" />
+      <div>
+        <div class="wbs-header__title">WBS Builder — Debug</div>
+        <div class="wbs-header__subtitle">DB connectivity + migrations</div>
+      </div>
+    </div>
+    <div class="wbs-header__actions">
+      <a class="md-btn md-btn--text" href="index.html" title="Back to Projects">
+        <span class="material-symbols-outlined">arrow_back</span> Projects
+      </a>
+      <a class="md-btn md-btn--text" href="/" title="Back to APAC Services">
+        <span class="material-symbols-outlined">home</span> APAC Services
+      </a>
+    </div>
+  </header>
+
+  <main class="wbs-main">
+    <section class="status-card" id="statusCard">
+      <div class="status-card__head">
+        <span class="material-symbols-outlined">database</span>
+        <h2>Database status</h2>
+        <span class="status-pill" id="statusPill">checking…</span>
+      </div>
+      <dl class="status-grid" id="statusGrid"></dl>
+    </section>
+  </main>
+
+  <script>
+    (async () => {
+      const pill = document.getElementById("statusPill");
+      const grid = document.getElementById("statusGrid");
+      try {
+        const r = await fetch("api/status");
+        const j = await r.json();
+        if (!j.ok) throw new Error(j.error || "unknown");
+        pill.textContent = "connected";
+        pill.classList.add("status-pill--ok");
+        grid.innerHTML = `
+          <dt>Mode</dt><dd>${j.mode}</dd>
+          <dt>Database</dt><dd>${j.db.database}</dd>
+          <dt>Host</dt><dd>${j.db.host}:${j.db.port}</dd>
+          <dt>User</dt><dd>${j.db.user}</dd>
+          <dt>Projects in DB</dt><dd><strong>${j.projects}</strong></dd>
+        `;
+      } catch (err) {
+        pill.textContent = "error";
+        pill.classList.add("status-pill--err");
+        grid.innerHTML = `<dt>Error</dt><dd>${err.message}</dd>`;
+      }
+    })();
+  </script>
+</body>
+</html>

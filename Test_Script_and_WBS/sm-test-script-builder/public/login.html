@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In — Test Script Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <img src="images/Altera_logo_rgb_graphicmark_rev.svg" alt="Altera Digital Health" class="login-card__logo" />
+    <p class="login-card__brand">DIGITAL HEALTH</p>
+    <h1 class="login-card__title">APAC Test Script Generator</h1>
+    <p class="login-card__subtitle">Sign in with your Altera account to continue</p>
+    <p class="login-card__subtitle" style="color: rgba(255, 191, 0, 0.7); font-size: 12px; margin-top: -20px; margin-bottom: 24px;">
+      This app is meant to be opened from the APAC Professional Services landing page.
+    </p>
+    <button class="login-card__sso-btn" id="ssoBtn" type="button" disabled>
+      <svg class="login-card__ms-icon" width="20" height="20" viewBox="0 0 21 21" fill="none">
+        <rect x="0" y="0" width="10" height="10" fill="#f25022"/>
+        <rect x="11" y="0" width="10" height="10" fill="#7fba00"/>
+        <rect x="0" y="11" width="10" height="10" fill="#00a4ef"/>
+        <rect x="11" y="11" width="10" height="10" fill="#ffb900"/>
+      </svg>
+      Sign in with Altera SSO
+    </button>
+    <div class="login-card__divider"><span>ENTERPRISE SSO</span></div>
+    <div class="login-card__badges">
+      <span class="login-card__badge" id="badgeEncrypted">
+        <span class="material-symbols-outlined">lock</span> Encrypted
+      </span>
+      <span class="login-card__badge" id="badgeAzureAd">
+        <span class="material-symbols-outlined">verified</span> Azure AD
+      </span>
+    </div>
+  </div>
+
+  <script src="vendor/msal-browser.min.js"></script>
+  <script src="auth.js"></script>
+  <script>
+    (async () => {
+      // Encrypted badge: green if page is served over HTTPS
+      if (window.location.protocol === "https:") {
+        document.getElementById("badgeEncrypted").classList.add("login-card__badge--ok");
+      }
+
+      try {
+        // Check if Azure AD is configured (for badge indicator)
+        const cfgRes = await fetch("auth-config");
+        const cfg = await cfgRes.json();
+        if (cfg.clientId) {
+          document.getElementById("badgeAzureAd").classList.add("login-card__badge--ok");
+        }
+
+        const account = await auth.init();
+        if (account) {
+          window.location.replace("index.html");
+          return;
+        }
+      } catch (err) {
+        console.error("Auth initialization failed:", err);
+      }
+      const btn = document.getElementById("ssoBtn");
+      btn.disabled = false;
+      btn.addEventListener("click", () => auth.login());
+    })();
+  </script>
+</body>
+</html>

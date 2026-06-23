@@ -1,0 +1,20 @@
+{
+  "name": "sm-wbs-app",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "APAC WBS Builder (Node port of the .NET Blazor app). Authors Work Breakdown Structures for APAC Sunrise EHR deliveries.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "node db/migrate.js",
+    "test": "node --test tests/"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "exceljs": "^4.4.0",
+    "express": "^5.1.0",
+    "pg": "^8.13.1"
+  },
+  "license": "ISC"
+}

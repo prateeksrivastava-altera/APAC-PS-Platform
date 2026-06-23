@@ -1,0 +1,1694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Projects — APAC WBS Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="vendor/theme.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="session-guard.js"></script>
+  <script type="module" src="vendor/material-web.js"></script>
+</head>
+<body class="wbs-page">
+  <header class="wbs-header">
+    <div class="wbs-header__brand">
+      <img src="images/Altera_logo_rgb_graphicmark.svg" alt="Altera" class="wbs-header__logo" />
+      <div>
+        <div class="wbs-header__title">WBS Builder</div>
+        <div class="wbs-header__subtitle">Work Breakdown Structures for APAC Sunrise EHR deliveries</div>
+      </div>
+    </div>
+    <div class="wbs-header__actions">
+      <a class="md-btn md-btn--text" href="/" title="Back to APAC Professional Services">
+        <span class="material-symbols-outlined">arrow_back</span> APAC Services
+      </a>
+      <span class="user-chip" id="userChip">
+        <span class="material-symbols-outlined">account_circle</span>
+        <span id="userName">…</span>
+      </span>
+    </div>
+  </header>
+
+  <!-- Main tab strip -->
+  <nav class="proj-tabs" role="tablist">
+    <button class="proj-tab proj-tab--active" data-tab="dashboard" role="tab">
+      <span class="material-symbols-outlined">dashboard</span> Project Dashboard
+    </button>
+    <button class="proj-tab" data-tab="analytics" role="tab">
+      <span class="material-symbols-outlined">analytics</span> Analytics
+    </button>
+    <button class="proj-tab" data-tab="settings" role="tab">
+      <span class="material-symbols-outlined">settings</span> Settings
+    </button>
+  </nav>
+
+  <!-- TAB: Dashboard -->
+  <section class="tab-panel tab-panel--active" data-panel="dashboard">
+    <main class="wbs-main wbs-main--wide" style="padding-top: 24px; max-width: none;">
+      <section class="projects-toolbar">
+        <div>
+          <h1 class="projects-title">Projects</h1>
+          <p class="projects-subtitle"><span id="projectsCount">…</span></p>
+        </div>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div class="projects-search">
+            <span class="material-symbols-outlined">search</span>
+            <input type="search" id="projectSearch" placeholder="Search projects…" />
+          </div>
+          <label class="filter-check">
+            <input type="checkbox" id="showArchivedProjects" /> Show archived
+          </label>
+          <button class="md-btn md-btn--filled" id="newProjectBtn" type="button">
+            <span class="material-symbols-outlined">add</span> New project
+          </button>
+        </div>
+      </section>
+
+      <div class="projects-loading" id="loadingState">
+        <span class="material-symbols-outlined spin">progress_activity</span>
+        Loading projects…
+      </div>
+
+      <div class="projects-empty" id="emptyState" hidden>
+        <span class="material-symbols-outlined">folder_open</span>
+        <h2>No projects yet</h2>
+        <p>Create your first Work Breakdown Structure to get started.</p>
+        <button class="md-btn md-btn--filled" id="emptyNewBtn" type="button">
+          <span class="material-symbols-outlined">add</span> Create a project
+        </button>
+      </div>
+
+      <div class="projects-error" id="errorState" hidden>
+        <span class="material-symbols-outlined">error</span>
+        <div>
+          <div class="projects-error__title">Could not load projects</div>
+          <div class="projects-error__msg" id="errorMsg"></div>
+        </div>
+      </div>
+
+      <section class="projects-table-wrap" id="tableWrap" hidden>
+        <table class="projects-table">
+          <thead>
+            <tr>
+              <th><div class="th-filter"><span>Client</span>
+                <select data-filter="clientName"><option value="">All</option></select></div></th>
+              <th>Project</th>
+              <th>SOW / Task</th>
+              <th><div class="th-filter"><span>Status</span>
+                <select data-filter="status"><option value="">All</option></select></div></th>
+              <th><div class="th-filter"><span>Product</span>
+                <select data-filter="productName"><option value="">All</option></select></div></th>
+              <th><div class="th-filter"><span>Solution</span>
+                <select data-filter="solutionName"><option value="">All</option></select></div></th>
+              <th><div class="th-filter"><span>Module</span>
+                <select data-filter="moduleName"><option value="">All</option></select></div></th>
+              <th>Modified</th>
+              <th>By</th>
+              <th class="projects-table__actions-col"></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </section>
+    </main>
+  </section>
+
+  <!-- TAB: Analytics -->
+  <section class="tab-panel" data-panel="analytics" hidden>
+    <main class="wbs-main wbs-main--wide" style="padding-top: 24px;">
+      <section class="projects-toolbar">
+        <div>
+          <h1 class="projects-title">Analytics</h1>
+          <p class="projects-subtitle">Portfolio summary across active projects</p>
+        </div>
+      </section>
+
+      <div class="analytics-loading" id="analyticsLoading">
+        <span class="material-symbols-outlined spin">progress_activity</span> Loading analytics…
+      </div>
+      <div class="analytics-error" id="analyticsError" hidden></div>
+
+      <div class="projects-empty" id="analyticsEmpty" hidden>
+        <span class="material-symbols-outlined" style="font-size: 64px;">analytics</span>
+        <h2>No analytics yet</h2>
+        <p>Create projects and enter WBS task hours to see portfolio analytics here.</p>
+      </div>
+
+      <div id="analyticsContent" hidden>
+        <div class="stat-cards" id="statCards"></div>
+
+        <div class="analytics-grid">
+          <article class="status-card">
+            <div class="status-card__head"><span class="material-symbols-outlined">flag</span><h2>By status</h2></div>
+            <div id="chartStatus"></div>
+          </article>
+          <article class="status-card">
+            <div class="status-card__head"><span class="material-symbols-outlined">people</span><h2>Resource demand</h2></div>
+            <div id="chartResource"></div>
+          </article>
+          <article class="status-card">
+            <div class="status-card__head"><span class="material-symbols-outlined">inventory_2</span><h2>By product</h2></div>
+            <div id="chartProduct"></div>
+          </article>
+          <article class="status-card">
+            <div class="status-card__head"><span class="material-symbols-outlined">lightbulb</span><h2>By solution</h2></div>
+            <div id="chartSolution"></div>
+          </article>
+          <article class="status-card">
+            <div class="status-card__head"><span class="material-symbols-outlined">widgets</span><h2>By module</h2></div>
+            <div id="chartModule"></div>
+          </article>
+          <article class="status-card">
+            <div class="status-card__head"><span class="material-symbols-outlined">business</span><h2>By client</h2></div>
+            <div id="chartClient"></div>
+          </article>
+        </div>
+
+        <div class="analytics-grid">
+          <article class="status-card">
+            <div class="status-card__head"><span class="material-symbols-outlined">leaderboard</span><h2>Top projects by effort</h2></div>
+            <div id="topProjects"></div>
+          </article>
+        </div>
+      </div>
+    </main>
+  </section>
+
+  <!-- TAB: Settings -->
+  <section class="tab-panel" data-panel="settings" hidden>
+    <main class="wbs-main wbs-main--wide" style="padding-top: 24px;">
+      <section class="projects-toolbar">
+        <div>
+          <h1 class="projects-title">Settings</h1>
+          <p class="projects-subtitle">Manage master lists and WBS templates used across projects.</p>
+        </div>
+      </section>
+
+      <nav class="settings-tabs">
+        <button class="settings-tab settings-tab--active" data-stab="clients">
+          <span class="material-symbols-outlined">business</span> Clients
+        </button>
+        <button class="settings-tab" data-stab="products">
+          <span class="material-symbols-outlined">inventory_2</span> Products
+        </button>
+        <button class="settings-tab" data-stab="solutions">
+          <span class="material-symbols-outlined">lightbulb</span> Solutions
+        </button>
+        <button class="settings-tab" data-stab="modules">
+          <span class="material-symbols-outlined">widgets</span> Modules
+        </button>
+        <button class="settings-tab" data-stab="resources">
+          <span class="material-symbols-outlined">people</span> Resource Roles
+        </button>
+        <button class="settings-tab" data-stab="templates">
+          <span class="material-symbols-outlined">account_tree</span> Templates
+        </button>
+        <button class="settings-tab" data-stab="costing">
+          <span class="material-symbols-outlined">attach_money</span> Costing
+        </button>
+        <button class="settings-tab" data-stab="users" id="usersTabBtn" hidden>
+          <span class="material-symbols-outlined">admin_panel_settings</span> Users
+        </button>
+      </nav>
+
+      <!-- Sub-tab: Clients -->
+      <section class="settings-panel settings-panel--active" data-spanel="clients">
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">business</span>
+            <h2>Clients</h2>
+            <span class="status-pill" id="clientsSummary">…</span>
+            <label class="filter-check" style="margin-left:auto;">
+              <input type="checkbox" id="showInactiveClients" />
+              Show inactive
+            </label>
+          </div>
+          <div class="settings-add-row">
+            <input type="text" id="newClientName" placeholder="New client name" />
+            <input type="text" id="newClientAbbrev" placeholder="Abbreviation" maxlength="32" style="width: 140px;" />
+            <input type="number" id="newClientOrder" min="0" max="999" placeholder="Order" value="0" style="width: 90px;" />
+            <button type="button" class="md-btn md-btn--filled" id="addClientBtn">
+              <span class="material-symbols-outlined">add</span> Add
+            </button>
+          </div>
+          <div id="clientsList"></div>
+        </article>
+      </section>
+
+      <!-- Sub-tab: Products -->
+      <section class="settings-panel" data-spanel="products" hidden>
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">inventory_2</span>
+            <h2>Products</h2>
+            <span class="status-pill" id="productsSummary">…</span>
+            <label class="filter-check" style="margin-left:auto;">
+              <input type="checkbox" id="showInactiveProducts" /> Show inactive
+            </label>
+          </div>
+          <div class="settings-add-row">
+            <input type="text" id="newProductName" placeholder="New product name" />
+            <input type="number" id="newProductOrder" min="0" max="999" placeholder="Order" value="0" style="width: 90px;" />
+            <button type="button" class="md-btn md-btn--filled" id="addProductBtn">
+              <span class="material-symbols-outlined">add</span> Add
+            </button>
+          </div>
+          <div id="productsList"></div>
+        </article>
+      </section>
+
+      <!-- Sub-tab: Solutions -->
+      <section class="settings-panel" data-spanel="solutions" hidden>
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">lightbulb</span>
+            <h2>Solutions</h2>
+            <span class="status-pill" id="solutionsSummary">…</span>
+            <label class="filter-check" style="margin-left:auto;">
+              <input type="checkbox" id="showInactiveSolutions" /> Show inactive
+            </label>
+          </div>
+          <div class="settings-add-row">
+            <input type="text" id="newSolutionName" placeholder="New solution name" />
+            <input type="number" id="newSolutionOrder" min="0" max="999" placeholder="Order" value="0" style="width: 90px;" />
+            <button type="button" class="md-btn md-btn--filled" id="addSolutionBtn">
+              <span class="material-symbols-outlined">add</span> Add
+            </button>
+          </div>
+          <div id="solutionsList"></div>
+        </article>
+      </section>
+
+      <!-- Sub-tab: Modules -->
+      <section class="settings-panel" data-spanel="modules" hidden>
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">widgets</span>
+            <h2>Modules</h2>
+            <span class="status-pill" id="modulesSummary">…</span>
+            <label class="filter-check" style="margin-left:auto;">
+              <input type="checkbox" id="showInactiveModules" /> Show inactive
+            </label>
+          </div>
+          <div class="settings-add-row">
+            <input type="text" id="newModuleName" placeholder="New module name" />
+            <input type="number" id="newModuleOrder" min="0" max="999" placeholder="Order" value="0" style="width: 90px;" />
+            <button type="button" class="md-btn md-btn--filled" id="addModuleBtn">
+              <span class="material-symbols-outlined">add</span> Add
+            </button>
+          </div>
+          <div id="modulesList"></div>
+        </article>
+      </section>
+
+      <!-- Sub-tab: Resources -->
+      <section class="settings-panel" data-spanel="resources" hidden>
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">people</span>
+            <h2>Resource Roles</h2>
+            <span class="status-pill" id="resourcesSummary">…</span>
+            <label class="filter-check" style="margin-left:auto;">
+              <input type="checkbox" id="showInactiveResources" />
+              Show inactive
+            </label>
+          </div>
+          <div class="settings-add-row settings-add-row--wide">
+            <input type="text" id="newResRole" placeholder="Role name (e.g. Project Manager)" />
+            <input type="text" id="newResCode" placeholder="Short code (e.g. PM)" maxlength="16" style="width: 140px;" />
+            <input type="number" id="newResOrder" min="0" max="999" placeholder="Order" value="0" style="width: 90px;" />
+            <button type="button" class="md-btn md-btn--filled" id="addResourceBtn">
+              <span class="material-symbols-outlined">add</span> Add
+            </button>
+          </div>
+          <div id="resourcesList"></div>
+        </article>
+      </section>
+
+      <!-- Sub-tab: Templates -->
+      <section class="settings-panel" data-spanel="templates" hidden>
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">account_tree</span>
+            <h2>WBS Templates</h2>
+            <span class="status-pill" id="templatesSummary">…</span>
+          </div>
+          <div class="settings-add-row">
+            <input type="text" id="newTplName" placeholder="Template name" />
+            <button type="button" class="md-btn md-btn--filled" id="addTplBtn">
+              <span class="material-symbols-outlined">add</span> Add
+            </button>
+          </div>
+          <div id="templatesList"></div>
+          <p class="muted" style="margin-top: 12px;">Template task tree editing arrives in a future phase. For now, the seeded templates (Sunrise EHR, HL7 Integration, Altera Standard Implementation) provide starting WBS structures for new projects.</p>
+        </article>
+      </section>
+
+      <!-- Sub-tab: Costing -->
+      <section class="settings-panel" data-spanel="costing" hidden>
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">attach_money</span>
+            <h2>Costing Profiles</h2>
+            <span class="status-pill" id="costingSummary">…</span>
+          </div>
+          <div class="settings-add-row">
+            <input type="text" id="newProfileName" placeholder="Profile name (e.g. GHA PS Costing)" />
+            <button type="button" class="md-btn md-btn--filled" id="addProfileBtn">
+              <span class="material-symbols-outlined">add</span> Add
+            </button>
+          </div>
+          <div id="profilesList"></div>
+        </article>
+      </section>
+
+      <!-- Sub-tab: Users (admin only) -->
+      <section class="settings-panel" data-spanel="users" hidden>
+        <article class="status-card">
+          <div class="status-card__head">
+            <span class="material-symbols-outlined">admin_panel_settings</span>
+            <h2>Users &amp; Permissions</h2>
+            <span class="status-pill" id="usersSummary">…</span>
+            <label class="filter-check" style="margin-left:auto;">
+              <input type="checkbox" id="showInactiveUsers" /> Show inactive
+            </label>
+          </div>
+          <!-- Add-user form: two stacked rows so the inputs and checkboxes
+               don't compete for horizontal space. Top row = identity
+               (username + email). Bottom row = permission flags + the
+               Add-user CTA on the right. -->
+          <div class="settings-add-row settings-add-row--wide"
+               id="newUserTopRow"
+               style="display:flex; gap:12px; flex-wrap:wrap;">
+            <input type="text" id="newUserName" placeholder="Username" />
+            <input type="email" id="newUserEmail" placeholder="user.name@alterahealth.com" />
+          </div>
+          <div class="settings-add-row settings-add-row--wide"
+               id="newUserBottomRow"
+               style="display:flex; gap:14px; flex-wrap:wrap; align-items:center; margin-top:8px;">
+            <span id="newUserFlags" style="display:flex; gap:14px; flex-wrap:wrap; align-items:center;">
+              <label class="filter-check"><input type="checkbox" data-newflag="isReadOnly" checked /> Read-only</label>
+              <label class="filter-check"><input type="checkbox" data-newflag="canViewAnalytics" /> Analytics</label>
+              <label class="filter-check"><input type="checkbox" data-newflag="canViewSettings" /> Settings</label>
+              <label class="filter-check"><input type="checkbox" data-newflag="canDeleteProjects" /> Can delete</label>
+              <label class="filter-check"><input type="checkbox" data-newflag="canApprove" /> Approver</label>
+              <label class="filter-check"><input type="checkbox" data-newflag="isAdmin" /> Admin</label>
+            </span>
+            <span style="flex:1"></span>
+            <button type="button" class="md-btn md-btn--filled" id="addUserBtn">
+              <span class="material-symbols-outlined">person_add</span> Add user
+            </button>
+          </div>
+          <p class="muted" style="margin: 4px 0 14px;">
+            New users are added active. Permissions stay fixed until changed here —
+            signing in or out never resets them. Deactivating a user keeps their row
+            but drops them to read-only until reactivated. A user shows “Pending”
+            until their first sign-in links their Azure account.
+          </p>
+          <div id="usersList"></div>
+        </article>
+      </section>
+    </main>
+  </section>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Reusable confirmation modal -->
+  <div class="modal-scrim" id="modalScrim" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal__head">
+        <span class="material-symbols-outlined" id="modalIcon">help</span>
+        <strong id="modalTitle">Confirm</strong>
+      </div>
+      <div class="modal__body" id="modalBody"></div>
+      <div class="modal__actions">
+        <button type="button" class="md-btn md-btn--text" id="modalCancel">Cancel</button>
+        <button type="button" class="md-btn md-btn--filled" id="modalConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="md-upgrade.js"></script>
+  <script>
+    function escapeHtml(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+    function formatModified(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    function statusChipClass(status) {
+      const s = (status || "").toLowerCase();
+      if (s === "draft")   return "chip chip--draft";
+      if (s === "final")   return "chip chip--final";
+      if (s === "revised") return "chip chip--revised";
+      return "chip";
+    }
+    function showToast(msg, kind = "ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = `toast toast--${kind}`;
+      el.hidden = false;
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => { el.hidden = true; }, 3000);
+    }
+
+    // Reusable modal confirmation. Returns a Promise<boolean>.
+    // opts: { title, bodyHtml, confirmLabel, danger, icon }
+    function confirmDialog(opts) {
+      return new Promise((resolve) => {
+        const scrim = document.getElementById("modalScrim");
+        const modal = scrim.querySelector(".modal");
+        document.getElementById("modalTitle").textContent = opts.title || "Confirm";
+        document.getElementById("modalBody").innerHTML = opts.bodyHtml || "";
+        document.getElementById("modalIcon").textContent = opts.icon || (opts.danger ? "warning" : "help");
+        modal.classList.toggle("modal--danger", !!opts.danger);
+        const confirmBtn = document.getElementById("modalConfirm");
+        const cancelBtn = document.getElementById("modalCancel");
+        confirmBtn.textContent = opts.confirmLabel || "Confirm";
+        confirmBtn.className = `md-btn ${opts.danger ? "md-btn--danger" : "md-btn--filled"}`;
+        scrim.hidden = false;
+
+        const cleanup = (val) => {
+          scrim.hidden = true;
+          confirmBtn.onclick = null;
+          cancelBtn.onclick = null;
+          scrim.onclick = null;
+          document.removeEventListener("keydown", onKey);
+          resolve(val);
+        };
+        const onKey = (e) => {
+          if (e.key === "Escape") cleanup(false);
+          else if (e.key === "Enter") cleanup(true);
+        };
+        confirmBtn.onclick = () => cleanup(true);
+        cancelBtn.onclick = () => cleanup(false);
+        scrim.onclick = (e) => { if (e.target === scrim) cleanup(false); };
+        document.addEventListener("keydown", onKey);
+        confirmBtn.focus();
+      });
+    }
+
+    // ============================================================
+    // PERMISSIONS — populated from /api/me, drives what the UI exposes
+    // ============================================================
+    const perms = {
+      isReadOnly: true,
+      canViewAnalytics: false,
+      canViewSettings: false,
+      canDeleteProjects: false,
+      isAdmin: false,
+    };
+
+    // Apply the user's permission flags to the chrome. Called once after
+    // /api/me resolves; renderProjects() also reads `perms` per row.
+    function applyPermissions() {
+      const analyticsTab = document.querySelector('.proj-tab[data-tab="analytics"]');
+      const settingsTab  = document.querySelector('.proj-tab[data-tab="settings"]');
+      if (analyticsTab) analyticsTab.hidden = !perms.canViewAnalytics;
+      if (settingsTab)  settingsTab.hidden  = !perms.canViewSettings;
+      // The Users sub-tab is admin-only.
+      const usersTab = document.getElementById("usersTabBtn");
+      if (usersTab) usersTab.hidden = !perms.isAdmin;
+      // Read-only accounts cannot create projects.
+      if (perms.isReadOnly) {
+        for (const id of ["newProjectBtn", "emptyNewBtn"]) {
+          const btn = document.getElementById(id);
+          if (btn) { btn.disabled = true; btn.title = "Your account is read-only"; }
+        }
+      }
+    }
+
+    // ============================================================
+    // PROJECT DASHBOARD
+    // ============================================================
+    const projectsState = {
+      list: [],
+      showArchived: false,
+      search: "",
+      filters: { clientName: "", status: "", productName: "", solutionName: "", moduleName: "" },
+    };
+
+    // Apply the search box + per-column header filters + archived toggle.
+    function getVisibleProjects() {
+      const f = projectsState.filters;
+      const q = projectsState.search.trim().toLowerCase();
+      return projectsState.list.filter((p) => {
+        if (!projectsState.showArchived && p.isArchived) return false;
+        if (f.clientName   && p.clientName !== f.clientName) return false;
+        if (f.status       && (p.status || "") !== f.status) return false;
+        if (f.productName  && (p.productName || "") !== f.productName) return false;
+        if (f.solutionName && (p.solutionName || "") !== f.solutionName) return false;
+        if (f.moduleName   && (p.moduleName || "") !== f.moduleName) return false;
+        if (q) {
+          const hay = [p.clientName, p.projectName, p.sowOrTaskId, p.status,
+            p.productName, p.solutionName, p.moduleName, p.modifiedBy]
+            .filter(Boolean).join(" ").toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    // Fill each header filter <select> with the distinct values present in
+    // the data, preserving the current selection (dropping it if it vanished).
+    function populateFilters() {
+      for (const col of ["clientName", "status", "productName", "solutionName", "moduleName"]) {
+        const sel = document.querySelector(`select[data-filter="${col}"]`);
+        if (!sel) continue;
+        const vals = [...new Set(projectsState.list.map((p) => p[col]).filter(Boolean))]
+          .sort((a, b) => String(a).localeCompare(String(b)));
+        if (projectsState.filters[col] && !vals.includes(projectsState.filters[col])) {
+          projectsState.filters[col] = "";
+        }
+        const cur = projectsState.filters[col];
+        sel.innerHTML = `<option value="">All</option>` +
+          vals.map((v) => `<option value="${escapeHtml(v)}"${v === cur ? " selected" : ""}>${escapeHtml(v)}</option>`).join("");
+      }
+    }
+
+    function renderProjects() {
+      const tableWrap = document.getElementById("tableWrap");
+      const empty = document.getElementById("emptyState");
+      const count = document.getElementById("projectsCount");
+
+      const archivedCount = projectsState.list.filter((p) => p.isArchived).length;
+
+      // No projects at all → the create-your-first empty state.
+      if (projectsState.list.length === 0) {
+        empty.hidden = false;
+        tableWrap.hidden = true;
+        count.textContent = "0 projects";
+        return;
+      }
+
+      const visible = getVisibleProjects();
+      empty.hidden = true;
+      tableWrap.hidden = false;
+      count.textContent = `${visible.length} ${visible.length === 1 ? "project" : "projects"}` +
+        (archivedCount > 0 ? ` · ${archivedCount} archived` : "");
+
+      // Projects exist but the search / filters hide them all.
+      if (visible.length === 0) {
+        document.getElementById("tableBody").innerHTML =
+          `<tr><td colspan="10" class="muted" style="padding:24px; text-align:center;">No projects match the current search and filters.</td></tr>`;
+        return;
+      }
+
+      document.getElementById("tableBody").innerHTML = visible.map((p) => `
+        <tr class="${p.isArchived ? "row--archived" : ""}">
+          <td>${escapeHtml(p.clientName)}</td>
+          <td>
+            <a class="projects-table__link" href="project.html?id=${p.projectId}">${escapeHtml(p.projectName)}</a>
+            ${p.isArchived ? '<span class="chip" style="margin-left:6px;">Archived</span>' : ""}
+          </td>
+          <td>${escapeHtml(p.sowOrTaskId)}</td>
+          <td><span class="${statusChipClass(p.status)}">${escapeHtml(p.status)}</span></td>
+          <td>${escapeHtml(p.productName || "—")}</td>
+          <td>${escapeHtml(p.solutionName || "—")}</td>
+          <td>${escapeHtml(p.moduleName || "—")}</td>
+          <td>${escapeHtml(formatModified(p.modifiedAtUtc))}</td>
+          <td>${escapeHtml(p.modifiedBy || "")}</td>
+          <td class="projects-table__actions">
+            <button class="md-btn md-btn--icon" title="Open" data-id="${p.projectId}" data-action="open">
+              <span class="material-symbols-outlined">open_in_new</span>
+            </button>
+            <a class="md-btn md-btn--icon" title="Export" href="api/projects/${p.projectId}/export/xlsx" target="_blank">
+              <span class="material-symbols-outlined">download</span>
+            </a>
+            <button class="md-btn md-btn--icon"
+                    title="${perms.isReadOnly ? "Read-only — cannot archive" : (p.isArchived ? "Unarchive" : "Archive")}"
+                    data-id="${p.projectId}" data-name="${escapeHtml(p.projectName)}"
+                    data-action="archive" data-archived="${p.isArchived ? "1" : "0"}"
+                    ${perms.isReadOnly ? "disabled" : ""}>
+              <span class="material-symbols-outlined">${p.isArchived ? "unarchive" : "archive"}</span>
+            </button>
+            <button class="md-btn md-btn--icon md-btn--icon-danger"
+                    title="${perms.canDeleteProjects ? "Delete project" : "You do not have permission to delete projects"}"
+                    data-id="${p.projectId}" data-name="${escapeHtml(p.projectName)}" data-action="delete"
+                    ${perms.canDeleteProjects ? "" : "disabled"}>
+              <span class="material-symbols-outlined">delete</span>
+            </button>
+          </td>
+        </tr>`).join("");
+    }
+
+    // Bound once (not per render) so the handler doesn't stack on reloads.
+    function bindProjectsTable() {
+      document.getElementById("tableBody").addEventListener("click", (e) => {
+        const openBtn = e.target.closest("[data-action='open']");
+        if (openBtn) { window.location.href = `project.html?id=${openBtn.dataset.id}`; return; }
+        const archiveBtn = e.target.closest("[data-action='archive']");
+        if (archiveBtn) {
+          archiveProject(archiveBtn.dataset.id, archiveBtn.dataset.name, archiveBtn.dataset.archived === "1");
+          return;
+        }
+        const delBtn = e.target.closest("[data-action='delete']");
+        if (delBtn) deleteProject(delBtn.dataset.id, delBtn.dataset.name);
+      });
+      document.getElementById("showArchivedProjects").addEventListener("change", (e) => {
+        projectsState.showArchived = e.target.checked;
+        renderProjects();
+      });
+      document.getElementById("projectSearch").addEventListener("input", (e) => {
+        projectsState.search = e.target.value;
+        renderProjects();
+      });
+      // Per-column header filter dropdowns (delegated on the table head).
+      document.querySelector(".projects-table thead").addEventListener("change", (e) => {
+        const sel = e.target.closest("select[data-filter]");
+        if (!sel) return;
+        projectsState.filters[sel.dataset.filter] = sel.value;
+        renderProjects();
+      });
+    }
+
+    async function archiveProject(id, name, currentlyArchived) {
+      if (perms.isReadOnly) return;
+      const archiving = !currentlyArchived;
+      const ok = await confirmDialog({
+        title: archiving ? "Archive project" : "Unarchive project",
+        icon: archiving ? "archive" : "unarchive",
+        bodyHtml: archiving
+          ? `Archive <strong>${escapeHtml(name)}</strong>? It will be hidden from the projects list ` +
+            `but kept intact — you can restore it anytime with “Show archived”.`
+          : `Restore <strong>${escapeHtml(name)}</strong> to the active projects list?`,
+        confirmLabel: archiving ? "Archive" : "Unarchive",
+      });
+      if (!ok) return;
+      try {
+        const res = await fetch(`api/projects/${id}/archived`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ archived: archiving }),
+        });
+        if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error(j.error || `HTTP ${res.status}`); }
+        showToast(archiving ? `"${name}" archived` : `"${name}" restored`, "ok");
+        await loadProjects();
+      } catch (err) { showToast(`Failed: ${err.message}`, "err"); }
+    }
+
+    async function deleteProject(id, name) {
+      if (!perms.canDeleteProjects) return;
+      const ok = await confirmDialog({
+        title: "Delete project",
+        danger: true,
+        confirmLabel: "Delete permanently",
+        bodyHtml:
+          `Permanently delete <strong>${escapeHtml(name)}</strong>?<br><br>` +
+          `This removes the entire WBS task tree, all resource assignments, and the ` +
+          `complete version history.` +
+          `<span class="modal__warn">This is permanent and cannot be reversed. ` +
+          `Consider archiving instead if you might need it later.</span>`,
+      });
+      if (!ok) return;
+      try {
+        const res = await fetch(`api/projects/${id}`, { method: "DELETE" });
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          throw new Error(j.error || `HTTP ${res.status}`);
+        }
+        showToast(`Project "${name}" deleted`, "ok");
+        await loadProjects();
+      } catch (err) {
+        showToast(`Delete failed: ${err.message}`, "err");
+      }
+    }
+
+    async function loadProjects() {
+      const loading = document.getElementById("loadingState");
+      try {
+        // Fetch everything (incl. archived); the Show-archived toggle filters client-side.
+        const res = await fetch("api/projects?includeArchived=1");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        projectsState.list = await res.json();
+        loading.hidden = true;
+        populateFilters();
+        renderProjects();
+      } catch (err) {
+        loading.hidden = true;
+        document.getElementById("errorState").hidden = false;
+        document.getElementById("errorMsg").textContent = err.message;
+      }
+    }
+
+    // ============================================================
+    // SETTINGS state + helpers
+    // ============================================================
+    const settingsState = { loaded: { clients: false, products: false, solutions: false, modules: false, resources: false, templates: false, costing: false, users: false } };
+
+    async function api(method, url, body) {
+      const opts = { method, headers: {} };
+      if (body !== undefined) { opts.headers["Content-Type"] = "application/json"; opts.body = JSON.stringify(body); }
+      const r = await fetch(url, opts);
+      if (!r.ok) {
+        const j = await r.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${r.status}`);
+      }
+      return r.json().catch(() => ({}));
+    }
+
+    // ------ Clients ------
+    // In-memory cache + per-row edit state so the active checkbox + edit flag
+    // can drive renders without round-tripping the API.
+    const clientsState = { list: [], editingId: null, showInactive: false };
+
+    async function loadClients() {
+      try {
+        clientsState.list = await api("GET", "api/clients/all");
+        renderClients();
+      } catch (err) { showToast(`Load clients failed: ${err.message}`, "err"); }
+    }
+
+    function renderClients() {
+      const active = clientsState.list.filter((c) => c.isActive).length;
+      const total = clientsState.list.length;
+      document.getElementById("clientsSummary").textContent = `${active} active · ${total} total`;
+
+      const visible = clientsState.showInactive
+        ? clientsState.list
+        : clientsState.list.filter((c) => c.isActive);
+
+      const wrap = document.getElementById("clientsList");
+      if (visible.length === 0) {
+        wrap.innerHTML = `<p class="muted" style="padding: 20px; text-align: center;">${
+          total === 0 ? "No clients yet — add the first one above." : "No clients match the current filter."
+        }</p>`;
+        return;
+      }
+
+      wrap.innerHTML = `
+        <table class="settings-table">
+          <thead><tr>
+            <th>Name</th>
+            <th>Abbreviation</th>
+            <th style="width:90px">Order</th>
+            <th style="width:90px">Status</th>
+            <th style="width:120px"></th>
+          </tr></thead>
+          <tbody>${visible.map((c) => renderClientRow(c)).join("")}</tbody>
+        </table>`;
+    }
+
+    function renderClientRow(c) {
+      const editing = clientsState.editingId === c.clientId;
+      if (editing) {
+        return `
+          <tr data-id="${c.clientId}" class="row--editing">
+            <td><input type="text" data-field="name" value="${escapeHtml(c.name)}" class="settings-inline-input" /></td>
+            <td><input type="text" data-field="abbreviation" value="${escapeHtml(c.abbreviation || "")}" maxlength="32" class="settings-inline-input" /></td>
+            <td><input type="number" min="0" max="999" data-field="displayOrder" value="${c.displayOrder}" class="settings-inline-input settings-inline-input--num" /></td>
+            <td>${c.isActive ? '<span class="chip chip--final">Active</span>' : '<span class="chip">Inactive</span>'}</td>
+            <td class="row-actions">
+              <button class="md-btn md-btn--icon md-btn--icon-success" data-action="commit-client" title="Save"><span class="material-symbols-outlined">check</span></button>
+              <button class="md-btn md-btn--icon" data-action="cancel-client" title="Cancel"><span class="material-symbols-outlined">close</span></button>
+            </td>
+          </tr>`;
+      }
+      const mutedCls = c.isActive ? "" : "muted";
+      return `
+        <tr data-id="${c.clientId}">
+          <td class="${mutedCls}">${escapeHtml(c.name)}</td>
+          <td class="${mutedCls}">${escapeHtml(c.abbreviation || "—")}</td>
+          <td class="${mutedCls}">${c.displayOrder}</td>
+          <td>${c.isActive ? '<span class="chip chip--final">Active</span>' : '<span class="chip">Inactive</span>'}</td>
+          <td class="row-actions">
+            <button class="md-btn md-btn--icon" data-action="edit-client" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+            <button class="md-btn md-btn--icon ${c.isActive ? '' : 'md-btn--icon-success'}" data-action="toggle-client" title="${c.isActive ? 'Deactivate' : 'Reactivate'}">
+              <span class="material-symbols-outlined">${c.isActive ? 'block' : 'check_circle'}</span>
+            </button>
+          </td>
+        </tr>`;
+    }
+
+    async function addClient() {
+      const name = document.getElementById("newClientName").value.trim();
+      if (!name) return;
+      const abbreviation = document.getElementById("newClientAbbrev").value.trim();
+      const order = Number(document.getElementById("newClientOrder").value) || 0;
+      try {
+        await api("POST", "api/clients", { name, abbreviation, displayOrder: order });
+        document.getElementById("newClientName").value = "";
+        document.getElementById("newClientAbbrev").value = "";
+        document.getElementById("newClientOrder").value = "0";
+        await loadClients();
+        showToast("Client added", "ok");
+      } catch (err) { showToast(`Add failed: ${err.message}`, "err"); }
+    }
+
+    function startEditClient(id) {
+      clientsState.editingId = id;
+      renderClients();
+    }
+    function cancelEditClient() {
+      clientsState.editingId = null;
+      renderClients();
+    }
+    async function commitEditClient(tr) {
+      const id = Number(tr.dataset.id);
+      const body = {
+        name: tr.querySelector('input[data-field="name"]').value.trim(),
+        abbreviation: tr.querySelector('input[data-field="abbreviation"]').value.trim(),
+        displayOrder: Number(tr.querySelector('input[data-field="displayOrder"]').value) || 0,
+      };
+      if (!body.name) return showToast("Name required", "err");
+      try {
+        await api("PATCH", `api/clients/${id}`, body);
+        clientsState.editingId = null;
+        await loadClients();
+        showToast("Saved", "ok");
+      } catch (err) { showToast(`Save failed: ${err.message}`, "err"); }
+    }
+    async function toggleClientActive(tr) {
+      const id = Number(tr.dataset.id);
+      const cur = clientsState.list.find((c) => c.clientId === id);
+      if (!cur) return;
+      try {
+        await api("PATCH", `api/clients/${id}`, { isActive: !cur.isActive });
+        await loadClients();
+        showToast(cur.isActive ? "Deactivated" : "Reactivated", "ok");
+      } catch (err) { showToast(`Update failed: ${err.message}`, "err"); }
+    }
+
+    // ------ Generic master lists: Products / Solutions / Modules ------
+    // All three are identical (Name / Order / Active), so one factory drives
+    // them. Each instance owns its state + render against a routeBase.
+    function makeMasterList(cfg) {
+      // cfg: { key, routeBase, singular, listId, summaryId, newNameId, newOrderId, showInactiveId }
+      const st = { list: [], editingId: null, showInactive: false };
+
+      async function load() {
+        try {
+          st.list = await api("GET", `api/${cfg.routeBase}/all`);
+          render();
+        } catch (err) { showToast(`Load ${cfg.routeBase} failed: ${err.message}`, "err"); }
+      }
+      function render() {
+        const active = st.list.filter((x) => x.isActive).length;
+        document.getElementById(cfg.summaryId).textContent = `${active} active · ${st.list.length} total`;
+        const visible = st.showInactive ? st.list : st.list.filter((x) => x.isActive);
+        const wrap = document.getElementById(cfg.listId);
+        if (visible.length === 0) {
+          wrap.innerHTML = `<p class="muted" style="padding:20px; text-align:center;">${
+            st.list.length === 0 ? `No ${cfg.routeBase} yet — add the first one above.` : "No rows match the current filter."
+          }</p>`;
+          return;
+        }
+        wrap.innerHTML = `
+          <table class="settings-table">
+            <thead><tr><th>Name</th><th style="width:90px">Order</th><th style="width:90px">Status</th><th style="width:120px"></th></tr></thead>
+            <tbody>${visible.map((x) => row(x)).join("")}</tbody>
+          </table>`;
+      }
+      function row(x) {
+        const editing = st.editingId === x.id;
+        if (editing) {
+          return `
+            <tr data-ml="${cfg.key}" data-id="${x.id}" class="row--editing">
+              <td><input type="text" data-field="name" value="${escapeHtml(x.name)}" class="settings-inline-input" /></td>
+              <td><input type="number" min="0" max="999" data-field="displayOrder" value="${x.displayOrder}" class="settings-inline-input settings-inline-input--num" /></td>
+              <td>${x.isActive ? '<span class="chip chip--final">Active</span>' : '<span class="chip">Inactive</span>'}</td>
+              <td class="row-actions">
+                <button class="md-btn md-btn--icon md-btn--icon-success" data-action="ml-commit" title="Save"><span class="material-symbols-outlined">check</span></button>
+                <button class="md-btn md-btn--icon" data-action="ml-cancel" title="Cancel"><span class="material-symbols-outlined">close</span></button>
+              </td>
+            </tr>`;
+        }
+        const m = x.isActive ? "" : "muted";
+        return `
+          <tr data-ml="${cfg.key}" data-id="${x.id}">
+            <td class="${m}">${escapeHtml(x.name)}</td>
+            <td class="${m}">${x.displayOrder}</td>
+            <td>${x.isActive ? '<span class="chip chip--final">Active</span>' : '<span class="chip">Inactive</span>'}</td>
+            <td class="row-actions">
+              <button class="md-btn md-btn--icon" data-action="ml-edit" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+              <button class="md-btn md-btn--icon ${x.isActive ? '' : 'md-btn--icon-success'}" data-action="ml-toggle" title="${x.isActive ? 'Deactivate' : 'Reactivate'}">
+                <span class="material-symbols-outlined">${x.isActive ? 'block' : 'check_circle'}</span>
+              </button>
+            </td>
+          </tr>`;
+      }
+      async function add() {
+        const name = document.getElementById(cfg.newNameId).value.trim();
+        if (!name) return;
+        const displayOrder = Number(document.getElementById(cfg.newOrderId).value) || 0;
+        try {
+          await api("POST", `api/${cfg.routeBase}`, { name, displayOrder });
+          document.getElementById(cfg.newNameId).value = "";
+          document.getElementById(cfg.newOrderId).value = "0";
+          await load();
+          showToast(`${cfg.singular} added`, "ok");
+        } catch (err) { showToast(`Add failed: ${err.message}`, "err"); }
+      }
+      function startEdit(id) { st.editingId = id; render(); }
+      function cancelEdit() { st.editingId = null; render(); }
+      async function commitEdit(tr) {
+        const id = Number(tr.dataset.id);
+        const body = {
+          name: tr.querySelector('input[data-field="name"]').value.trim(),
+          displayOrder: Number(tr.querySelector('input[data-field="displayOrder"]').value) || 0,
+        };
+        if (!body.name) return showToast("Name required", "err");
+        try {
+          await api("PATCH", `api/${cfg.routeBase}/${id}`, body);
+          st.editingId = null;
+          await load();
+          showToast("Saved", "ok");
+        } catch (err) { showToast(`Save failed: ${err.message}`, "err"); }
+      }
+      async function toggleActive(tr) {
+        const id = Number(tr.dataset.id);
+        const cur = st.list.find((x) => x.id === id);
+        if (!cur) return;
+        try {
+          await api("PATCH", `api/${cfg.routeBase}/${id}`, { isActive: !cur.isActive });
+          await load();
+          showToast(cur.isActive ? "Deactivated" : "Reactivated", "ok");
+        } catch (err) { showToast(`Update failed: ${err.message}`, "err"); }
+      }
+      function bind() {
+        document.getElementById(`add${cfg.key[0].toUpperCase()}${cfg.key.slice(1, -1)}Btn`).addEventListener("click", add);
+        document.getElementById(cfg.showInactiveId).addEventListener("change", (e) => {
+          st.showInactive = e.target.checked; render();
+        });
+      }
+      return { load, render, startEdit, cancelEdit, commitEdit, toggleActive, bind, state: st };
+    }
+
+    const masterLists = {
+      products:  makeMasterList({ key: "products",  routeBase: "products",  singular: "Product",
+        listId: "productsList",  summaryId: "productsSummary",  newNameId: "newProductName",  newOrderId: "newProductOrder",  showInactiveId: "showInactiveProducts" }),
+      solutions: makeMasterList({ key: "solutions", routeBase: "solutions", singular: "Solution",
+        listId: "solutionsList", summaryId: "solutionsSummary", newNameId: "newSolutionName", newOrderId: "newSolutionOrder", showInactiveId: "showInactiveSolutions" }),
+      modules:   makeMasterList({ key: "modules",   routeBase: "modules",   singular: "Module",
+        listId: "modulesList",   summaryId: "modulesSummary",   newNameId: "newModuleName",   newOrderId: "newModuleOrder",   showInactiveId: "showInactiveModules" }),
+    };
+
+    // ------ Resource Roles ------
+    const resourcesState = { list: [], editingId: null, showInactive: false };
+
+    async function loadResources() {
+      try {
+        resourcesState.list = await api("GET", "api/resources/all");
+        renderResources();
+      } catch (err) { showToast(`Load resources failed: ${err.message}`, "err"); }
+    }
+
+    function renderResources() {
+      const active = resourcesState.list.filter((r) => r.isActive).length;
+      const total = resourcesState.list.length;
+      document.getElementById("resourcesSummary").textContent = `${active} active · ${total} total`;
+
+      const visible = resourcesState.showInactive
+        ? resourcesState.list
+        : resourcesState.list.filter((r) => r.isActive);
+
+      const wrap = document.getElementById("resourcesList");
+      if (visible.length === 0) {
+        wrap.innerHTML = `<p class="muted" style="padding: 20px; text-align: center;">${
+          total === 0 ? "No resources yet." : "No resources match the current filter."
+        }</p>`;
+        return;
+      }
+      wrap.innerHTML = `
+        <table class="settings-table">
+          <thead><tr>
+            <th>Role name</th><th style="width:110px">Code</th><th style="width:80px">Order</th>
+            <th>Costing description</th><th style="width:140px">Costing code</th>
+            <th style="width:90px">Status</th><th style="width:140px"></th>
+          </tr></thead>
+          <tbody>${visible.map((r) => renderResourceRow(r)).join("")}</tbody>
+        </table>`;
+    }
+
+    function renderResourceRow(r) {
+      const editing = resourcesState.editingId === r.resourceId;
+      if (editing) {
+        return `
+          <tr data-id="${r.resourceId}" class="row--editing">
+            <td><input type="text" data-field="roleName" value="${escapeHtml(r.roleName)}" class="settings-inline-input" /></td>
+            <td><input type="text" data-field="shortCode" value="${escapeHtml(r.shortCode)}" maxlength="16" class="settings-inline-input" /></td>
+            <td><input type="number" min="0" max="999" data-field="displayOrder" value="${r.displayOrder}" class="settings-inline-input settings-inline-input--num" /></td>
+            <td><input type="text" data-field="costingDescription" value="${escapeHtml(r.costingDescription || "")}" class="settings-inline-input" /></td>
+            <td><input type="text" data-field="costingCode" value="${escapeHtml(r.costingCode || "")}" class="settings-inline-input" /></td>
+            <td>${r.isActive ? '<span class="chip chip--final">Active</span>' : '<span class="chip">Inactive</span>'}</td>
+            <td class="row-actions">
+              <button class="md-btn md-btn--icon md-btn--icon-success" data-action="commit-res" title="Save"><span class="material-symbols-outlined">check</span></button>
+              <button class="md-btn md-btn--icon" data-action="cancel-res" title="Cancel"><span class="material-symbols-outlined">close</span></button>
+            </td>
+          </tr>`;
+      }
+      const m = r.isActive ? "" : "muted";
+      return `
+        <tr data-id="${r.resourceId}">
+          <td class="${m}">${escapeHtml(r.roleName)}</td>
+          <td class="${m}">${escapeHtml(r.shortCode)}</td>
+          <td class="${m}">${r.displayOrder}</td>
+          <td class="${m}">${escapeHtml(r.costingDescription || "—")}</td>
+          <td class="${m}">${escapeHtml(r.costingCode || "—")}</td>
+          <td>${r.isActive ? '<span class="chip chip--final">Active</span>' : '<span class="chip">Inactive</span>'}</td>
+          <td class="row-actions">
+            <button class="md-btn md-btn--icon" data-action="edit-res" title="Edit"><span class="material-symbols-outlined">edit</span></button>
+            <button class="md-btn md-btn--icon ${r.isActive ? '' : 'md-btn--icon-success'}" data-action="toggle-res" title="${r.isActive ? 'Deactivate' : 'Reactivate'}">
+              <span class="material-symbols-outlined">${r.isActive ? 'block' : 'check_circle'}</span>
+            </button>
+          </td>
+        </tr>`;
+    }
+
+    async function addResource() {
+      const roleName = document.getElementById("newResRole").value.trim();
+      const shortCode = document.getElementById("newResCode").value.trim();
+      if (!roleName || !shortCode) return showToast("Role name + short code required", "err");
+      const order = Number(document.getElementById("newResOrder").value) || 0;
+      try {
+        await api("POST", "api/resources", { roleName, shortCode, displayOrder: order });
+        document.getElementById("newResRole").value = "";
+        document.getElementById("newResCode").value = "";
+        document.getElementById("newResOrder").value = "0";
+        await loadResources();
+        showToast("Resource added", "ok");
+      } catch (err) { showToast(`Add failed: ${err.message}`, "err"); }
+    }
+    function startEditResource(id) {
+      resourcesState.editingId = id;
+      renderResources();
+    }
+    function cancelEditResource() {
+      resourcesState.editingId = null;
+      renderResources();
+    }
+    async function commitEditResource(tr) {
+      const id = Number(tr.dataset.id);
+      const body = {
+        roleName: tr.querySelector('input[data-field="roleName"]').value.trim(),
+        shortCode: tr.querySelector('input[data-field="shortCode"]').value.trim(),
+        displayOrder: Number(tr.querySelector('input[data-field="displayOrder"]').value) || 0,
+        costingDescription: tr.querySelector('input[data-field="costingDescription"]').value,
+        costingCode: tr.querySelector('input[data-field="costingCode"]').value,
+      };
+      if (!body.roleName || !body.shortCode) return showToast("Role name + short code required", "err");
+      try {
+        await api("PATCH", `api/resources/${id}`, body);
+        resourcesState.editingId = null;
+        await loadResources();
+        showToast("Saved", "ok");
+      } catch (err) { showToast(`Save failed: ${err.message}`, "err"); }
+    }
+    async function toggleResourceActive(tr) {
+      const id = Number(tr.dataset.id);
+      const cur = resourcesState.list.find((r) => r.resourceId === id);
+      if (!cur) return;
+      try {
+        await api("PATCH", `api/resources/${id}`, { isActive: !cur.isActive });
+        await loadResources();
+        showToast(cur.isActive ? "Deactivated" : "Reactivated", "ok");
+      } catch (err) { showToast(`Update failed: ${err.message}`, "err"); }
+    }
+
+    // ------ Templates ------
+    const templatesState = { list: [], editingId: null };
+
+    async function loadTemplates() {
+      try {
+        templatesState.list = await api("GET", "api/templates");
+        renderTemplates();
+      } catch (err) { showToast(`Load templates failed: ${err.message}`, "err"); }
+    }
+
+    function renderTemplates() {
+      const list = templatesState.list;
+      document.getElementById("templatesSummary").textContent = `${list.length} template${list.length === 1 ? "" : "s"}`;
+      const wrap = document.getElementById("templatesList");
+      if (list.length === 0) {
+        wrap.innerHTML = `<p class="muted" style="padding: 20px; text-align: center;">No templates yet.</p>`;
+        return;
+      }
+      wrap.innerHTML = `
+        <table class="settings-table">
+          <thead><tr><th>Template name</th><th>Description</th><th style="width:160px"></th></tr></thead>
+          <tbody>${list.map((t) => renderTemplateRow(t)).join("")}</tbody>
+        </table>`;
+    }
+
+    function renderTemplateRow(t) {
+      const editing = templatesState.editingId === t.templateId;
+      if (editing) {
+        return `
+          <tr data-id="${t.templateId}" class="row--editing">
+            <td><input type="text" data-field="templateName" value="${escapeHtml(t.templateName)}" class="settings-inline-input" /></td>
+            <td><input type="text" data-field="description" value="${escapeHtml(t.description || "")}" class="settings-inline-input" /></td>
+            <td class="row-actions">
+              <button class="md-btn md-btn--icon md-btn--icon-success" data-action="commit-tpl" title="Save name/description"><span class="material-symbols-outlined">check</span></button>
+              <button class="md-btn md-btn--icon" data-action="cancel-tpl" title="Cancel"><span class="material-symbols-outlined">close</span></button>
+            </td>
+          </tr>`;
+      }
+      return `
+        <tr data-id="${t.templateId}">
+          <td>${escapeHtml(t.templateName)}</td>
+          <td class="muted-text">${escapeHtml(t.description || "—")}</td>
+          <td class="row-actions">
+            <button class="md-btn md-btn--text" data-action="open-tpl" title="Open the full template editor">
+              <span class="material-symbols-outlined">edit_note</span> Edit tasks
+            </button>
+            <button class="md-btn md-btn--icon" data-action="rename-tpl" title="Rename inline"><span class="material-symbols-outlined">edit</span></button>
+            <button class="md-btn md-btn--icon md-btn--icon-danger" data-action="del-tpl" title="Delete template"><span class="material-symbols-outlined">delete</span></button>
+          </td>
+        </tr>`;
+    }
+
+    async function addTemplate() {
+      const templateName = document.getElementById("newTplName").value.trim();
+      if (!templateName) return;
+      try {
+        const r = await api("POST", "api/templates", { templateName });
+        document.getElementById("newTplName").value = "";
+        showToast("Template added — opening editor", "ok");
+        window.location.href = `template.html?id=${r.templateId}`;
+      } catch (err) { showToast(`Add failed: ${err.message}`, "err"); }
+    }
+    function startRenameTemplate(id) { templatesState.editingId = id; renderTemplates(); }
+    function cancelRenameTemplate() { templatesState.editingId = null; renderTemplates(); }
+    async function commitRenameTemplate(tr) {
+      const id = Number(tr.dataset.id);
+      const body = {
+        templateName: tr.querySelector('input[data-field="templateName"]').value.trim(),
+        description: tr.querySelector('input[data-field="description"]').value,
+      };
+      if (!body.templateName) return showToast("Name required", "err");
+      try {
+        await api("PATCH", `api/templates/${id}`, body);
+        templatesState.editingId = null;
+        await loadTemplates();
+        showToast("Saved", "ok");
+      } catch (err) { showToast(`Save failed: ${err.message}`, "err"); }
+    }
+    async function deleteTemplate(tr) {
+      const id = Number(tr.dataset.id);
+      const cur = templatesState.list.find((t) => t.templateId === id);
+      const name = cur ? cur.templateName : "this template";
+      if (!confirm(`Delete template "${name}"? Its template tasks will also be removed. Existing projects created from it are unaffected.`)) return;
+      try { await api("DELETE", `api/templates/${id}`); await loadTemplates(); showToast("Deleted", "ok"); }
+      catch (err) { showToast(`Delete failed: ${err.message}`, "err"); }
+    }
+
+    // ------ Costing Profiles + rates ------
+    async function loadCosting() {
+      try {
+        const list = await api("GET", "api/costing-profiles");
+        document.getElementById("costingSummary").textContent = `${list.length} profile${list.length === 1 ? "" : "s"}`;
+        const allRes = await api("GET", "api/resources/all");
+        const wrap = document.getElementById("profilesList");
+        if (list.length === 0) {
+          wrap.innerHTML = `<p class="muted" style="padding: 20px; text-align: center;">No costing profiles yet.</p>`;
+          return;
+        }
+        // Fetch each profile's rates in parallel
+        const profilesWithRates = await Promise.all(list.map(async (p) => {
+          const detail = await api("GET", `api/costing-profiles/${p.profileId}`);
+          return { ...p, rates: detail.rates || [] };
+        }));
+        wrap.innerHTML = profilesWithRates.map((p) => {
+          const rateById = new Map((p.rates || []).map((r) => [r.resourceId, Number(r.ratePerHour)]));
+          return `
+            <details class="costing-profile" data-id="${p.profileId}">
+              <summary>
+                <input type="text" data-field="profileName" value="${escapeHtml(p.profileName)}" class="settings-inline-input" />
+                <span class="muted" style="margin-left: 8px;">${p.rates.length} rates</span>
+                <span style="flex:1;"></span>
+                <button class="md-btn md-btn--text" data-action="save-prof">Save name</button>
+                <button class="md-btn md-btn--icon md-btn--icon-danger" data-action="del-prof" title="Delete profile">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </summary>
+              <div class="costing-rates">
+                <table class="settings-table">
+                  <thead><tr><th>Resource</th><th style="width:90px">Code</th><th style="width:160px">Rate ($/hr)</th></tr></thead>
+                  <tbody>${allRes.map((r) => `
+                    <tr>
+                      <td>${escapeHtml(r.roleName)}</td>
+                      <td>${escapeHtml(r.shortCode)}</td>
+                      <td><input type="number" step="0.01" min="0" data-rid="${r.resourceId}" value="${rateById.has(r.resourceId) ? rateById.get(r.resourceId) : ""}" class="settings-inline-input settings-inline-input--num" placeholder="—" /></td>
+                    </tr>`).join("")}</tbody>
+                </table>
+                <div style="margin-top: 10px; text-align: right;">
+                  <button class="md-btn md-btn--filled" data-action="save-rates">
+                    <span class="material-symbols-outlined">save</span> Save rates
+                  </button>
+                </div>
+              </div>
+            </details>`;
+        }).join("");
+      } catch (err) { showToast(`Load costing failed: ${err.message}`, "err"); }
+    }
+    async function addProfile() {
+      const profileName = document.getElementById("newProfileName").value.trim();
+      if (!profileName) return;
+      try {
+        await api("POST", "api/costing-profiles", { profileName });
+        document.getElementById("newProfileName").value = "";
+        await loadCosting();
+        showToast("Profile added", "ok");
+      } catch (err) { showToast(`Add failed: ${err.message}`, "err"); }
+    }
+    async function saveProfileName(details) {
+      const id = Number(details.dataset.id);
+      const body = { profileName: details.querySelector('input[data-field="profileName"]').value.trim() };
+      try { await api("PATCH", `api/costing-profiles/${id}`, body); showToast("Saved", "ok"); }
+      catch (err) { showToast(`Save failed: ${err.message}`, "err"); }
+    }
+    async function deleteProfile(details) {
+      const id = Number(details.dataset.id);
+      const name = details.querySelector('input[data-field="profileName"]').value;
+      if (!confirm(`Delete profile "${name}"? Projects referencing it will have CostingProfileId cleared.`)) return;
+      try { await api("DELETE", `api/costing-profiles/${id}`); await loadCosting(); showToast("Deleted", "ok"); }
+      catch (err) { showToast(`Delete failed: ${err.message}`, "err"); }
+    }
+    async function saveRates(details) {
+      const id = Number(details.dataset.id);
+      const rates = Array.from(details.querySelectorAll('input[data-rid]'))
+        .map((inp) => ({ resourceId: Number(inp.dataset.rid), ratePerHour: Number(inp.value) }))
+        .filter((x) => Number.isFinite(x.ratePerHour) && x.ratePerHour > 0);
+      try { await api("PUT", `api/costing-profiles/${id}/rates`, { rates }); await loadCosting(); showToast("Rates saved", "ok"); }
+      catch (err) { showToast(`Save rates failed: ${err.message}`, "err"); }
+    }
+
+    // ------ Users & Permissions (admin only) ------
+    const usersState = { list: [], editingId: null, showInactive: false };
+    const PERM_FLAGS = [
+      { key: "isReadOnly",        label: "Read-only" },
+      { key: "canViewAnalytics",  label: "Analytics" },
+      { key: "canViewSettings",   label: "Settings" },
+      { key: "canDeleteProjects", label: "Can delete" },
+      { key: "canApprove",        label: "Approver" },
+      { key: "isAdmin",           label: "Admin" },
+    ];
+
+    // Interlock the 6 permission checkboxes. Fires only when a box is *checked*:
+    //  - Read-only excludes every elevated permission (incl. Approver).
+    //  - Any elevated permission clears Read-only.
+    //  - Admin additionally selects all the other elevated permissions
+    //    (Analytics + Settings + Can-delete + Approver).
+    //  - Approver does NOT auto-toggle the other elevated flags — it can
+    //    stand alone alongside any other permission.
+    // getCb(key) returns the checkbox element for a flag within one group.
+    function syncPermCheckboxes(changedKey, getCb) {
+      const changed = getCb(changedKey);
+      if (!changed || !changed.checked) return;
+      const elevated = ["canViewAnalytics", "canViewSettings", "canDeleteProjects", "canApprove", "isAdmin"];
+      if (changedKey === "isReadOnly") {
+        elevated.forEach((k) => { const c = getCb(k); if (c) c.checked = false; });
+      } else {
+        const ro = getCb("isReadOnly");
+        if (ro) ro.checked = false;
+        if (changedKey === "isAdmin") {
+          elevated.forEach((k) => { const c = getCb(k); if (c) c.checked = true; });
+        }
+      }
+    }
+
+    async function loadUsers() {
+      try {
+        usersState.list = await api("GET", "api/permissions");
+        renderUsers();
+      } catch (err) { showToast(`Load users failed: ${err.message}`, "err"); }
+    }
+
+    function renderUsers() {
+      const list = usersState.list;
+      const active = list.filter((u) => u.isActive).length;
+      document.getElementById("usersSummary").textContent = `${active} active · ${list.length} total`;
+      const visible = usersState.showInactive ? list : list.filter((u) => u.isActive);
+      const wrap = document.getElementById("usersList");
+      if (visible.length === 0) {
+        wrap.innerHTML = `<p class="muted" style="padding:20px; text-align:center;">${
+          list.length === 0 ? "No users yet — add the first one above." : "No users match the current filter."
+        }</p>`;
+        return;
+      }
+      wrap.innerHTML = `
+        <table class="settings-table">
+          <thead><tr>
+            <th>Username</th><th>Email</th><th style="width:90px; text-align:center;">AD Linked</th>
+            ${PERM_FLAGS.map((f) => `<th style="width:84px; text-align:center;">${f.label}</th>`).join("")}
+            <th style="width:120px"></th>
+          </tr></thead>
+          <tbody>${visible.map((u) => renderUserRow(u)).join("")}</tbody>
+        </table>`;
+    }
+
+    function userFlagCell(on) {
+      return `<td style="text-align:center">${on
+        ? '<span class="material-symbols-outlined" style="color:#2e7d32;">check</span>'
+        : '<span class="muted">—</span>'}</td>`;
+    }
+
+    function renderUserRow(u) {
+      const editing = usersState.editingId === u.userId;
+      // Read-only indicator — ticked once the user's Azure account is linked.
+      const linkedCell =
+        `<td style="text-align:center"><input type="checkbox" disabled ${u.linked ? "checked" : ""} /></td>`;
+      if (editing) {
+        return `
+          <tr data-id="${u.userId}" class="row--editing">
+            <td><input type="text" data-field="name" value="${escapeHtml(u.username)}" class="settings-inline-input" /></td>
+            <td><input type="email" data-field="email" value="${escapeHtml(u.email)}" class="settings-inline-input" /></td>
+            ${linkedCell}
+            ${PERM_FLAGS.map((f) => `<td style="text-align:center"><input type="checkbox" data-flag="${f.key}" ${u[f.key] ? "checked" : ""} /></td>`).join("")}
+            <td class="row-actions">
+              <button class="md-btn md-btn--icon md-btn--icon-success" data-action="commit-user" title="Save"><span class="material-symbols-outlined">check</span></button>
+              <button class="md-btn md-btn--icon" data-action="cancel-user" title="Cancel"><span class="material-symbols-outlined">close</span></button>
+            </td>
+          </tr>`;
+      }
+      const m = u.isActive ? "" : "muted";
+      return `
+        <tr data-id="${u.userId}">
+          <td class="${m}">${escapeHtml(u.username)}</td>
+          <td class="${m}">${escapeHtml(u.email)}</td>
+          ${linkedCell}
+          ${PERM_FLAGS.map((f) => userFlagCell(u[f.key])).join("")}
+          <td class="row-actions">
+            <button class="md-btn md-btn--icon" data-action="edit-user" title="Edit permissions"><span class="material-symbols-outlined">edit</span></button>
+            <button class="md-btn md-btn--icon ${u.isActive ? '' : 'md-btn--icon-success'}" data-action="toggle-user" title="${u.isActive ? 'Deactivate' : 'Reactivate'}">
+              <span class="material-symbols-outlined">${u.isActive ? 'block' : 'check_circle'}</span>
+            </button>
+          </td>
+        </tr>`;
+    }
+
+    async function addUser() {
+      const email = document.getElementById("newUserEmail").value.trim();
+      const name = document.getElementById("newUserName").value.trim();
+      if (!email) return showToast("Email required", "err");
+      const body = { email, name };
+      document.querySelectorAll('#newUserFlags input[data-newflag]').forEach((cb) => {
+        body[cb.dataset.newflag] = cb.checked;
+      });
+      try {
+        await api("POST", "api/permissions", body);
+        document.getElementById("newUserEmail").value = "";
+        document.getElementById("newUserName").value = "";
+        // Reset the flag checkboxes to the default (read-only only).
+        document.querySelectorAll('#newUserFlags input[data-newflag]').forEach((cb) => {
+          cb.checked = cb.dataset.newflag === "isReadOnly";
+        });
+        await loadUsers();
+        showToast("User added", "ok");
+      } catch (err) { showToast(`Add failed: ${err.message}`, "err"); }
+    }
+    async function toggleUserActive(tr) {
+      const id = Number(tr.dataset.id);
+      const cur = usersState.list.find((u) => u.userId === id);
+      if (!cur) return;
+      try {
+        await api("PATCH", `api/permissions/${id}`, { isActive: !cur.isActive });
+        await loadUsers();
+        showToast(cur.isActive ? "User deactivated" : "User reactivated", "ok");
+      } catch (err) { showToast(`Update failed: ${err.message}`, "err"); }
+    }
+    function startEditUser(id) { usersState.editingId = id; renderUsers(); }
+    function cancelEditUser() { usersState.editingId = null; renderUsers(); }
+    async function commitEditUser(tr) {
+      const id = Number(tr.dataset.id);
+      const body = {
+        name: tr.querySelector('input[data-field="name"]').value.trim(),
+        email: tr.querySelector('input[data-field="email"]').value.trim(),
+      };
+      for (const f of PERM_FLAGS) {
+        body[f.key] = tr.querySelector(`input[data-flag="${f.key}"]`).checked;
+      }
+      if (!body.email) return showToast("Email required", "err");
+      try {
+        await api("PATCH", `api/permissions/${id}`, body);
+        usersState.editingId = null;
+        await loadUsers();
+        showToast("Saved", "ok");
+      } catch (err) { showToast(`Save failed: ${err.message}`, "err"); }
+    }
+
+    // ============================================================
+    // ANALYTICS — portfolio summaries (lazy-loaded on first tab view)
+    // ============================================================
+    const analyticsState = { loaded: false, monthlyLoaded: false, data: null };
+
+    function fmtH(h) {
+      const n = Math.round((Number(h) || 0) * 10) / 10;
+      return (n % 1 === 0 ? n : n.toFixed(1)) + "h";
+    }
+    function monthLabel(ym) {
+      const names = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+      const [y, m] = String(ym).split("-");
+      return `${names[Number(m) - 1] || m} ${y}`;
+    }
+
+    async function loadAnalytics() {
+      try {
+        analyticsState.data = await api("GET", "api/analytics/portfolio");
+        document.getElementById("analyticsLoading").hidden = true;
+        renderAnalytics();
+      } catch (err) {
+        document.getElementById("analyticsLoading").hidden = true;
+        const el = document.getElementById("analyticsError");
+        el.hidden = false;
+        el.textContent = `Could not load analytics: ${err.message}`;
+      }
+    }
+
+    // Group projects by a key, summing count + hours; sorted by hours desc.
+    function analyticsGroupBy(projects, keyFn) {
+      const m = new Map();
+      for (const p of projects) {
+        const k = keyFn(p) || "(none)";
+        if (!m.has(k)) m.set(k, { count: 0, hours: 0 });
+        const g = m.get(k);
+        g.count += 1;
+        g.hours += p.totalHours;
+      }
+      return [...m.entries()]
+        .map(([label, g]) => ({ label, value: g.hours, count: g.count, hours: g.hours }))
+        .sort((a, b) => b.hours - a.hours);
+    }
+
+    // Reusable horizontal CSS bar chart. items: [{label, value, ...}].
+    function renderBarChart(containerId, items, fmt) {
+      const el = document.getElementById(containerId);
+      if (!items.length) {
+        el.innerHTML = `<p class="muted" style="padding:10px 2px;">No data yet.</p>`;
+        return;
+      }
+      const max = Math.max(...items.map((i) => i.value), 1);
+      el.innerHTML = `<div class="bar-chart">${items.map((i) => `
+        <div class="bar-row">
+          <div class="bar-label" title="${escapeHtml(i.label)}">${escapeHtml(i.label)}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(i.value / max * 100).toFixed(1)}%"></div></div>
+          <div class="bar-value">${escapeHtml(fmt ? fmt(i) : String(i.value))}</div>
+        </div>`).join("")}</div>`;
+    }
+
+    function renderAnalytics() {
+      const d = analyticsState.data;
+      const content = document.getElementById("analyticsContent");
+      const emptyEl = document.getElementById("analyticsEmpty");
+      if (!d || !d.projects || d.projects.length === 0) {
+        content.hidden = true;
+        emptyEl.hidden = false;
+        return;
+      }
+      emptyEl.hidden = true;
+      content.hidden = false;
+      const projects = d.projects;
+
+      // ----- Summary cards -----
+      const totalHours = projects.reduce((s, p) => s + p.totalHours, 0);
+      const bufferedHours = projects.reduce((s, p) => s + p.bufferedHours, 0);
+      const statusCount = (st) => projects.filter((p) => p.status === st).length;
+      document.getElementById("statCards").innerHTML = [
+        { v: projects.length, l: "Active projects" },
+        { v: fmtH(totalHours), l: "Estimated hours" },
+        { v: fmtH(bufferedHours), l: "Buffered hours" },
+        { v: statusCount("Draft"), l: "Draft" },
+        { v: statusCount("Final"), l: "Final" },
+        { v: statusCount("Revised"), l: "Revised" },
+      ].map((c) => `<div class="stat-card"><div class="stat-card__value">${escapeHtml(String(c.v))}</div><div class="stat-card__label">${escapeHtml(c.l)}</div></div>`).join("");
+
+      // ----- Breakdown bar charts -----
+      const hoursFmt = (i) => `${fmtH(i.hours)} · ${i.count} proj`;
+      renderBarChart("chartStatus",   analyticsGroupBy(projects, (p) => p.status), hoursFmt);
+      renderBarChart("chartProduct",  analyticsGroupBy(projects, (p) => p.productName), hoursFmt);
+      renderBarChart("chartSolution", analyticsGroupBy(projects, (p) => p.solutionName), hoursFmt);
+      renderBarChart("chartModule",   analyticsGroupBy(projects, (p) => p.moduleName), hoursFmt);
+      renderBarChart("chartClient",   analyticsGroupBy(projects, (p) => p.clientName), hoursFmt);
+      renderBarChart("chartResource",
+        (d.resourceDemand || []).map((r) => ({ label: `${r.shortCode} — ${r.roleName}`, value: r.hours })),
+        (i) => fmtH(i.value));
+
+      // ----- Top projects by effort -----
+      const top = [...projects].sort((a, b) => b.totalHours - a.totalHours).slice(0, 8);
+      document.getElementById("topProjects").innerHTML = `
+        <table class="analytics-table">
+          <thead><tr><th>Project</th><th>Client</th><th>Status</th><th style="text-align:right">Hours</th></tr></thead>
+          <tbody>${top.map((p) => `<tr>
+            <td>${escapeHtml(p.projectName)}</td>
+            <td>${escapeHtml(p.clientName)}</td>
+            <td><span class="${statusChipClass(p.status)}">${escapeHtml(p.status)}</span></td>
+            <td style="text-align:right">${escapeHtml(fmtH(p.totalHours))}</td>
+          </tr>`).join("")}</tbody>
+        </table>`;
+    }
+
+    // ============================================================
+    // Tab + sub-tab switching, event delegation
+    // ============================================================
+    function switchTab(name, subTab) {
+      document.querySelectorAll(".proj-tab").forEach((b) => b.classList.toggle("proj-tab--active", b.dataset.tab === name));
+      document.querySelectorAll(".tab-panel").forEach((p) => {
+        const active = p.dataset.panel === name;
+        p.classList.toggle("tab-panel--active", active);
+        p.hidden = !active;
+      });
+      if (name === "settings") {
+        const validSubs = ["clients", "products", "solutions", "modules", "resources", "templates", "costing", "users"];
+        switchSettingsTab(validSubs.includes(subTab) ? subTab : "clients");
+      }
+      if (name === "analytics" && !analyticsState.loaded) {
+        analyticsState.loaded = true;
+        loadAnalytics();
+      }
+    }
+    function switchSettingsTab(name) {
+      // The Users sub-tab is admin-only — fall back to Clients otherwise.
+      if (name === "users" && !perms.isAdmin) name = "clients";
+      document.querySelectorAll(".settings-tab").forEach((b) => b.classList.toggle("settings-tab--active", b.dataset.stab === name));
+      document.querySelectorAll(".settings-panel").forEach((p) => {
+        const active = p.dataset.spanel === name;
+        p.classList.toggle("settings-panel--active", active);
+        p.hidden = !active;
+      });
+      if (name === "clients"   && !settingsState.loaded.clients)   { loadClients(); settingsState.loaded.clients = true; }
+      if (name === "products"  && !settingsState.loaded.products)  { masterLists.products.load(); settingsState.loaded.products = true; }
+      if (name === "solutions" && !settingsState.loaded.solutions) { masterLists.solutions.load(); settingsState.loaded.solutions = true; }
+      if (name === "modules"   && !settingsState.loaded.modules)   { masterLists.modules.load(); settingsState.loaded.modules = true; }
+      if (name === "resources" && !settingsState.loaded.resources) { loadResources(); settingsState.loaded.resources = true; }
+      if (name === "templates" && !settingsState.loaded.templates) { loadTemplates(); settingsState.loaded.templates = true; }
+      if (name === "costing"   && !settingsState.loaded.costing)   { loadCosting(); settingsState.loaded.costing = true; }
+      if (name === "users"     && !settingsState.loaded.users)     { loadUsers(); settingsState.loaded.users = true; }
+    }
+
+    function bindSettings() {
+      document.getElementById("addClientBtn").addEventListener("click", addClient);
+      document.getElementById("addResourceBtn").addEventListener("click", addResource);
+      document.getElementById("addTplBtn").addEventListener("click", addTemplate);
+      document.getElementById("addProfileBtn").addEventListener("click", addProfile);
+      document.getElementById("showInactiveClients").addEventListener("change", (e) => {
+        clientsState.showInactive = e.target.checked;
+        renderClients();
+      });
+      document.getElementById("showInactiveResources").addEventListener("change", (e) => {
+        resourcesState.showInactive = e.target.checked;
+        renderResources();
+      });
+      masterLists.products.bind();
+      masterLists.solutions.bind();
+      masterLists.modules.bind();
+      document.getElementById("addUserBtn").addEventListener("click", addUser);
+      document.getElementById("showInactiveUsers").addEventListener("change", (e) => {
+        usersState.showInactive = e.target.checked;
+        renderUsers();
+      });
+      // Permission-checkbox interlocks — add-user row.
+      document.getElementById("newUserFlags").addEventListener("change", (e) => {
+        if (e.target.matches("input[data-newflag]")) {
+          syncPermCheckboxes(e.target.dataset.newflag, (k) =>
+            document.querySelector(`#newUserFlags input[data-newflag="${k}"]`));
+        }
+      });
+      // Permission-checkbox interlocks — each user's edit row.
+      document.querySelector('[data-panel="settings"]').addEventListener("change", (e) => {
+        const cb = e.target;
+        if (cb.matches("tr.row--editing input[data-flag]")) {
+          const tr = cb.closest("tr");
+          syncPermCheckboxes(cb.dataset.flag, (k) =>
+            tr.querySelector(`input[data-flag="${k}"]`));
+        }
+      });
+      document.querySelectorAll(".settings-tab").forEach((b) => b.addEventListener("click", () => switchSettingsTab(b.dataset.stab)));
+
+      // Global delegation for save/delete inside settings panels
+      document.querySelector('[data-panel="settings"]').addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn) return;
+        const action = btn.dataset.action;
+        if (action === "edit-client")     startEditClient(Number(btn.closest("tr").dataset.id));
+        else if (action === "commit-client") commitEditClient(btn.closest("tr"));
+        else if (action === "cancel-client") cancelEditClient();
+        else if (action === "toggle-client") toggleClientActive(btn.closest("tr"));
+        else if (action.startsWith("ml-")) {
+          // Generic master-list (products / solutions / modules) row actions
+          const tr = btn.closest("tr");
+          const ml = masterLists[tr.dataset.ml];
+          if (!ml) return;
+          if (action === "ml-edit")        ml.startEdit(Number(tr.dataset.id));
+          else if (action === "ml-commit") ml.commitEdit(tr);
+          else if (action === "ml-cancel") ml.cancelEdit();
+          else if (action === "ml-toggle") ml.toggleActive(tr);
+        }
+        else if (action === "edit-res")      startEditResource(Number(btn.closest("tr").dataset.id));
+        else if (action === "commit-res")    commitEditResource(btn.closest("tr"));
+        else if (action === "cancel-res")    cancelEditResource();
+        else if (action === "toggle-res")    toggleResourceActive(btn.closest("tr"));
+        else if (action === "open-tpl")   window.location.href = `template.html?id=${btn.closest("tr").dataset.id}`;
+        else if (action === "rename-tpl") startRenameTemplate(Number(btn.closest("tr").dataset.id));
+        else if (action === "commit-tpl") commitRenameTemplate(btn.closest("tr"));
+        else if (action === "cancel-tpl") cancelRenameTemplate();
+        else if (action === "del-tpl")    deleteTemplate(btn.closest("tr"));
+        else if (action === "save-prof")  { saveProfileName(btn.closest("details")); e.preventDefault(); }
+        else if (action === "del-prof")   { deleteProfile(btn.closest("details")); e.preventDefault(); }
+        else if (action === "save-rates") saveRates(btn.closest("details"));
+        else if (action === "edit-user")   startEditUser(Number(btn.closest("tr").dataset.id));
+        else if (action === "commit-user") commitEditUser(btn.closest("tr"));
+        else if (action === "cancel-user") cancelEditUser();
+        else if (action === "toggle-user") toggleUserActive(btn.closest("tr"));
+      });
+    }
+
+    (async () => {
+      try {
+        const me = await (await fetch("api/me")).json();
+        document.getElementById("userName").textContent = me.name;
+        if (me.permissions) Object.assign(perms, me.permissions);
+      } catch { document.getElementById("userName").textContent = "Developer"; }
+      applyPermissions();
+
+      document.querySelectorAll(".proj-tab").forEach((b) => b.addEventListener("click", () => switchTab(b.dataset.tab)));
+      const goNew = () => { window.location.href = "new.html"; };
+      document.getElementById("newProjectBtn").addEventListener("click", goNew);
+      document.getElementById("emptyNewBtn").addEventListener("click", goNew);
+      bindProjectsTable();
+      bindSettings();
+
+      await loadProjects();
+
+      // Deep-link support: index.html?tab=settings&sub=templates lands directly
+      // on a tab/sub-tab — used by the "Back to Settings" link in the template
+      // editor. Only honoured when the user is permitted to see that tab.
+      const params = new URLSearchParams(location.search);
+      const tab = params.get("tab");
+      if ((tab === "settings"  && perms.canViewSettings) ||
+          (tab === "analytics" && perms.canViewAnalytics)) {
+        switchTab(tab, params.get("sub"));
+      }
+    })();
+  </script>
+</body>
+</html>

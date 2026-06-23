@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Template editor — APAC WBS Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="vendor/theme.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="session-guard.js"></script>
+  <script type="module" src="vendor/material-web.js"></script>
+</head>
+<body class="wbs-page">
+  <header class="proj-header">
+    <a class="proj-header__back" href="index.html?tab=settings&sub=templates" title="Back to Settings → Templates"><span class="material-symbols-outlined">arrow_back</span></a>
+    <h1 class="proj-header__title" id="tplTitle">Loading…</h1>
+    <span class="proj-header__divider"></span>
+    <span class="proj-header__client">WBS Template</span>
+    <span class="proj-header__spacer"></span>
+    <a id="backToSettingsBtn" href="index.html?tab=settings&sub=templates">
+      <md-text-button>
+        <span slot="icon" class="material-symbols-outlined">settings</span>
+        Settings
+      </md-text-button>
+    </a>
+    <button type="button" class="md-btn md-btn--outlined" id="saveBtnTop">
+      <span class="material-symbols-outlined">save</span> Save
+    </button>
+  </header>
+
+  <main class="wbs-main wbs-main--wide" style="padding-top: 24px;">
+    <div class="phase-banner">
+      <span class="material-symbols-outlined">account_tree</span>
+      <div>
+        <div class="phase-banner__title">Template editor</div>
+        <div class="phase-banner__desc">Define the task tree, default hours per resource, and which resources this template uses. Projects created from this template clone this structure.</div>
+      </div>
+    </div>
+
+    <!-- Template meta -->
+    <article class="status-card">
+      <div class="status-card__head">
+        <span class="material-symbols-outlined">info</span>
+        <h2>Template details</h2>
+      </div>
+      <form id="tplForm" class="form-grid" autocomplete="off">
+        <md-outlined-text-field name="templateName" label="Template name" required></md-outlined-text-field>
+        <md-outlined-text-field name="description" label="Description" placeholder="Optional"></md-outlined-text-field>
+      </form>
+    </article>
+
+    <!-- Confirmation modal -->
+    <div id="confirmOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:2000;"></div>
+    <div id="confirmModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--md-sys-color-surface); border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:2001; min-width:320px; max-width:420px;">
+      <div style="padding:24px;">
+        <div id="confirmTitle" style="font-size:16px; font-weight:500; color:var(--md-sys-color-on-surface); margin-bottom:12px;"></div>
+        <div id="confirmMessage" style="font-size:14px; color:var(--md-sys-color-on-surface-variant); line-height:1.5; margin-bottom:24px;"></div>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; padding:16px 24px; border-top:1px solid var(--md-sys-color-outline-variant);">
+        <md-text-button id="confirmCancel">Cancel</md-text-button>
+        <md-filled-button id="confirmOk" style="background-color:var(--md-sys-color-error);">Delete</md-filled-button>
+      </div>
+    </div>
+
+    <!-- Resources modal -->
+    <div id="columnsOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000;"></div>
+    <div id="columnsModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--md-sys-color-surface); border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:1001; min-width:400px; max-width:500px;">
+      <div style="padding:24px 24px 16px;">
+        <div style="font-size:16px; font-weight:500; color:var(--md-sys-color-on-surface); margin-bottom:16px;">Select columns (resources)</div>
+        <form id="columnsForm" style="max-height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+          <div id="resourcesList"></div>
+        </form>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:8px; padding:16px 24px; border-top:1px solid var(--md-sys-color-outline-variant);">
+        <md-text-button onclick="document.getElementById('columnsOverlay').style.display='none'; document.getElementById('columnsModal').style.display='none';">Done</md-text-button>
+      </div>
+    </div>
+
+    <!-- Task tree -->
+    <section class="wbs-table-card">
+      <div class="status-card__head">
+        <span class="material-symbols-outlined">account_tree</span>
+        <h2>Template tasks</h2>
+        <span class="status-pill" id="taskCount">…</span>
+        <button type="button" class="md-btn md-btn--outlined" id="columnsBtn">
+          <span class="material-symbols-outlined">view_week</span> Columns
+        </button>
+        <button type="button" class="md-btn md-btn--filled" id="addRootBtn">
+          <span class="material-symbols-outlined">add</span> Add level-1 task
+        </button>
+      </div>
+      <div class="wbs-table-wrap" style="max-height: none;">
+        <table class="wbs-grid wbs-table--editable" id="tplTable">
+          <thead></thead><tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Save bar -->
+  <div class="save-bar" id="saveBar" hidden>
+    <span class="save-bar__msg" id="saveMsg">Unsaved changes</span>
+    <button type="button" class="md-btn md-btn--text" id="discardBtn">
+      <span class="material-symbols-outlined">undo</span> Discard
+    </button>
+    <button type="button" class="md-btn md-btn--filled" id="saveBtn">
+      <span class="material-symbols-outlined">save</span> Save template
+    </button>
+  </div>
+  <div class="toast" id="toast" hidden></div>
+
+  <script src="md-upgrade.js"></script>
+  <script>
+    function escapeHtml(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+    function showToast(msg, kind = "ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = `toast toast--${kind}`;
+      el.hidden = false;
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => { el.hidden = true; }, 3000);
+    }
+
+    function showConfirm(title, message, onConfirm, onCancel) {
+      document.getElementById("confirmTitle").textContent = title;
+      document.getElementById("confirmMessage").textContent = message;
+      document.getElementById("confirmOverlay").style.display = "block";
+      document.getElementById("confirmModal").style.display = "block";
+
+      const handleOk = () => {
+        cleanup();
+        onConfirm?.();
+      };
+
+      const handleCancel = () => {
+        cleanup();
+        onCancel?.();
+      };
+
+      const cleanup = () => {
+        document.getElementById("confirmOverlay").style.display = "none";
+        document.getElementById("confirmModal").style.display = "none";
+        document.getElementById("confirmOk").removeEventListener("click", handleOk);
+        document.getElementById("confirmCancel").removeEventListener("click", handleCancel);
+      };
+
+      document.getElementById("confirmOk").addEventListener("click", handleOk);
+      document.getElementById("confirmCancel").addEventListener("click", handleCancel);
+    }
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    const state = {
+      templateId: null,
+      pristine: null,
+      template: { templateName: "", description: "" },
+      resources: [],          // [{ resourceId, roleName, shortCode }]
+      tasks: [],              // template task tree
+      allResources: [],
+      nextTempId: -1,
+    };
+    function newTempId() { return state.nextTempId--; }
+
+    function editable() {
+      return {
+        templateName: state.template.templateName,
+        description: state.template.description,
+        resourceIds: state.resources.map((r) => r.resourceId),
+        tasks: state.tasks.map((t) => ({
+          templateTaskId: t.templateTaskId,
+          parentTemplateTaskId: t.parentTemplateTaskId ?? null,
+          depth: t.depth,
+          sortOrder: t.sortOrder,
+          taskName: t.taskName,
+          isConcurrent: !!t.isConcurrent,
+          defaultHours: { ...t.defaultHours },
+        })),
+      };
+    }
+    function checkDirty() {
+      const dirty = JSON.stringify(editable()) !== state.pristine;
+      document.getElementById("saveBar").hidden = !dirty;
+      window.onbeforeunload = dirty ? (e) => { e.preventDefault(); return ""; } : null;
+      return dirty;
+    }
+    function markPristine() { state.pristine = JSON.stringify(editable()); checkDirty(); }
+
+    // ============================================================
+    // TREE OPS
+    // ============================================================
+    function childrenOf(parentId) {
+      const pid = parentId ?? 0;
+      return state.tasks.filter((t) => (t.parentTemplateTaskId ?? 0) === pid).sort((a, b) => a.sortOrder - b.sortOrder);
+    }
+    function isLeaf(taskId) { return childrenOf(taskId).length === 0; }
+    function descendantsOf(taskId) {
+      const out = [];
+      const stack = [taskId];
+      while (stack.length) {
+        const id = stack.pop();
+        for (const c of childrenOf(id)) { out.push(c.templateTaskId); stack.push(c.templateTaskId); }
+      }
+      return out;
+    }
+    function renumber() {
+      function walk(pid, prefix) {
+        childrenOf(pid).forEach((k, i) => {
+          k.rowNumber = prefix ? `${prefix}.${i + 1}` : String(i + 1);
+          k.sortOrder = i + 1;
+          walk(k.templateTaskId, k.rowNumber);
+        });
+      }
+      walk(0, "");
+    }
+    function afterMutation() { renumber(); render(); checkDirty(); }
+    function makeBlank(parentId, depth) {
+      return {
+        templateTaskId: newTempId(),
+        parentTemplateTaskId: parentId,
+        depth, sortOrder: 0, rowNumber: "",
+        taskName: "", isConcurrent: false,
+        defaultHours: {},
+      };
+    }
+    function addRoot() {
+      const roots = childrenOf(null);
+      const t = makeBlank(null, 1);
+      t.sortOrder = roots.length ? roots[roots.length - 1].sortOrder + 1 : 1;
+      state.tasks.push(t);
+      afterMutation();
+      focusRow(t.templateTaskId);
+    }
+    function addSibling(taskId) {
+      const target = state.tasks.find((t) => t.templateTaskId === taskId);
+      if (!target) return;
+      const t = makeBlank(target.parentTemplateTaskId ?? null, target.depth);
+      t.sortOrder = (target.sortOrder ?? 0) + 0.5;
+      state.tasks.splice(state.tasks.indexOf(target) + 1, 0, t);
+      afterMutation();
+      focusRow(t.templateTaskId);
+    }
+    function addChild(taskId) {
+      const target = state.tasks.find((t) => t.templateTaskId === taskId);
+      if (!target) return;
+      if (target.depth >= 4) { showToast("Max depth is 4 levels.", "err"); return; }
+      const sibs = childrenOf(target.templateTaskId);
+      const t = makeBlank(target.templateTaskId, target.depth + 1);
+      t.sortOrder = sibs.length ? sibs[sibs.length - 1].sortOrder + 1 : 1;
+      state.tasks.push(t);
+      afterMutation();
+      focusRow(t.templateTaskId);
+    }
+    function deleteTask(taskId) {
+      const target = state.tasks.find((t) => t.templateTaskId === taskId);
+      if (!target) return;
+      const ids = new Set([taskId, ...descendantsOf(taskId)]);
+      if (ids.size > 1) {
+        showConfirm(
+          "Delete task and subtasks?",
+          `"${target.taskName || "(untitled)"}" and ${ids.size - 1} descendant task(s) will be deleted.`,
+          () => {
+            state.tasks = state.tasks.filter((t) => !ids.has(t.templateTaskId));
+            afterMutation();
+          }
+        );
+      } else {
+        state.tasks = state.tasks.filter((t) => !ids.has(t.templateTaskId));
+        afterMutation();
+      }
+    }
+    function canIndent(t) {
+      if (t.depth >= 4) return false;
+      const sibs = childrenOf(t.parentTemplateTaskId ?? null);
+      return sibs.findIndex((s) => s.templateTaskId === t.templateTaskId) > 0;
+    }
+    function indentTask(taskId) {
+      const t = state.tasks.find((x) => x.templateTaskId === taskId);
+      if (!t || !canIndent(t)) return;
+      const sibs = childrenOf(t.parentTemplateTaskId ?? null);
+      const newParent = sibs[sibs.findIndex((s) => s.templateTaskId === taskId) - 1];
+      const subtree = new Set([taskId, ...descendantsOf(taskId)]);
+      const delta = (newParent.depth + 1) - t.depth;
+      for (const id of subtree) {
+        const x = state.tasks.find((y) => y.templateTaskId === id);
+        if (x) x.depth = Math.min(4, x.depth + delta);
+      }
+      t.parentTemplateTaskId = newParent.templateTaskId;
+      afterMutation();
+    }
+    function outdentTask(taskId) {
+      const t = state.tasks.find((x) => x.templateTaskId === taskId);
+      if (!t || t.depth <= 1) return;
+      const parent = state.tasks.find((x) => x.templateTaskId === t.parentTemplateTaskId);
+      if (!parent) return;
+      const subtree = new Set([taskId, ...descendantsOf(taskId)]);
+      for (const id of subtree) {
+        const x = state.tasks.find((y) => y.templateTaskId === id);
+        if (x) x.depth = Math.max(1, x.depth - 1);
+      }
+      t.parentTemplateTaskId = parent.parentTemplateTaskId ?? null;
+      afterMutation();
+    }
+    function toggleConcurrent(taskId) {
+      const t = state.tasks.find((x) => x.templateTaskId === taskId);
+      if (t) { t.isConcurrent = !t.isConcurrent; afterMutation(); }
+    }
+    function focusRow(taskId) {
+      requestAnimationFrame(() => {
+        const inp = document.querySelector(`input[data-action="rename"][data-task="${taskId}"]`);
+        if (inp) { inp.focus(); inp.select?.(); }
+      });
+    }
+
+    // Roll-up: parent hours = sum of leaf descendants
+    function rolledHours(task, rid) {
+      if (isLeaf(task.templateTaskId)) return Number(task.defaultHours[rid] || 0);
+      let s = 0;
+      for (const did of descendantsOf(task.templateTaskId)) {
+        const c = state.tasks.find((t) => t.templateTaskId === did);
+        if (c && isLeaf(did)) s += Number(c.defaultHours[rid] || 0);
+      }
+      return s;
+    }
+    function rowTotal(task) {
+      return state.resources.reduce((s, r) => s + rolledHours(task, r.resourceId), 0);
+    }
+
+    // ============================================================
+    // RENDER
+    // ============================================================
+    function render() {
+      document.getElementById("tplTitle").textContent = state.template.templateName || "(untitled template)";
+      renderResources();
+      renderTable();
+    }
+
+    function fillForm() {
+      const f = document.getElementById("tplForm");
+      f.templateName.value = state.template.templateName || "";
+      f.description.value = state.template.description || "";
+    }
+
+    function renderResources() {
+      // Render resource checkboxes in the modal
+      const list = document.getElementById("resourcesList");
+      const have = new Set(state.resources.map((r) => r.resourceId));
+      list.innerHTML = state.allResources.map((r) => `
+        <label style="display: flex; align-items: center; gap: 8px; padding: 8px; cursor: pointer;">
+          <md-checkbox data-rid="${r.resourceId}" ${have.has(r.resourceId) ? "checked" : ""}></md-checkbox>
+          <span style="flex: 1;">
+            <strong>${escapeHtml(r.shortCode)}</strong> — ${escapeHtml(r.roleName)}
+          </span>
+        </label>
+      `).join("");
+    }
+
+    function renderTable() {
+      const tbl = document.getElementById("tplTable");
+      document.getElementById("taskCount").textContent =
+        `${state.tasks.length} ${state.tasks.length === 1 ? "task" : "tasks"}`;
+
+      tbl.querySelector("thead").innerHTML = `
+        <tr>
+          <th class="wbs-col-row">Row</th>
+          <th class="wbs-col-task">Task</th>
+          <th class="wbs-col-conc">Conc.</th>
+          ${state.resources.map((r) => `<th class="wbs-col-hours" title="${escapeHtml(r.roleName)}">${escapeHtml(r.shortCode)}</th>`).join("")}
+          <th class="wbs-col-total">Total</th>
+          <th class="wbs-col-actions"></th>
+        </tr>`;
+
+      if (state.tasks.length === 0) {
+        tbl.querySelector("tbody").innerHTML =
+          `<tr><td colspan="999" class="muted" style="padding:32px; text-align:center;">No tasks yet. Click <b>Add level-1 task</b> to begin.</td></tr>`;
+        return;
+      }
+
+      // DFS order
+      const byParent = new Map();
+      for (const t of state.tasks) {
+        const pid = t.parentTemplateTaskId ?? 0;
+        if (!byParent.has(pid)) byParent.set(pid, []);
+        byParent.get(pid).push(t);
+      }
+      for (const arr of byParent.values()) arr.sort((a, b) => a.sortOrder - b.sortOrder);
+      const dfs = [];
+      (function walk(pid) { for (const t of byParent.get(pid) || []) { dfs.push(t); walk(t.templateTaskId); } })(0);
+
+      tbl.querySelector("tbody").innerHTML = dfs.map((t) => {
+        const leaf = isLeaf(t.templateTaskId);
+        const total = rowTotal(t);
+        const hoursCells = state.resources.map((r) => {
+          if (leaf) {
+            const v = t.defaultHours[r.resourceId] ?? "";
+            return `<td class="wbs-col-hours"><input type="number" min="0" step="0.5"
+                       class="wbs-hours-input" data-action="hours" data-task="${t.templateTaskId}" data-res="${r.resourceId}"
+                       value="${v > 0 ? v : ""}" /></td>`;
+          }
+          const v = rolledHours(t, r.resourceId);
+          return `<td class="wbs-col-hours wbs-cell--rolled">${v > 0 ? v : "·"}</td>`;
+        }).join("");
+        const concClass = t.isConcurrent ? "wbs-icon-btn wbs-icon-btn--on" : "wbs-icon-btn";
+        return `
+          <tr class="wbs-row wbs-row--depth-${t.depth}${leaf ? "" : " wbs-row--parent"}">
+            <td class="wbs-col-row"><span class="wbs-row-num" style="padding-left:${(t.depth - 1) * 18}px;">${escapeHtml(t.rowNumber || "")}</span></td>
+            <td class="wbs-col-task">
+              <input type="text" class="wbs-task-name" data-action="rename" data-task="${t.templateTaskId}"
+                     value="${escapeHtml(t.taskName)}" placeholder="(untitled)" />
+            </td>
+            <td class="wbs-col-conc">
+              <button class="${concClass}" data-action="concurrent" data-task="${t.templateTaskId}" title="${t.isConcurrent ? "Concurrent" : "Make concurrent"}">
+                <span class="material-symbols-outlined">sync_alt</span>
+              </button>
+            </td>
+            ${hoursCells}
+            <td class="wbs-col-total"><strong>${total > 0 ? total : "·"}</strong></td>
+            <td class="wbs-col-actions">
+              <button class="md-btn md-btn--icon" data-action="outdent" data-task="${t.templateTaskId}" title="Outdent" ${t.depth <= 1 ? "disabled" : ""}>
+                <span class="material-symbols-outlined">format_indent_decrease</span></button>
+              <button class="md-btn md-btn--icon" data-action="indent" data-task="${t.templateTaskId}" title="Indent" ${!canIndent(t) ? "disabled" : ""}>
+                <span class="material-symbols-outlined">format_indent_increase</span></button>
+              <button class="md-btn md-btn--icon" data-action="add-sibling" data-task="${t.templateTaskId}" title="Add sibling">
+                <span class="material-symbols-outlined">add_box</span></button>
+              <button class="md-btn md-btn--icon" data-action="add-child" data-task="${t.templateTaskId}" title="Add child" ${t.depth >= 4 ? "disabled" : ""}>
+                <span class="material-symbols-outlined">subdirectory_arrow_right</span></button>
+              <button class="md-btn md-btn--icon md-btn--icon-danger" data-action="delete" data-task="${t.templateTaskId}" title="Delete">
+                <span class="material-symbols-outlined">delete_outline</span></button>
+            </td>
+          </tr>`;
+      }).join("");
+    }
+
+    // ============================================================
+    // EVENTS
+    // ============================================================
+    function bindEvents() {
+      document.getElementById("tplForm").addEventListener("input", (e) => {
+        const n = e.target.name;
+        if (n === "templateName" || n === "description") {
+          state.template[n] = e.target.value;
+          if (n === "templateName") document.getElementById("tplTitle").textContent = e.target.value || "(untitled template)";
+          checkDirty();
+        }
+      });
+
+      // Columns button and resource selection modal
+      document.getElementById("columnsBtn").addEventListener("click", () => {
+        document.getElementById("columnsOverlay").style.display = "block";
+        document.getElementById("columnsModal").style.display = "block";
+      });
+
+      document.getElementById("columnsOverlay").addEventListener("click", () => {
+        document.getElementById("columnsOverlay").style.display = "none";
+        document.getElementById("columnsModal").style.display = "none";
+      });
+
+      document.getElementById("resourcesList").addEventListener("change", async (e) => {
+        const cb = e.target.closest("md-checkbox");
+        if (!cb) return;
+        const rid = Number(cb.dataset.rid);
+        const isChecked = cb.checked; // MWC checkbox uses .checked property
+
+        if (isChecked) {
+          // Adding resource
+          const meta = state.allResources.find((r) => r.resourceId === rid);
+          if (!meta) return;
+          state.resources.push({ resourceId: meta.resourceId, roleName: meta.roleName, shortCode: meta.shortCode });
+          afterMutation();
+        } else {
+          // Removing resource - check if it has hours
+          const hasHours = state.tasks.some((t) => t.defaultHours[rid] && t.defaultHours[rid] > 0);
+          if (hasHours) {
+            showConfirm(
+              "Remove resource?",
+              "Any hours assigned to this resource will be deleted.",
+              () => {
+                const idx = state.resources.findIndex((r) => r.resourceId === rid);
+                if (idx >= 0) {
+                  const removed = state.resources[idx];
+                  state.resources.splice(idx, 1);
+                  for (const t of state.tasks) delete t.defaultHours[removed.resourceId];
+                  afterMutation();
+                }
+              },
+              () => {
+                cb.checked = true;
+              }
+            );
+          } else {
+            const idx = state.resources.findIndex((r) => r.resourceId === rid);
+            if (idx >= 0) {
+              const removed = state.resources[idx];
+              state.resources.splice(idx, 1);
+              for (const t of state.tasks) delete t.defaultHours[removed.resourceId];
+              afterMutation();
+            }
+          }
+        }
+      });
+
+      document.getElementById("addRootBtn").addEventListener("click", addRoot);
+
+      const tbl = document.getElementById("tplTable");
+      tbl.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn || btn.disabled) return;
+        const id = Number(btn.dataset.task);
+        const a = btn.dataset.action;
+        if (a === "add-sibling") addSibling(id);
+        else if (a === "add-child") addChild(id);
+        else if (a === "delete") deleteTask(id);
+        else if (a === "indent") indentTask(id);
+        else if (a === "outdent") outdentTask(id);
+        else if (a === "concurrent") toggleConcurrent(id);
+      });
+      tbl.addEventListener("input", (e) => {
+        const inp = e.target;
+        const a = inp.dataset?.action;
+        if (a === "rename") {
+          const t = state.tasks.find((x) => x.templateTaskId === Number(inp.dataset.task));
+          if (t) { t.taskName = inp.value; checkDirty(); }
+        } else if (a === "hours") {
+          const t = state.tasks.find((x) => x.templateTaskId === Number(inp.dataset.task));
+          if (!t) return;
+          const rid = Number(inp.dataset.res);
+          const v = Number(inp.value);
+          if (!Number.isFinite(v) || v <= 0) delete t.defaultHours[rid];
+          else t.defaultHours[rid] = v;
+          renderTable();
+          requestAnimationFrame(() => {
+            const el = document.querySelector(`input[data-action="hours"][data-task="${t.templateTaskId}"][data-res="${rid}"]`);
+            if (el) { el.focus(); el.setSelectionRange?.(el.value.length, el.value.length); }
+          });
+          checkDirty();
+        }
+      });
+
+      document.getElementById("saveBtn").addEventListener("click", save);
+      document.getElementById("saveBtnTop").addEventListener("click", save);
+      document.getElementById("discardBtn").addEventListener("click", () => {
+        showConfirm(
+          "Discard changes?",
+          "All unsaved changes to this template will be lost.",
+          () => load()
+        );
+      });
+    }
+
+    // ============================================================
+    // SAVE / LOAD
+    // ============================================================
+    async function save() {
+      for (const b of document.querySelectorAll("#saveBtn,#saveBtnTop")) b.disabled = true;
+      document.getElementById("saveMsg").textContent = "Saving…";
+      try {
+        const r = await fetch(`api/templates/${state.templateId}/content`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(editable()),
+        });
+        if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j.error || `HTTP ${r.status}`); }
+        showToast("Template saved", "ok");
+        await load();
+      } catch (err) {
+        showToast(`Save failed: ${err.message}`, "err");
+        document.getElementById("saveMsg").textContent = "Unsaved changes";
+      } finally {
+        for (const b of document.querySelectorAll("#saveBtn,#saveBtnTop")) b.disabled = false;
+      }
+    }
+
+    async function load() {
+      const r = await fetch(`api/templates/${state.templateId}`);
+      if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j.error || `HTTP ${r.status}`); }
+      const b = await r.json();
+      state.template = { templateName: b.template.templateName, description: b.template.description || "" };
+      state.resources = b.resources.map((r) => ({ resourceId: r.resourceId, roleName: r.roleName, shortCode: r.shortCode }));
+      state.tasks = b.tasks.map((t) => ({ ...t, defaultHours: { ...t.defaultHours } }));
+      state.nextTempId = -1;
+      fillForm();
+      renumber();
+      render();
+      markPristine();
+    }
+
+    (async () => {
+      const id = Number(new URLSearchParams(location.search).get("id"));
+      if (!id) { document.getElementById("tplTitle").textContent = "No template ID"; return; }
+      state.templateId = id;
+      try {
+        state.allResources = await (await fetch("api/resources")).json();
+        await load();
+        bindEvents();
+      } catch (err) {
+        document.getElementById("tplTitle").textContent = "Failed to load template";
+        showToast(err.message, "err");
+      }
+    })();
+  </script>
+</body>
+</html>
