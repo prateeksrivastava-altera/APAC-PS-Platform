@@ -23,6 +23,7 @@ const HUB_DATA_ROOT =
   process.env.HUB_DATA_ROOT ||
   (fs.existsSync(TRAINING_PERSISTENT_ROOT) ? TRAINING_PERSISTENT_ROOT : path.join(ROOT, ".tmp", "hub-data"));
 const HUB_REQUESTS_FILE = path.join(HUB_DATA_ROOT, "hub-requests.json");
+const HUB_ACCESS_FILE = path.join(HUB_DATA_ROOT, "hub-access.json");
 const TRAINING_BUNDLED_RESOURCES_DIR = path.join(TRAINING_BUNDLED_ROOT, "resources");
 const TRAINING_BUNDLED_VIDEOS_DIR = path.join(TRAINING_BUNDLED_RESOURCES_DIR, "videos");
 const TRAINING_BUNDLED_DOCS_DIR = path.join(TRAINING_BUNDLED_RESOURCES_DIR, "documents");
@@ -69,6 +70,17 @@ const TROUBLESHOOTING_KB_FOLDER_BY_PRODUCT = {
 };
 const HUB_REQUEST_ADMIN_EMAIL = "prateek.srivastava@alterahealth.com";
 const HUB_REQUEST_STATUS_VALUES = ["New", "WIP", "Closed Completed", "Closed Cancelled"];
+const HUB_APP_DEFINITIONS = [
+  { id: "troubleshooting-platform", label: "Troubleshooting Platform" },
+  { id: "training-platform", label: "Training Platform" },
+  { id: "subject-matter-expert", label: "Subject Matter Expert Platform" },
+  { id: "integration-sow-platform", label: "SOW to Design" }
+];
+const HUB_APP_ID_SET = new Set(
+  HUB_APP_DEFINITIONS.map(function (appDefinition) {
+    return appDefinition.id;
+  })
+);
 
 app.disable("x-powered-by");
 app.use(express.json({ limit: "25mb" }));
@@ -764,6 +776,99 @@ app.get("/api/me", function (req, res) {
   });
 });
 
+app.get("/api/access-control", function (req, res) {
+  const user = requireHubAuth(req, res);
+  if (!user) {
+    return;
+  }
+
+  const isAdmin = isHubRequestAdmin(user);
+  const allowedApps = getHubAllowedAppsForUser(user);
+  const config = readHubAccessConfig();
+
+  return res.json({
+    currentUser: {
+      email: normalizeEmail(user.email || ""),
+      isAdmin,
+      apps: allowedApps
+    },
+    appDefinitions: HUB_APP_DEFINITIONS,
+    users: isAdmin ? config.users : []
+  });
+});
+
+app.post("/api/access-control/users", function (req, res) {
+  const user = requireHubAuth(req, res);
+  if (!user) {
+    return;
+  }
+
+  if (!isHubRequestAdmin(user)) {
+    return res.status(403).json({ error: "Admin access required." });
+  }
+
+  const email = normalizeEmail(req.body && req.body.email);
+  if (!email) {
+    return res.status(400).json({ error: "Email is required." });
+  }
+
+  const config = readHubAccessConfig();
+  const existing = config.users.find(function (entry) {
+    return entry.email === email;
+  });
+  if (existing) {
+    return res.status(409).json({ error: "User already exists." });
+  }
+
+  const entry = normalizeHubAccessUser({
+    email,
+    apps: [],
+    updatedAtIso: new Date().toISOString()
+  });
+  config.users.push(entry);
+  writeHubAccessConfig(config);
+  return res.status(201).json({ user: entry });
+});
+
+app.put("/api/access-control/users/:email/apps", function (req, res) {
+  const user = requireHubAuth(req, res);
+  if (!user) {
+    return;
+  }
+
+  if (!isHubRequestAdmin(user)) {
+    return res.status(403).json({ error: "Admin access required." });
+  }
+
+  const targetEmail = normalizeEmail(req.params.email);
+  if (!targetEmail) {
+    return res.status(400).json({ error: "Email is required." });
+  }
+
+  const config = readHubAccessConfig();
+  const index = config.users.findIndex(function (entry) {
+    return entry.email === targetEmail;
+  });
+  if (index < 0) {
+    return res.status(404).json({ error: "User not found." });
+  }
+
+  const nextApps = Array.isArray(req.body && req.body.apps)
+    ? req.body.apps.map(normalizeHubAppId).filter(Boolean)
+    : null;
+  if (!nextApps) {
+    return res.status(400).json({ error: "Apps array is required." });
+  }
+
+  config.users[index] = normalizeHubAccessUser({
+    email: targetEmail,
+    apps: nextApps,
+    updatedAtIso: new Date().toISOString()
+  });
+  writeHubAccessConfig(config);
+  return res.json({ user: config.users[index] });
+});
+
 app.get("/api/hub-requests", function (req, res) {
   const user = requireHubAuth(req, res);
   if (!user) {
@@ -859,7 +964,7 @@ app.put("/api/hub-requests/:id", function (req, res) {
 });
 
 app.get("/api/mission", async function (req, res) {
-  const user = requireHubAuth(req, res);
+  const user = requireHubAppAccess(req, res, "troubleshooting-platform");
   if (!user) {
     return;
   }
@@ -909,7 +1014,7 @@ app.get("/api/mission", async function (req, res) {
 });
 
 app.post("/api/chat", async function (req, res) {
-  const user = requireHubAuth(req, res);
+  const user = requireHubAppAccess(req, res, "troubleshooting-platform");
   if (!user) {
     return;
   }
@@ -1042,7 +1147,7 @@ const trainingKbUpload = multer({
 });
 
 app.post("/api/integration-design", integrationUpload.single("sowFile"), async function (req, res) {
-  const user = requireHubAuth(req, res);
+  const user = requireHubAppAccess(req, res, "integration-sow-platform");
   if (!user) {
     return;
   }
@@ -1153,7 +1258,7 @@ app.post("/api/integration-design", integrationUpload.single("sowFile"), async f
 });
 
 app.post("/api/sme-chat", smeChatUpload.single("attachment"), async function (req, res) {
-  const user = requireHubAuth(req, res);
+  const user = requireHubAppAccess(req, res, "subject-matter-expert");
   if (!user) {
     return;
   }
@@ -1276,7 +1381,7 @@ app.post("/api/sme-chat", smeChatUpload.single("attachment"), async function (re
 });
 
 app.get("/api/integration-design/download/:fileName", function (req, res) {
-  const user = requireHubAuth(req, res);
+  const user = requireHubAppAccess(req, res, "integration-sow-platform");
   if (!user) {
     return;
   }
@@ -1600,8 +1705,161 @@ function writeHubRequests(requests) {
   return list;
 }
 
+function createDefaultHubAccessConfig() {
+  return {
+    version: 1,
+    users: [
+      {
+        email: HUB_REQUEST_ADMIN_EMAIL,
+        apps: HUB_APP_DEFINITIONS.map(function (appDefinition) {
+          return appDefinition.id;
+        }),
+        updatedAtIso: new Date().toISOString()
+      }
+    ]
+  };
+}
+
+function normalizeHubAppId(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!HUB_APP_ID_SET.has(normalized)) {
+    return "";
+  }
+  return normalized;
+}
+
+function normalizeHubAccessUser(entry) {
+  const email = normalizeEmail(entry && entry.email);
+  if (!email) {
+    return null;
+  }
+
+  const apps = Array.isArray(entry && entry.apps)
+    ? Array.from(
+        new Set(
+          entry.apps
+            .map(normalizeHubAppId)
+            .filter(Boolean)
+        )
+      )
+    : [];
+
+  return {
+    email,
+    apps,
+    updatedAtIso: String(entry && entry.updatedAtIso ? entry.updatedAtIso : new Date().toISOString())
+  };
+}
+
+function writeHubAccessConfig(config) {
+  const users = Array.isArray(config && config.users)
+    ? config.users.map(normalizeHubAccessUser).filter(Boolean)
+    : [];
+  const dedupedUsers = [];
+  const seenEmails = new Set();
+
+  users.forEach(function (entry) {
+    if (seenEmails.has(entry.email)) {
+      return;
+    }
+    seenEmails.add(entry.email);
+    dedupedUsers.push(entry);
+  });
+
+  if (!seenEmails.has(HUB_REQUEST_ADMIN_EMAIL)) {
+    dedupedUsers.unshift(normalizeHubAccessUser(createDefaultHubAccessConfig().users[0]));
+  }
+
+  fs.writeFileSync(
+    HUB_ACCESS_FILE,
+    JSON.stringify(
+      {
+        version: 1,
+        users: dedupedUsers
+      },
+      null,
+      2
+    )
+  );
+}
+
+function readHubAccessConfig() {
+  const fallback = createDefaultHubAccessConfig();
+  if (!fs.existsSync(HUB_ACCESS_FILE)) {
+    writeHubAccessConfig(fallback);
+    return fallback;
+  }
+
+  try {
+    const parsed = JSON.parse(fs.readFileSync(HUB_ACCESS_FILE, "utf8"));
+    const users = Array.isArray(parsed && parsed.users)
+      ? parsed.users.map(normalizeHubAccessUser).filter(Boolean)
+      : [];
+    const hasAdmin = users.some(function (entry) {
+      return entry.email === HUB_REQUEST_ADMIN_EMAIL;
+    });
+    if (!hasAdmin) {
+      users.unshift(normalizeHubAccessUser(fallback.users[0]));
+    }
+    return {
+      version: 1,
+      users
+    };
+  } catch {
+    writeHubAccessConfig(fallback);
+    return fallback;
+  }
+}
+
 function isHubRequestAdmin(user) {
   return normalizeEmail(user && user.email) === HUB_REQUEST_ADMIN_EMAIL;
+}
+
+function getHubAccessEntryByEmail(email) {
+  const normalizedEmail = normalizeEmail(email);
+  if (!normalizedEmail) {
+    return null;
+  }
+
+  const config = readHubAccessConfig();
+  return (
+    config.users.find(function (entry) {
+      return entry.email === normalizedEmail;
+    }) || null
+  );
+}
+
+function getHubAllowedAppsForUser(user) {
+  const email = normalizeEmail(user && user.email);
+  if (!email) {
+    return [];
+  }
+
+  const entry = getHubAccessEntryByEmail(email);
+  return entry ? entry.apps.slice() : [];
+}
+
+function hasHubAppAccess(user, appId) {
+  const normalizedAppId = normalizeHubAppId(appId);
+  if (!normalizedAppId) {
+    return false;
+  }
+
+  return getHubAllowedAppsForUser(user).includes(normalizedAppId);
+}
+
+function requireHubAppAccess(req, res, appId) {
+  const user = requireHubAuth(req, res);
+  if (!user) {
+    return null;
+  }
+
+  if (!hasHubAppAccess(user, appId)) {
+    res.status(403).json({ error: "You do not have access to this application." });
+    return null;
+  }
+
+  return user;
 }
 
 function createHubRequestId() {
@@ -2383,6 +2641,14 @@ trainingRouter.post("/api/matcha/chat", async function (req, res) {
 
 trainingRouter.use(function (error, req, res, next) {
   return res.status(400).json({ error: error.message || "Upload error" });
+});
+
+app.use("/training-platform", function (req, res, next) {
+  const user = requireHubAppAccess(req, res, "training-platform");
+  if (!user) {
+    return;
+  }
+  next();
 });
 
 app.use("/training-platform", trainingRouter);

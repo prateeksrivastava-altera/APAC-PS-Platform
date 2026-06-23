@@ -26,10 +26,14 @@
   const mainHeaderIdentityAvatarEl = document.getElementById("mainHeaderIdentityAvatar");
   const mainHeaderIdentityNameEl = document.getElementById("mainHeaderIdentityName");
   const hubFeedbackBtnEl = document.getElementById("hubFeedbackBtn");
+  const userManagementBtnEl = document.getElementById("userManagementBtn");
   const hubFeedbackAdminBtnEl = document.getElementById("hubFeedbackAdminBtn");
   const hubFeedbackOverlayEl = document.getElementById("hubFeedbackOverlay");
   const hubFeedbackAdminOverlayEl = document.getElementById("hubFeedbackAdminOverlay");
+  const userManagementOverlayEl = document.getElementById("userManagementOverlay");
+  const accessSummaryMessageEl = document.getElementById("accessSummaryMessage");
   const viewTargetButtons = document.querySelectorAll("[data-view-target]");
+  const appScopedButtons = document.querySelectorAll("[data-app-id]");
   const appViews = document.querySelectorAll(".appView");
   const troubleshootingViewEl = document.getElementById("troubleshooting-platform");
   const popoutTroubleshooterBtnEl = document.getElementById("popoutTroubleshooterBtn");
@@ -113,6 +117,12 @@
   const ACTIVE_VIEW_STORAGE_KEY = "apac_hub_active_view";
   const HUB_REQUEST_ADMIN_EMAIL = "prateek.srivastava@alterahealth.com";
   const HUB_REQUEST_STATUS_VALUES = ["New", "WIP", "Closed Completed", "Closed Cancelled"];
+  const HUB_APP_DEFINITIONS = [
+    { id: "troubleshooting-platform", label: "Troubleshooting Platform" },
+    { id: "training-platform", label: "Training Platform" },
+    { id: "subject-matter-expert", label: "Subject Matter Expert Platform" },
+    { id: "integration-sow-platform", label: "SOW to Design" }
+  ];
   let activeViewId = readStoredActiveView() || "platform-briefing";
   let hubFeedbackFormState = {
     type: "bug",
@@ -127,6 +137,24 @@
     message: "",
     error: false,
     requests: [],
+  };
+  let hubAccessState = {
+    currentUser: {
+      email: "",
+      isAdmin: false,
+      apps: [],
+    },
+    users: [],
+    appDefinitions: HUB_APP_DEFINITIONS.slice(),
+  };
+  let userManagementState = {
+    loading: false,
+    message: "",
+    error: false,
+    selectedUserEmail: "",
+    selectedAssignedAppId: "",
+    selectedAvailableAppId: "",
+    addEmail: "",
   };
 
   function escapeHtml(text) {
@@ -163,6 +191,10 @@
       })
       .join(" ")
       .trim();
+  }
+
+  function normalizeEmail(value) {
+    return String(value || "").trim().toLowerCase();
   }
 
   function getPreferredDisplayName(user) {
@@ -210,6 +242,80 @@
     return String(user && user.email ? user.email : "").trim().toLowerCase() === HUB_REQUEST_ADMIN_EMAIL;
   }
 
+  function getAppDefinitions() {
+    return Array.isArray(hubAccessState.appDefinitions) && hubAccessState.appDefinitions.length
+      ? hubAccessState.appDefinitions
+      : HUB_APP_DEFINITIONS;
+  }
+
+  function getAppLabel(appId) {
+    const match = getAppDefinitions().find(function (appDefinition) {
+      return appDefinition.id === appId;
+    });
+    return match ? match.label : appId;
+  }
+
+  function getViewAppId(viewId) {
+    if (
+      viewId === "troubleshooting-platform" ||
+      viewId === "training-platform" ||
+      viewId === "subject-matter-expert" ||
+      viewId === "integration-sow-platform"
+    ) {
+      return viewId;
+    }
+    return "";
+  }
+
+  function canAccessApp(appId) {
+    if (!appId) {
+      return true;
+    }
+    return Array.isArray(hubAccessState.currentUser.apps) && hubAccessState.currentUser.apps.includes(appId);
+  }
+
+  function canAccessView(viewId) {
+    return canAccessApp(getViewAppId(viewId));
+  }
+
+  function getFirstAccessibleViewId() {
+    const order = [
+      "troubleshooting-platform",
+      "training-platform",
+      "subject-matter-expert",
+      "integration-sow-platform",
+    ];
+    const match = order.find(function (viewId) {
+      return canAccessView(viewId);
+    });
+    return match || "platform-briefing";
+  }
+
+  function resolveAccessibleView(viewId) {
+    if (!viewId) {
+      return "platform-briefing";
+    }
+    if (viewId === "platform-briefing") {
+      return "platform-briefing";
+    }
+    if (canAccessView(viewId)) {
+      return viewId;
+    }
+    return getFirstAccessibleViewId();
+  }
+
+  function getAccessibleApplicationOptions() {
+    return getAppDefinitions()
+      .filter(function (appDefinition) {
+        return canAccessApp(appDefinition.id);
+      })
+      .map(function (appDefinition) {
+        return appDefinition.id === "subject-matter-expert"
+          ? "Subject Matter Expert - " + (smeRoleConfigs[activeSmeRoleKey] || smeRoleConfigs["integration-consultant"]).title
+          : appDefinition.label;
+      });
+  }
+
   function getCurrentHubUser() {
     return window.__hubAuthUser || readStoredHubAuthUser() || null;
   }
@@ -232,16 +338,7 @@
   }
 
   function getApplicationOptions() {
-    const options = [
-      "Platform Briefing",
-      "Troubleshooting Platform",
-      "Training Platform",
-      "Subject Matter Expert - Integration Consultant",
-      "Subject Matter Expert - Systems Engineering",
-      "Subject Matter Expert - Implementation Consultant",
-      "Subject Matter Expert - Project Manager",
-      "SOW to Design (Integration)",
-    ];
+    const options = ["Platform Briefing"].concat(getAccessibleApplicationOptions());
     const current = getCurrentApplicationLabel();
     if (!options.includes(current)) {
       options.unshift(current);
@@ -530,6 +627,306 @@
       hubFeedbackAdminState.error = true;
       renderHubFeedbackAdmin();
     }
+  }
+
+  function closeUserManagement() {
+    if (userManagementOverlayEl) {
+      userManagementOverlayEl.hidden = true;
+      userManagementOverlayEl.innerHTML = "";
+    }
+  }
+
+  function getManagedUsers() {
+    const users = Array.isArray(hubAccessState.users) ? hubAccessState.users.slice() : [];
+    return users.sort(function (left, right) {
+      return String(left.email || "").localeCompare(String(right.email || ""));
+    });
+  }
+
+  function getSelectedManagedUser() {
+    return getManagedUsers().find(function (entry) {
+      return normalizeEmail(entry.email) === normalizeEmail(userManagementState.selectedUserEmail);
+    }) || null;
+  }
+
+  function renderUserManagement() {
+    if (!userManagementOverlayEl) {
+      return;
+    }
+
+    const users = getManagedUsers();
+    const selectedUser = getSelectedManagedUser() || users[0] || null;
+    if (selectedUser && !userManagementState.selectedUserEmail) {
+      userManagementState.selectedUserEmail = selectedUser.email;
+    }
+    const assignedApps = selectedUser
+      ? getAppDefinitions().filter(function (appDefinition) {
+          return Array.isArray(selectedUser.apps) && selectedUser.apps.includes(appDefinition.id);
+        })
+      : [];
+    const availableApps = getAppDefinitions().filter(function (appDefinition) {
+      return !assignedApps.some(function (assignedApp) {
+        return assignedApp.id === appDefinition.id;
+      });
+    });
+
+    if (!assignedApps.some(function (appDefinition) { return appDefinition.id === userManagementState.selectedAssignedAppId; })) {
+      userManagementState.selectedAssignedAppId = assignedApps[0] ? assignedApps[0].id : "";
+    }
+    if (!availableApps.some(function (appDefinition) { return appDefinition.id === userManagementState.selectedAvailableAppId; })) {
+      userManagementState.selectedAvailableAppId = availableApps[0] ? availableApps[0].id : "";
+    }
+
+    userManagementOverlayEl.innerHTML = `
+      <div class="hubOverlayCard userManagementCard" role="dialog" aria-modal="true" aria-labelledby="user-management-title">
+        <div class="hubOverlayHeader">
+          <div>
+            <div id="user-management-title" class="hubOverlayTitle">User Access Management</div>
+            <div class="hubOverlaySub">Only <strong>${escapeHtml(HUB_REQUEST_ADMIN_EMAIL)}</strong> can manage hub application visibility. New users are added with no application access.</div>
+          </div>
+          <button class="light-btn hubOverlayClose" type="button" id="userManagementCloseBtn">Close</button>
+        </div>
+        <div class="userManagementGrid">
+          <section class="userManagementPanel">
+            <div class="userManagementPanelTitle">Select User</div>
+            <select id="userManagementUserList" class="userManagementList" size="10">
+              ${users.map(function (entry) {
+                const selected = normalizeEmail(entry.email) === normalizeEmail(userManagementState.selectedUserEmail);
+                return '<option value="' + escapeHtml(entry.email) + '"' + (selected ? " selected" : "") + ">" + escapeHtml(entry.email) + "</option>";
+              }).join("")}
+            </select>
+            <label class="userManagementLabel" for="userManagementAddEmail">Add user</label>
+            <div class="userManagementAddRow">
+              <input id="userManagementAddEmail" class="hubInput" type="email" value="${escapeHtml(userManagementState.addEmail)}" placeholder="name@alterahealth.com">
+              <button id="userManagementAddBtn" class="primaryButton userManagementActionBtn" type="button"${userManagementState.loading ? " disabled" : ""}>Add</button>
+            </div>
+          </section>
+          <section class="userManagementPanel">
+            <div class="userManagementPanelTitle">Add/Remove Applications</div>
+            <div class="userManagementDualColumn">
+              <div class="userManagementBoxWrap">
+                <div class="userManagementBoxLabel">Assigned Applications</div>
+                <select id="userManagementAssignedApps" class="userManagementList" size="8"${selectedUser ? "" : " disabled"}>
+                  ${assignedApps.map(function (appDefinition) {
+                    const selected = appDefinition.id === userManagementState.selectedAssignedAppId;
+                    return '<option value="' + escapeHtml(appDefinition.id) + '"' + (selected ? " selected" : "") + ">" + escapeHtml(appDefinition.label) + "</option>";
+                  }).join("")}
+                </select>
+              </div>
+              <div class="userManagementArrowColumn">
+                <button id="userManagementAddAppBtn" class="ghostButton userManagementArrowBtn" type="button"${selectedUser && userManagementState.selectedAvailableAppId ? "" : " disabled"} aria-label="Grant application access">&#9650;</button>
+                <button id="userManagementRemoveAppBtn" class="ghostButton userManagementArrowBtn" type="button"${selectedUser && userManagementState.selectedAssignedAppId ? "" : " disabled"} aria-label="Remove application access">&#9660;</button>
+              </div>
+              <div class="userManagementBoxWrap">
+                <div class="userManagementBoxLabel">All Applications</div>
+                <select id="userManagementAvailableApps" class="userManagementList" size="8">
+                  ${availableApps.map(function (appDefinition) {
+                    const selected = appDefinition.id === userManagementState.selectedAvailableAppId;
+                    return '<option value="' + escapeHtml(appDefinition.id) + '"' + (selected ? " selected" : "") + ">" + escapeHtml(appDefinition.label) + "</option>";
+                  }).join("")}
+                </select>
+              </div>
+            </div>
+          </section>
+        </div>
+        ${userManagementState.message ? `<div class="hubFeedbackStatus${userManagementState.error ? " hubFeedbackStatus--error" : ""}">${escapeHtml(userManagementState.message)}</div>` : ""}
+      </div>
+    `;
+    userManagementOverlayEl.hidden = false;
+
+    const closeBtn = document.getElementById("userManagementCloseBtn");
+    const userListEl = document.getElementById("userManagementUserList");
+    const assignedAppsEl = document.getElementById("userManagementAssignedApps");
+    const availableAppsEl = document.getElementById("userManagementAvailableApps");
+    const addEmailEl = document.getElementById("userManagementAddEmail");
+    const addBtn = document.getElementById("userManagementAddBtn");
+    const addAppBtn = document.getElementById("userManagementAddAppBtn");
+    const removeAppBtn = document.getElementById("userManagementRemoveAppBtn");
+
+    if (closeBtn) {
+      closeBtn.onclick = closeUserManagement;
+    }
+    if (userListEl) {
+      userListEl.onchange = function () {
+        userManagementState.selectedUserEmail = userListEl.value;
+        userManagementState.message = "";
+        renderUserManagement();
+      };
+    }
+    if (assignedAppsEl) {
+      assignedAppsEl.onchange = function () {
+        userManagementState.selectedAssignedAppId = assignedAppsEl.value;
+      };
+    }
+    if (availableAppsEl) {
+      availableAppsEl.onchange = function () {
+        userManagementState.selectedAvailableAppId = availableAppsEl.value;
+      };
+    }
+    if (addEmailEl) {
+      addEmailEl.oninput = function () {
+        userManagementState.addEmail = addEmailEl.value;
+      };
+    }
+    if (addBtn) {
+      addBtn.onclick = addManagedUser;
+    }
+    if (addAppBtn) {
+      addAppBtn.onclick = function () {
+        updateManagedUserApps(true);
+      };
+    }
+    if (removeAppBtn) {
+      removeAppBtn.onclick = function () {
+        updateManagedUserApps(false);
+      };
+    }
+    userManagementOverlayEl.onclick = function (event) {
+      if (event.target === userManagementOverlayEl) {
+        closeUserManagement();
+      }
+    };
+  }
+
+  async function loadHubAccessControl(options) {
+    try {
+      const response = await fetch("/api/access-control", {
+        credentials: "include",
+        cache: "no-store",
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || "Unable to load access control.");
+      }
+      hubAccessState = {
+        currentUser: payload.currentUser || { email: "", isAdmin: false, apps: [] },
+        users: Array.isArray(payload.users) ? payload.users : [],
+        appDefinitions: Array.isArray(payload.appDefinitions) && payload.appDefinitions.length ? payload.appDefinitions : HUB_APP_DEFINITIONS.slice(),
+      };
+      applyAccessState();
+      if (!options || !options.silent) {
+        userManagementState.message = "";
+        userManagementState.error = false;
+      }
+      if (!userManagementState.selectedUserEmail && hubAccessState.currentUser.isAdmin) {
+        userManagementState.selectedUserEmail = hubAccessState.currentUser.email || HUB_REQUEST_ADMIN_EMAIL;
+      }
+      if (userManagementOverlayEl && !userManagementOverlayEl.hidden) {
+        renderUserManagement();
+      }
+    } catch (error) {
+      userManagementState.message = error.message || "Unable to load access control.";
+      userManagementState.error = true;
+      applyAccessState();
+      if (userManagementOverlayEl && !userManagementOverlayEl.hidden) {
+        renderUserManagement();
+      }
+    }
+  }
+
+  async function addManagedUser() {
+    const email = normalizeEmail(userManagementState.addEmail);
+    if (!email) {
+      userManagementState.message = "Enter an email address.";
+      userManagementState.error = true;
+      renderUserManagement();
+      return;
+    }
+
+    userManagementState.loading = true;
+    userManagementState.message = "";
+    userManagementState.error = false;
+    renderUserManagement();
+    try {
+      const response = await fetch("/api/access-control/users", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || "Unable to add user.");
+      }
+      userManagementState.loading = false;
+      userManagementState.addEmail = "";
+      userManagementState.selectedUserEmail = payload.user && payload.user.email ? payload.user.email : email;
+      userManagementState.message = "User added.";
+      userManagementState.error = false;
+      await loadHubAccessControl({ silent: true });
+    } catch (error) {
+      userManagementState.loading = false;
+      userManagementState.message = error.message || "Unable to add user.";
+      userManagementState.error = true;
+      renderUserManagement();
+    }
+  }
+
+  async function updateManagedUserApps(addAccess) {
+    const selectedUser = getSelectedManagedUser();
+    if (!selectedUser) {
+      return;
+    }
+
+    const sourceAppId = addAccess ? userManagementState.selectedAvailableAppId : userManagementState.selectedAssignedAppId;
+    if (!sourceAppId) {
+      return;
+    }
+
+    const nextApps = Array.isArray(selectedUser.apps) ? selectedUser.apps.slice() : [];
+    if (addAccess) {
+      if (!nextApps.includes(sourceAppId)) {
+        nextApps.push(sourceAppId);
+      }
+    } else {
+      const index = nextApps.indexOf(sourceAppId);
+      if (index >= 0) {
+        nextApps.splice(index, 1);
+      }
+    }
+
+    userManagementState.loading = true;
+    userManagementState.message = "";
+    userManagementState.error = false;
+    renderUserManagement();
+    try {
+      const response = await fetch("/api/access-control/users/" + encodeURIComponent(selectedUser.email) + "/apps", {
+        method: "PUT",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ apps: nextApps }),
+      });
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload.error || "Unable to update access.");
+      }
+      userManagementState.loading = false;
+      userManagementState.selectedUserEmail = selectedUser.email;
+      userManagementState.message = addAccess ? "Application access granted." : "Application access removed.";
+      userManagementState.error = false;
+      await loadHubAccessControl({ silent: true });
+    } catch (error) {
+      userManagementState.loading = false;
+      userManagementState.message = error.message || "Unable to update access.";
+      userManagementState.error = true;
+      renderUserManagement();
+    }
+  }
+
+  function openUserManagement() {
+    if (!hubAccessState.currentUser.isAdmin) {
+      return;
+    }
+    if (!userManagementState.selectedUserEmail) {
+      userManagementState.selectedUserEmail = hubAccessState.currentUser.email || HUB_REQUEST_ADMIN_EMAIL;
+    }
+    userManagementState.message = "";
+    userManagementState.error = false;
+    renderUserManagement();
   }
 
   function renderInline(text) {
@@ -1543,17 +1940,59 @@
     window.location.href = popupUrl.toString();
   }
 
+  function applyAccessState() {
+    const allowedApps = Array.isArray(hubAccessState.currentUser.apps) ? hubAccessState.currentUser.apps : [];
+    appScopedButtons.forEach(function (element) {
+      const appId = element.getAttribute("data-app-id") || "";
+      const allowed = canAccessApp(appId);
+      element.hidden = !allowed;
+      if ("disabled" in element) {
+        element.disabled = !allowed;
+      }
+    });
+
+    if (userManagementBtnEl) {
+      userManagementBtnEl.hidden = !hubAccessState.currentUser.isAdmin;
+    }
+
+    if (accessSummaryMessageEl) {
+      if (!allowedApps.length) {
+        accessSummaryMessageEl.hidden = false;
+        accessSummaryMessageEl.textContent =
+          "No hub applications are assigned to your account. Only " +
+          HUB_REQUEST_ADMIN_EMAIL +
+          " currently has access by default. Contact that administrator to assign applications.";
+      } else {
+        accessSummaryMessageEl.hidden = false;
+        accessSummaryMessageEl.textContent =
+          "Accessible applications: " +
+          allowedApps.map(getAppLabel).join(", ") +
+          ".";
+      }
+    }
+
+    const nextView = resolveAccessibleView(activeViewId);
+    if (nextView !== activeViewId) {
+      activateView(nextView);
+    }
+  }
+
   function activateView(viewId) {
-    activeViewId = viewId;
-    persistActiveView(viewId);
+    const nextViewId = resolveAccessibleView(viewId);
+    if (!canAccessView(nextViewId) && nextViewId !== "platform-briefing") {
+      return;
+    }
+
+    activeViewId = nextViewId;
+    persistActiveView(nextViewId);
 
     appViews.forEach(function (view) {
-      view.classList.toggle("appView--active", view.id === viewId);
+      view.classList.toggle("appView--active", view.id === nextViewId);
     });
 
     viewTargetButtons.forEach(function (button) {
       if (button.classList.contains("navItem")) {
-        button.classList.toggle("navItem--active", button.getAttribute("data-view-target") === viewId);
+        button.classList.toggle("navItem--active", button.getAttribute("data-view-target") === nextViewId);
       }
     });
     if (!hubFeedbackOverlayEl?.hidden) {
@@ -1561,17 +2000,17 @@
       renderHubFeedbackForm();
     }
 
-    if (viewId === "troubleshooting-platform") {
+    if (nextViewId === "troubleshooting-platform") {
       promptEl.focus();
       return;
     }
 
-    if (viewId === "integration-sow-platform" && integrationSowFileEl) {
+    if (nextViewId === "integration-sow-platform" && integrationSowFileEl) {
       integrationSowFileEl.focus();
       return;
     }
 
-    if (viewId === "subject-matter-expert" && smePromptInputEl) {
+    if (nextViewId === "subject-matter-expert" && smePromptInputEl) {
       smePromptInputEl.focus();
     }
   }
@@ -1628,6 +2067,9 @@
     if (hubFeedbackAdminBtnEl) {
       hubFeedbackAdminBtnEl.hidden = !isHubRequestAdminClient(user);
     }
+    if (userManagementBtnEl) {
+      userManagementBtnEl.hidden = !isHubRequestAdminClient(user);
+    }
     try {
       const hubAuthUser = fetchedUser || storedUser
         ? {
@@ -1657,7 +2099,9 @@
       } else {
         frameUrl.searchParams.delete("user_email");
       }
-      if (trainingFrameEl.getAttribute("src") !== frameUrl.toString()) {
+      if (!canAccessApp("training-platform")) {
+        trainingFrameEl.removeAttribute("src");
+      } else if (trainingFrameEl.getAttribute("src") !== frameUrl.toString()) {
         trainingFrameEl.src = frameUrl.toString();
       }
     }
@@ -1853,6 +2297,9 @@
     if (hubFeedbackBtnEl) {
       hubFeedbackBtnEl.addEventListener("click", openHubFeedbackForm);
     }
+    if (userManagementBtnEl) {
+      userManagementBtnEl.addEventListener("click", openUserManagement);
+    }
     if (hubFeedbackAdminBtnEl) {
       hubFeedbackAdminBtnEl.addEventListener("click", openHubFeedbackAdmin);
     }
@@ -2012,6 +2459,9 @@
         return;
       }
       applyAuthState(state);
+      if (state.authenticated || state.user) {
+        await loadHubAccessControl({ silent: true });
+      }
     } catch {
       applyAuthState({
         authenticated: false,

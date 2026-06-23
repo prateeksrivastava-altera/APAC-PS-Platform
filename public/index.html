@@ -24,19 +24,20 @@
 
           <div class="navSection navSection--apps">
             <div class="navDivider">Applications</div>
-            <button class="navItem" type="button" data-view-target="troubleshooting-platform">
+            <button class="navItem" type="button" data-view-target="troubleshooting-platform" data-app-id="troubleshooting-platform">
               Troubleshooting Platform
             </button>
 
-            <button class="navItem" type="button" data-view-target="training-platform">
+            <button class="navItem" type="button" data-view-target="training-platform" data-app-id="training-platform">
               Training Platform
             </button>
 
-            <div class="navGroup navGroup--sme">
+            <div class="navGroup navGroup--sme" data-app-id="subject-matter-expert">
               <button
                 id="smeNavToggle"
                 class="navItem navItem--toggle"
                 type="button"
+                data-app-id="subject-matter-expert"
                 aria-expanded="false"
                 aria-controls="smeNavSubmenu"
               >
@@ -63,7 +64,7 @@
           <div class="navSectionUpcoming">
             <div class="navDivider">Upcoming Apps</div>
 
-            <button class="navItem navItem--upcoming" type="button" data-view-target="integration-sow-platform">
+            <button class="navItem navItem--upcoming" type="button" data-view-target="integration-sow-platform" data-app-id="integration-sow-platform">
               SOW to Design (Integration)
             </button>
 
@@ -111,6 +112,7 @@
             <div class="mainHeaderActions">
               <div class="mainHeaderTitleTools">
                 <button id="hubFeedbackBtn" class="titleActionButton titleActionButton--report" type="button" title="Report bug or enhancement" aria-label="Report bug or enhancement">REPORT BUG/ENHANCEMENT</button>
+                <button id="userManagementBtn" class="titleActionButton" type="button" title="Manage application access" aria-label="Manage application access" hidden>User Management</button>
                 <button id="hubFeedbackAdminBtn" class="titleActionButton" type="button" title="View bug and enhancement requests" aria-label="View bug and enhancement requests" hidden>View Requests</button>
               </div>
               <div id="mainHeaderIdentity" class="widgetIdentity mainHeaderIdentity" hidden>
@@ -141,6 +143,7 @@
                     This hub brings APAC Professional Services delivery tools into one workspace so teams can move between support,
                     SME guidance, training, drafting, and improvement tracking without leaving the application.
                   </p>
+                  <p id="accessSummaryMessage" class="boardText boardText--notice" hidden></p>
                 </div>
               </div>
 
@@ -173,7 +176,7 @@
             </section>
           </section>
 
-          <section id="troubleshooting-platform" class="appView">
+          <section id="troubleshooting-platform" class="appView" data-app-id="troubleshooting-platform">
             <section class="workspaceBoard">
               <div class="boardHeader">
                 <div>
@@ -270,7 +273,7 @@
             </section>
           </section>
 
-          <section id="training-platform" class="appView">
+          <section id="training-platform" class="appView" data-app-id="training-platform">
             <section class="workspaceBoard">
               <div class="boardHeader">
                 <div>
@@ -293,7 +296,7 @@
             </section>
           </section>
 
-            <section id="subject-matter-expert" class="appView">
+            <section id="subject-matter-expert" class="appView" data-app-id="subject-matter-expert">
               <section class="workspaceBoard">
                 <div class="boardHeader">
                   <div>
@@ -345,7 +348,7 @@
             </section>
           </section>
 
-          <section id="integration-sow-platform" class="appView">
+          <section id="integration-sow-platform" class="appView" data-app-id="integration-sow-platform">
             <section class="workspaceBoard">
               <div class="boardHeader">
                 <div>
@@ -403,6 +406,7 @@
         </div>
         <div id="hubFeedbackOverlay" class="hubOverlay" hidden></div>
         <div id="hubFeedbackAdminOverlay" class="hubOverlay" hidden></div>
+        <div id="userManagementOverlay" class="hubOverlay" hidden></div>
       </main>
     </div>
 

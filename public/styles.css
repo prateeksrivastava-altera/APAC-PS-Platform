@@ -779,6 +779,15 @@ h3 {
   box-shadow: 0 14px 26px rgba(143, 35, 126, 0.3);
 }
 
+.boardText--notice {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid rgba(91, 75, 219, 0.16);
+  border-radius: 14px;
+  background: rgba(91, 75, 219, 0.08);
+  color: var(--primary-strong);
+}
+
 .hubOverlay {
   position: fixed;
   inset: 0;
@@ -946,6 +955,93 @@ h3 {
 .hubFeedbackTable td textarea {
   min-height: 82px;
   resize: vertical;
+}
+
+.userManagementCard {
+  width: min(1080px, 96vw);
+}
+
+.userManagementGrid {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.92fr) minmax(440px, 1fr);
+  gap: 20px;
+}
+
+.userManagementPanel {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.userManagementPanelTitle {
+  font-size: 1.02rem;
+  font-weight: 800;
+  color: var(--primary-strong);
+}
+
+.userManagementLabel,
+.userManagementBoxLabel {
+  font-size: 0.83rem;
+  font-weight: 700;
+  color: var(--muted-strong);
+}
+
+.userManagementList {
+  width: 100%;
+  min-height: 280px;
+  border: 2px solid rgba(29, 23, 65, 0.14);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #faf8ff 100%);
+  color: var(--text);
+  padding: 10px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.userManagementList option {
+  padding: 10px 12px;
+  border-radius: 10px;
+}
+
+.userManagementList option:checked {
+  background: linear-gradient(135deg, rgba(91, 75, 219, 0.18) 0%, rgba(91, 75, 219, 0.32) 100%);
+  color: var(--text);
+}
+
+.userManagementAddRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.userManagementActionBtn {
+  min-width: 90px;
+}
+
+.userManagementDualColumn {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.userManagementBoxWrap {
+  display: grid;
+  gap: 8px;
+}
+
+.userManagementArrowColumn {
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+}
+
+.userManagementArrowBtn {
+  width: 52px;
+  min-height: 48px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 800;
 }
 
 .workspacePill {
@@ -2011,6 +2107,15 @@ body.widgetMode .widgetIdentityName {
   .workspaceActions {
     justify-items: start;
   }
+
+  .userManagementGrid,
+  .userManagementDualColumn {
+    grid-template-columns: 1fr;
+  }
+
+  .userManagementArrowColumn {
+    grid-auto-flow: column;
+  }
 }
 
 @media (max-width: 760px) {
@@ -2028,6 +2133,10 @@ body.widgetMode .widgetIdentityName {
 
   .mainHeaderTitleRow {
     gap: 10px;
+  }
+
+  .mainHeaderTitleTools {
+    flex-wrap: wrap;
   }
 
   .mainHeaderLogo {
@@ -2053,5 +2162,9 @@ body.widgetMode .widgetIdentityName {
   .composer {
     padding-left: 16px;
     padding-right: 16px;
+  }
+
+  .userManagementAddRow {
+    grid-template-columns: 1fr;
   }
 }
