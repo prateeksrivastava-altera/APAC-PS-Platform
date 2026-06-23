@@ -4,38 +4,94 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>APAC Professional Services Platform</title>
+    <link rel="icon" type="image/png" href="/resources/Altera_logo_rgb_graphicmark.png">
     <link rel="stylesheet" href="/styles.css">
   </head>
   <body>
     <div class="appShell">
       <aside class="sidebar">
         <div class="sidebarBrand">
-          <div class="brandMark">AP</div>
+          <img class="brandMark brandMarkImage" src="/resources/Altera_logo_rgb_graphicmark.png" alt="Altera">
           <div class="brandTitle">APAC Professional Services Application Hub</div>
         </div>
 
         <nav class="sidebarNav" aria-label="Platform apps">
-          <button class="navItem navItem--active" type="button" data-view-target="platform-briefing">
-            Platform Briefing
-            <span class="navItemMeta">Overview and delivery signals</span>
-          </button>
+          <div class="navSection navSection--briefing">
+            <button class="navItem navItem--active" type="button" data-view-target="platform-briefing">
+              Platform Briefing
+            </button>
+          </div>
 
-          <button class="navItem" type="button" data-view-target="troubleshooting-platform">
-            Troubleshooting Platform
-            <span class="navItemMeta">Powered by Matcha</span>
-          </button>
+          <div class="navSection navSection--apps">
+            <div class="navDivider">Applications</div>
+            <button class="navItem" type="button" data-view-target="troubleshooting-platform">
+              Troubleshooting Platform
+            </button>
 
-          <button class="navItem" type="button" data-view-target="training-platform">
-            Training Platform
-            <span class="navItemMeta">APAC AI enablement workspace</span>
-          </button>
+            <button class="navItem" type="button" data-view-target="training-platform">
+              Training Platform
+            </button>
 
-          <div class="navDivider">Upcoming</div>
+            <div class="navGroup navGroup--sme">
+              <button
+                id="smeNavToggle"
+                class="navItem navItem--toggle"
+                type="button"
+                aria-expanded="false"
+                aria-controls="smeNavSubmenu"
+              >
+                <span>Subject Matter Expert</span>
+                <span class="navToggleChevron" aria-hidden="true">&#8250;</span>
+              </button>
+              <div id="smeNavSubmenu" class="navSubmenu navSubmenu--collapsed" aria-label="Subject Matter Expert roles">
+                <button class="navSubItem navSubItem--active" type="button" data-sme-role="integration-consultant">
+                  Integration Consultant
+                </button>
+                <button class="navSubItem" type="button" data-sme-role="systems-engineering">
+                  Systems Engineering
+                </button>
+                <button class="navSubItem" type="button" data-sme-role="implementation-consultant">
+                  Implementation Consultant
+                </button>
+                <button class="navSubItem" type="button" data-sme-role="project-manager">
+                  Project Manager
+                </button>
+              </div>
+            </div>
+          </div>
 
-          <button class="navItem navItem--disabled" type="button" disabled>
-            Test Script Generator
-          </button>
+          <div class="navSectionUpcoming">
+            <div class="navDivider">Upcoming Apps</div>
+
+            <button class="navItem navItem--upcoming" type="button" data-view-target="integration-sow-platform">
+              SOW to Design (Integration)
+            </button>
+
+            <button class="navItem navItem--disabled" type="button" disabled>
+              Test Script Generator
+            </button>
+          </div>
         </nav>
+
+        <section class="sidebarLinks" aria-labelledby="useful-links-title">
+          <div id="useful-links-title" class="navDivider">Useful Links to Other Areas</div>
+          <a
+            class="sidebarLinkItem"
+            href="https://pmo.alteraapacai.dev/login"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            APAC Margin Analysis
+          </a>
+          <a
+            class="sidebarLinkItem"
+            href="https://alteradh.sharepoint.com/teams/APACProfessionalServices/SitePages/Home.aspx"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            APAC Professional Services SharePoint
+          </a>
+        </section>
 
         <div class="sidebarFooter">
           <div class="sidebarFooterUser">Prateek Workspace</div>
@@ -47,7 +103,22 @@
       <main class="mainStage">
         <header class="mainHeader">
           <p class="mainHeaderEyebrow">APAC Professional Services</p>
-          <h1 class="mainHeaderTitle">Application Hub</h1>
+          <div class="mainHeaderTitleRow">
+            <div class="mainHeaderTitleGroup">
+              <img class="mainHeaderLogo" src="/resources/Altera_logo_rgb_graphicmark.png" alt="Altera">
+              <h1 class="mainHeaderTitle">Application Hub</h1>
+            </div>
+            <div class="mainHeaderActions">
+              <div class="mainHeaderTitleTools">
+                <button id="hubFeedbackBtn" class="titleActionButton titleActionButton--report" type="button" title="Report bug or enhancement" aria-label="Report bug or enhancement">REPORT BUG/ENHANCEMENT</button>
+                <button id="hubFeedbackAdminBtn" class="titleActionButton" type="button" title="View bug and enhancement requests" aria-label="View bug and enhancement requests" hidden>View Requests</button>
+              </div>
+              <div id="mainHeaderIdentity" class="widgetIdentity mainHeaderIdentity" hidden>
+                <span id="mainHeaderIdentityAvatar" class="widgetIdentityAvatar">PS</span>
+                <span id="mainHeaderIdentityName" class="widgetIdentityName">User</span>
+              </div>
+            </div>
+          </div>
         </header>
 
         <div class="contentRail">
@@ -60,53 +131,42 @@
                   Overview of delivery posture, operating signals, and the currently live application portfolio.
                 </p>
               </div>
-              <button class="primaryButton" type="button" data-view-target="troubleshooting-platform">Open Troubleshooting Platform</button>
             </div>
-
-            <section class="greetingCard">
-              <div class="greetingIdentity">
-                <div class="greetingAvatar">P</div>
-                <div>
-                  <div class="greetingLabel">Good morning</div>
-                  <div class="greetingName">APAC Professional Services</div>
-                </div>
-              </div>
-            </section>
 
             <section class="briefingBoard">
               <div class="boardHeader">
                 <div>
                   <p class="sectionEyebrow">Command Centre</p>
-                  <h2>Platform briefing</h2>
                   <p class="boardText">
-                    This hub is the front door for APAC Professional Services applications. It is intended to consolidate
-                    troubleshooting, enablement, script generation, and other delivery accelerators behind one consistent interface.
+                    This hub brings APAC Professional Services delivery tools into one workspace so teams can move between support,
+                    SME guidance, training, drafting, and improvement tracking without leaving the application.
                   </p>
                 </div>
               </div>
 
               <div class="briefingContent">
                 <article class="briefingCard">
-                  <h3>Current live capability</h3>
+                  <h3>Troubleshooting And SME Support</h3>
                   <p>
-                    The hub currently exposes two live applications: Troubleshooting Platform for Matcha-guided issue triage
-                    and Training Platform for APAC AI onboarding, learning paths, and mentor-led enablement.
+                    The Troubleshooting Platform supports Matcha-guided issue triage with chat, screenshot review, and knowledge-base enhancement.
+                    The Subject Matter Expert area provides role-based guidance for Integration Consultant and Systems Engineering workflows,
+                    with separate session context for each SME role.
                   </p>
                 </article>
 
                 <article class="briefingCard">
-                  <h3>How the platform is structured</h3>
+                  <h3>Training And Enablement</h3>
                   <p>
-                    Each application appears as a selectable item in the left navigation. Selecting an app loads its
-                    dedicated experience into the main panel so users stay within one shared APAC PS workspace.
+                    The Training Platform supports SSO-based learner profiles, manager-linked reporting, role-based access for trainees,
+                    trainers, and admins, contributor-managed training content, assessments, mentor sessions, and guided onboarding journeys.
                   </p>
                 </article>
 
                 <article class="briefingCard">
-                  <h3>Planned expansion</h3>
+                  <h3>Delivery Accelerators And Feedback</h3>
                   <p>
-                    Additional accelerators such as Test Script Generator remain visible in the
-                    navigation to show roadmap intent, but they stay disabled until their workflows are implemented.
+                    SOW to Design is available for integration drafting, future accelerators can be staged in the same navigation,
+                    and the hub includes built-in bug and enhancement reporting so users can raise improvement requests directly against the active application.
                   </p>
                 </article>
               </div>
@@ -118,20 +178,12 @@
               <div class="boardHeader">
                 <div>
                   <p class="sectionEyebrow">Live Workspace</p>
-                  <h2>Troubleshooting Platform</h2>
-                  <p class="boardText">
-                    Powered by Matcha. Use the sign-in control here only while tenant approval is pending.
-                  </p>
+                  <div class="widgetTitleRow">
+                    <h2>Troubleshooting Platform</h2>
+                  </div>
                 </div>
                 <div class="workspaceActions">
-                  <div class="workspacePill">Azure-hosted Matcha assistant</div>
-                  <div id="authBox" class="authBox authBox--inline">
-                    <div class="authTestingLabel">Microsoft sign-in test</div>
-                    <button id="authBtn" class="authPill authPill--loggedOut" type="button" aria-expanded="false">
-                      <span class="authAvatar">A</span>
-                      <span class="authName">Sign in for testing</span>
-                    </button>
-                  </div>
+                  <button id="popoutTroubleshooterBtn" class="ghostButton" type="button">Pop out</button>
                 </div>
               </div>
 
@@ -140,9 +192,39 @@
                   <div class="panelHeader">
                     <div>
                       <h3>Ask the assistant</h3>
-                      <p id="chatHint" class="hint">Chat is ready. Microsoft sign-in is optional, and you can also attach screenshots for Matcha to review.</p>
+                      <p id="chatHint" class="hint">Chat is ready. You can also attach screenshots for Matcha to review.</p>
+                    </div>
+                    <div class="widgetActions">
+                      <button id="archiveChatBtn" class="ghostButton actionIconButton" type="button" title="Archive chat" aria-label="Archive chat">&#10515;</button>
+                      <button id="refreshChatBtn" class="ghostButton actionIconButton" type="button" title="Refresh chat" aria-label="Refresh chat">&#8635;</button>
+                      <a id="openFullHubLink" class="ghostButton widgetOpenLink" href="/">Open Full Hub</a>
                     </div>
                   </div>
+
+                  <section id="kbEnhancer" class="kbMini">
+                    <button id="kbEnhancerToggle" class="kbMiniToggle" type="button" aria-expanded="false" aria-controls="kbEnhancerBody">
+                      <span>Enhance KB</span>
+                      <span class="kbMiniChevron" aria-hidden="true">&#8250;</span>
+                    </button>
+                    <div id="kbEnhancerBody" class="kbMiniBody" hidden aria-hidden="true">
+                      <div class="kbMiniRow">
+                        <a class="kbMiniLink" href="/resources/Issue_productName_IssueTitle-Template.docx" download>Template</a>
+                        <select id="kbProductSelect" class="kbMiniSelect" aria-label="Select product">
+                          <option value="sunrise">Sunrise</option>
+                          <option value="opal">Opal</option>
+                          <option value="patient-flow">Patient Flow</option>
+                        </select>
+                      </div>
+                      <div id="kbDropZone" class="kbMiniDropZone" tabindex="0">
+                        <span id="kbFileLabel">Drop DOCX here or click to select</span>
+                        <input id="kbFileInput" class="uploadInput uploadInput--hidden" type="file" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+                      </div>
+                      <div class="kbMiniRow kbMiniRow--actions">
+                        <button id="kbUploadBtn" class="ghostButton" type="button">Upload</button>
+                        <span id="kbStatus" class="kbMiniStatus" aria-live="polite"></span>
+                      </div>
+                    </div>
+                  </section>
 
                   <div id="chatTranscript" class="transcript">
                     <article class="message message--assistant">
@@ -156,13 +238,13 @@
                   <form id="chatForm" class="composer">
                     <label class="composerLabel" for="promptInput">Troubleshooting prompt</label>
                     <div id="composerDropZone" class="composerDropZone">
-                      <textarea
-                        id="promptInput"
-                        name="prompt"
-                        rows="5"
-                        placeholder="Describe the issue here. Press Enter to send, Shift+Enter for a new line. Drag screenshots into this area or use the + button."
-                        required
-                      ></textarea>
+                        <textarea
+                          id="promptInput"
+                          name="prompt"
+                          rows="2"
+                          placeholder="Describe the issue here. Press Enter to send, Shift+Enter for a new line. Drag screenshots into this area or use the + button."
+                          required
+                        ></textarea>
                       <div class="composerToolbar">
                         <label class="attachButton" for="screenshotInput" title="Attach screenshots">+</label>
                         <button id="sendBtn" class="sendIconButton" type="submit" title="Send">
@@ -173,6 +255,16 @@
                       <div id="screenshotList" class="screenshotList"></div>
                     </div>
                   </form>
+
+                  <section class="archivePanel">
+                    <div class="archivePanelHeader">
+                      <h4>Archived chats</h4>
+                      <span id="archiveCount" class="archiveCount">0</span>
+                    </div>
+                    <div id="archiveList" class="archiveList">
+                      <div class="archiveEmpty">No archived chats yet.</div>
+                    </div>
+                  </section>
                 </section>
               </div>
             </section>
@@ -188,22 +280,129 @@
                     APAC AI enablement workspace for onboarding, curated training paths, mentor interactions, and training administration.
                   </p>
                 </div>
-                <div class="workspaceActions">
-                  <div class="workspacePill">Embedded inside Application Hub</div>
-                </div>
               </div>
 
               <div class="embeddedAppFrameWrap">
                 <iframe
                   class="embeddedAppFrame"
-                  src="/training-platform/"
+                  data-src="/training-platform/"
                   title="APAC AI Training Platform"
                   loading="lazy"
                 ></iframe>
               </div>
             </section>
           </section>
+
+            <section id="subject-matter-expert" class="appView">
+              <section class="workspaceBoard">
+                <div class="boardHeader">
+                  <div>
+                    <p class="sectionEyebrow">Live Workspace</p>
+                    <h2>Subject Matter Expert</h2>
+                  </div>
+                  <div class="workspaceActions">
+                    <button id="popoutSmeBtn" class="ghostButton" type="button">Pop out</button>
+                  </div>
+                </div>
+
+                <div class="workspaceLayout">
+                  <section class="chatPanel">
+                  <div class="panelHeader">
+                    <div>
+                      <h3 id="smePanelTitle">Integration Consultant</h3>
+                    </div>
+                  </div>
+
+                  <div id="smeTranscript" class="transcript">
+                    <article class="message message--assistant">
+                      <div class="messageRole">Assistant</div>
+                      <div class="messageBody">
+                        Ask your Integration Consultant question.
+                      </div>
+                    </article>
+                  </div>
+
+                  <form id="smeForm" class="composer">
+                    <label class="composerLabel" for="smePromptInput">SME prompt</label>
+                    <div class="composerDropZone">
+                      <textarea
+                        id="smePromptInput"
+                        rows="2"
+                        placeholder="Ask a question for the selected SME role."
+                      ></textarea>
+                      <div class="composerToolbar">
+                        <label class="attachButton" for="smeAttachmentInput" title="Attach document or image">+</label>
+                        <button id="smeSendBtn" class="sendIconButton" type="submit" title="Send">
+                          &#9992;
+                        </button>
+                      </div>
+                      <input id="smeAttachmentInput" class="uploadInput uploadInput--hidden" type="file" accept=".pdf,.docx,.txt,.png,.jpg,.jpeg,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain,image/png,image/jpeg">
+                      <div id="smeAttachmentList" class="screenshotList"></div>
+                    </div>
+                  </form>
+                </section>
+              </div>
+            </section>
+          </section>
+
+          <section id="integration-sow-platform" class="appView">
+            <section class="workspaceBoard">
+              <div class="boardHeader">
+                <div>
+                  <p class="sectionEyebrow">Upcoming Workspace</p>
+                  <h2>SOW to Design (Integration)</h2>
+                  <p class="boardText">
+                    Uses Matcha mission <code>4050</code> to turn a signed integration Statement of Work into an
+                    implementation-ready design draft. The generated export uses the approved template at
+                    <code>public/resources/2026 Integration Design Document.docx</code>.
+                  </p>
+                </div>
+              </div>
+
+              <div class="workspaceLayout">
+                <section class="chatPanel">
+                  <div class="panelHeader">
+                    <div>
+                      <h3>Generate design draft</h3>
+                      <p class="hint">
+                        Attach the signed SOW file. The app will send it to Matcha mission <code>4050</code> and generate the design draft from that file.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div id="integrationResult" class="transcript">
+                    <article class="message message--assistant">
+                      <div class="messageRole">Assistant</div>
+                      <div class="messageBody">
+                        Attach the signed SOW to generate the Integration Design Document draft.
+                      </div>
+                    </article>
+                  </div>
+
+                  <form id="integrationForm" class="composer">
+                    <label class="composerLabel" for="integrationSowFile">Attach signed SOW</label>
+                    <input
+                      id="integrationSowFile"
+                      class="uploadInput"
+                      name="sowFile"
+                      type="file"
+                      accept=".pdf,.doc,.docx,.txt,.md"
+                    >
+                    <div id="integrationSowFileMeta" class="hint">
+                      Supported formats: PDF, DOC, DOCX, TXT, MD. Attach the signed SOW file so Matcha can read it directly.
+                    </div>
+
+                    <div class="composerActions">
+                      <button id="integrationSendBtn" class="primaryButton" type="submit">Generate Draft</button>
+                    </div>
+                  </form>
+                </section>
+              </div>
+            </section>
+          </section>
         </div>
+        <div id="hubFeedbackOverlay" class="hubOverlay" hidden></div>
+        <div id="hubFeedbackAdminOverlay" class="hubOverlay" hidden></div>
       </main>
     </div>
 

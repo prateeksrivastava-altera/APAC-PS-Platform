@@ -30,7 +30,7 @@ tar.exe -a -c -f .\altera-apac-ps-hub.zip `
   persona_improved.md `
   matcha-client.js `
   AZURE_DEPLOYMENT.md `
-  APAC_AI_Training_Platform\Website\index.html
+  APAC_AI_Training_Platform\Website
 
 az account set --subscription "SalesAustraliaQa"
 az webapp deploy `
@@ -46,4 +46,8 @@ az webapp show `
   --name "altera-apac-ps-hub" `
   --query defaultHostName
 
+|| UPDLOAD IDD Template ||
+Upload in Resources folder
+Upload in Matcha Integration SME mission > IDD Tmplate holder
 
+|| UPLOAD Troubleshooting Issue Document ||

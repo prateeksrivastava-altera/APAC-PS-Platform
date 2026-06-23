@@ -1,6 +1,6 @@
 {
   "name": "apac-ai-troubleshooting-platform",
-  "version": "1.2.0",
+  "version": "1.11.4",
   "private": true,
   "description": "APAC Professional Services Application Hub",
   "scripts": {
@@ -10,7 +10,9 @@
     "node": ">=22"
   },
   "dependencies": {
+    "@xmldom/xmldom": "^0.9.10",
     "express": "^4.21.2",
+    "jszip": "^3.10.1",
     "multer": "^1.4.5-lts.1"
   }
 }

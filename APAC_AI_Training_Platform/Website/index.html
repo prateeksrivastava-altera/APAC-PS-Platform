@@ -38,7 +38,7 @@
     .link-btn:hover { border-color: var(--blue); color: var(--blue); }
     .link-btn.logout:hover { border-color: #e53935; color: #e53935; }
     /* Auth shells */
-    .auth-wrap { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 24px; }
+    .auth-wrap { display: flex; justify-content: center; align-items: flex-start; min-height: auto; padding: 24px 24px 0; }
     .auth-card { background: #fff; width: min(760px, 95vw); padding: 32px 36px; border-radius: 22px; box-shadow: var(--shadow); border: 1px solid rgba(64, 45, 132, 0.12); }
     .auth-header { text-align: center; }
     .icon-circle { width: 62px; height: 62px; border-radius: 50%; background: rgba(91, 75, 219, 0.12); display: grid; place-items: center; color: var(--blue); margin: 0 auto 12px; }
@@ -81,6 +81,12 @@
     .group-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
     .badge { background: #dfe9ff; color: var(--blue); padding: 6px 10px; border-radius: 999px; font-size: 12px; }
     .training-row { background: #fff; border-radius: 12px; padding: 14px 16px; border: 1px solid #dfe4f0; box-shadow: 0 6px 20px rgba(16,12,49,0.05); display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; margin-top: 12px; }
+    .reports-grid { display: grid; gap: 14px; }
+    .report-card { background: var(--surface); border-radius: 14px; padding: 18px; border: 1px solid rgba(64, 45, 132, 0.10); box-shadow: inset 0 1px 0 rgba(255,255,255,0.6); }
+    .report-head { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+    .report-meta { color: #564f79; font-size: 13px; margin-top: 4px; line-height: 1.45; }
+    .report-training-group { margin-top: 14px; border-top: 1px solid rgba(64, 45, 132, 0.08); padding-top: 14px; }
+    .report-training-group:first-of-type { margin-top: 12px; }
     .train-name { font-weight: 700; color: #1f2a44; margin-bottom: 4px; }
     .status-chip { border: 1px solid #dfe4ed; border-radius: 18px; padding: 6px 10px; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; color: #4b556b; }
     .status-chip.not { background: #f8fafc; }
@@ -98,17 +104,59 @@
     .phase-tab { border: 1px solid #dfe4f2; background: #f7f9fe; border-radius: 12px; padding: 8px 12px; font-size: 13px; color: #324a7a; cursor: default; display: inline-flex; gap: 8px; align-items: center; }
     .phase-tab.current { border-color: var(--blue); background: #e7edff; color: var(--blue); }
     .phase-tab.done { border-color: #cfead7; background: #f2fbf5; color: #1c8c4a; }
-    .chat-shell { border: 1px solid var(--line); border-radius: 18px; overflow: hidden; background: #fff; display: flex; flex-direction: column; height: 560px; }
-    .chat-box { flex: 1; overflow: auto; background: #faf9fe; padding: 20px; }
+    .phase-tab.phase-tab--clickable { cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease; }
+    .phase-tab.phase-tab--clickable:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(16,12,49,0.08); border-color: #9fb4f2; }
+    .training-overview { display: grid; gap: 14px; margin-top: 10px; }
+    .training-overview-hero { padding: 16px 18px; border-radius: 16px; background: linear-gradient(135deg, #f0ecff 0%, #fbfaff 100%); border: 1px solid rgba(65, 48, 199, 0.14); box-shadow: inset 0 1px 0 rgba(255,255,255,0.75); }
+    .training-overview-kicker { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); }
+    .training-overview-title { margin-top: 6px; font-size: 22px; font-weight: 800; letter-spacing: -0.03em; color: var(--blue-dark); }
+    .training-overview-text { margin-top: 8px; color: #4f4873; font-size: 14px; line-height: 1.6; }
+    .training-overview-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+    .training-overview-phase { padding: 16px; border-radius: 16px; border: 1px solid #dfe3f2; background: linear-gradient(180deg, #ffffff 0%, #f8f6ff 100%); box-shadow: 0 10px 22px rgba(16,12,49,0.06); }
+    .training-overview-phase-top { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+    .training-overview-phase-label { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: var(--blue); }
+    .training-overview-phase-name { margin-top: 6px; font-size: 17px; font-weight: 800; color: #211852; line-height: 1.2; overflow-wrap: anywhere; word-break: break-word; }
+    .training-overview-phase-count { padding: 6px 10px; border-radius: 999px; background: #ebe7ff; color: var(--blue-dark); font-size: 11px; font-weight: 800; white-space: nowrap; }
+    .training-overview-phase-list { margin: 12px 0 0; padding: 0; list-style: none; color: #534b78; display: grid; gap: 10px; }
+    .training-overview-activity { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 12px; align-items: start; padding: 10px 12px; border-radius: 14px; background: #ffffff; border: 1px solid #e1e5f2; }
+    .training-overview-activity-label { display: inline-flex; align-items: center; justify-content: flex-start; padding: 8px 10px; border-radius: 12px; background: #ece9ff; color: var(--blue-dark); font-size: 11px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
+    .training-overview-activity-text { color: #3f3962; line-height: 1.5; overflow-wrap: anywhere; word-break: break-word; min-width: 0; }
+    .chat-shell { border: 1px solid rgba(28, 31, 39, 0.28); border-radius: 18px; overflow: hidden; background: #2b2f39; display: flex; flex-direction: column; height: 560px; box-shadow: 0 14px 30px rgba(16,12,49,0.12); }
+    .chat-box { flex: 1; overflow: auto; background: linear-gradient(180deg, #343946 0%, #2a2f3a 100%); padding: 20px; }
     .msg { padding: 12px 14px; border-radius: 12px; margin-bottom: 10px; max-width: 80%; box-shadow: 0 6px 18px rgba(27,63,140,0.07); }
-    .bot { background: #eef3ff; color: #1b3f8c; }
-    .user { background: #dff7e8; color: #0d5228; margin-left: auto; }
-    .timestamp { display: block; font-size: 11px; color: #7a859d; margin-top: 4px; }
-    .chat-input { display: flex; gap: 10px; padding: 12px; border-top: 1px solid #e3e8f3; background: #fff; align-items: center; }
-    .chat-input input { flex: 1; background: #f9fbff; border-radius: 10px; border: 1px solid #d8deed; padding: 10px 12px; }
+    .bot { background: #454b5b; color: #f8f9fc; }
+    .user { background: #d8cdfc; color: #1d1448; margin-left: auto; }
+    .timestamp { display: block; font-size: 11px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+    .chat-input { display: flex; gap: 10px; padding: 12px; border-top: 1px solid rgba(255,255,255,0.08); background: #262a33; align-items: center; }
+    .chat-input input { flex: 1; background: #1e2129; color: #f7f8fc; border-radius: 10px; border: 1px solid rgba(255,255,255,0.16); padding: 10px 12px; }
+    .chat-input input::placeholder { color: rgba(255,255,255,0.56); }
+    .chat-input input:disabled { opacity: 0.55; cursor: not-allowed; }
     .chat-input button { width: 120px; border-radius: 10px; }
+    .chat-input button:disabled { opacity: 0.55; cursor: not-allowed; }
     .light-btn { padding: 9px 13px; border-radius: 10px; border: 1px solid #cfd7ea; background: #fff; color: #261f47; cursor: pointer; font-size: 13px; font-weight: 600; }
     .light-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .danger-btn { color: #c62828; border-color: #f5d7d7; background: #fff7f7; }
+    .danger-btn:hover { border-color: #e53935; color: #e53935; }
+    .admin-user-modal-backdrop { position: fixed; inset: 0; background: rgba(18, 13, 51, 0.42); display: grid; place-items: center; padding: 24px; z-index: 1000; }
+    .admin-user-modal { width: min(760px, 96vw); max-height: calc(100vh - 48px); overflow: auto; background: #fff; border-radius: 20px; border: 1px solid var(--line); box-shadow: 0 24px 60px rgba(39, 24, 114, 0.22); padding: 22px; }
+    .admin-user-modal-header { display: flex; justify-content: space-between; align-items: start; gap: 12px; margin-bottom: 14px; }
+    .admin-user-modal-title { font-weight: 700; font-size: 18px; }
+    .admin-user-modal-sub { color: var(--muted); font-size: 13px; margin-top: 4px; }
+    .admin-user-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 16px; flex-wrap: wrap; }
+    .label-with-help { display: inline-flex; align-items: center; gap: 8px; }
+    .hover-help { display:inline-grid; place-items:center; width:18px; height:18px; border-radius:999px; border:1px solid #cdbff4; background:#f5f0ff; color:#4b2a94; font-size:11px; font-weight:800; cursor:help; }
+    .training-help-layout { display:grid; grid-template-columns: 220px minmax(0, 1fr); gap: 20px; align-items:start; }
+    .training-help-topics { position: sticky; top: 0; align-self: start; border:1px solid #e1daf6; border-radius:16px; padding:14px; background:linear-gradient(180deg, #faf7ff 0%, #f3f6ff 100%); display:grid; gap:8px; }
+    .training-help-topic-title { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6956b0; }
+    .training-help-topics a { text-decoration:none; color:#2d2356; font-weight:700; padding:8px 10px; border-radius:10px; border:1px solid transparent; }
+    .training-help-topics a:hover { background:#ffffff; border-color:#d9d0f7; color:#4b2a94; }
+    .training-help-content { display:grid; gap:18px; font-size:14px; color:var(--text); line-height:1.6; }
+    .training-help-section { scroll-margin-top: 12px; }
+    @media (max-width: 900px) {
+      .training-help-layout { grid-template-columns: 1fr; }
+      .training-help-topics { position: static; }
+    }
+    .field textarea { border: none; background: transparent; outline: none; width: 100%; font-size: 14px; color: var(--text); font-family: inherit; resize: vertical; min-height: 90px; }
     .phase-builder { margin-top: 18px; border: 1px solid #d9def0; border-radius: 18px; padding: 18px; background: linear-gradient(180deg, #fcfbff 0%, #f6f4fd 100%); }
     .phase-builder-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; }
     .phase-card { background: #fff; border: 1px solid #dbe1f0; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 8px 22px rgba(16,12,49,0.05); }
@@ -116,31 +164,70 @@
     .phase-title { display: flex; align-items: center; gap: 10px; flex: 1; min-width: min(100%, 460px); }
     .phase-name-input { width: 100%; border: 1px solid #cad3ea; border-radius: 12px; padding: 11px 12px; background: #fff; font-size: 15px; color: var(--text); font-weight: 600; }
     .phase-tools { display: flex; gap: 10px; flex-wrap: wrap; }
-    .chip-btn { border: 1px solid #cad3ea; background: #fff; border-radius: 999px; padding: 7px 12px; font-size: 12px; cursor: pointer; color: #2f2757; }
-    .chip-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .chip-btn { border: 1px solid var(--activity-border, #cad3ea); background: var(--activity-soft, #fff); border-radius: 999px; padding: 7px 12px; font-size: 12px; cursor: pointer; color: var(--activity-text, #2f2757); font-weight: 600; }
+    .chip-btn:hover { border-color: var(--activity-border-strong, var(--blue)); color: var(--activity-text, var(--blue)); transform: translateY(-1px); }
     .phase-items { display: grid; gap: 10px; margin-top: 12px; }
-    .phase-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid #dde3f0; background: #fcfcff; }
+    .phase-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; border-radius: 14px; border: 1px solid var(--activity-border, #dde3f0); background: linear-gradient(180deg, var(--activity-base, #fcfcff) 0%, #ffffff 100%); box-shadow: inset 4px 0 0 var(--activity-accent, transparent); }
     .phase-item-body { display: flex; flex-direction: column; gap: 10px; flex: 1; min-width: 0; }
     .phase-item-config { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
     .phase-item-config select, .phase-item-config input, .phase-item-config textarea { width: 100%; border: 1px solid #cad3ea; border-radius: 10px; padding: 8px 10px; background: #fff; font-size: 13px; font-family: inherit; color: var(--text); }
     .file-name { background: #f1f4fb; color: #4b556b; }
-    .assessment-block { border: 1px dashed #cad3ea; border-radius: 12px; padding: 12px; background: #f8faff; }
-    .assessment-header { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
-    .assessment-question { border: 1px solid #e6ebf5; border-radius: 10px; padding: 8px; background: #fff; margin-top: 8px; }
-    .assessment-top { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center; }
-    .assessment-options { margin-top: 8px; display: grid; gap: 6px; }
-    .assessment-option { display: grid; grid-template-columns: 1fr auto auto; gap: 8px; align-items: center; }
+    .assessment-block { border: 1px solid #d9d0f7; border-radius: 18px; padding: 14px; background: linear-gradient(180deg, #fbf9ff 0%, #f4f6ff 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.75); display: grid; gap: 12px; }
+    .assessment-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 14px; border-radius: 14px; background: linear-gradient(135deg, #efe8ff 0%, #eef4ff 100%); border: 1px solid #d9d0f7; }
+    .assessment-question { border: 1px solid #dfe5f5; border-radius: 16px; padding: 14px; background: linear-gradient(180deg, #ffffff 0%, #fdfcff 100%); margin-top: 4px; box-shadow: 0 10px 22px rgba(16,12,49,0.05); display: grid; gap: 10px; }
+    .assessment-question.dragging { opacity: 0.55; }
+    .assessment-header-actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
+    .assessment-total-wrap { display:flex; align-items:center; gap:10px; }
+    .assessment-total-caption { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6956b0; white-space: nowrap; }
+    .assessment-total-input { width: 110px; border: 1px solid #cad3ea; border-radius: 12px; padding: 10px 12px; font-size: 18px; font-weight: 800; text-align: center; color: #241a55; background: #f4f6ff; }
+    .assessment-question.is-collapsed .assessment-top,
+    .assessment-question.is-collapsed .assessment-options { display: none; }
+    .assessment-top { display: grid; grid-template-columns: 1fr auto auto auto; gap: 8px; align-items: center; padding-bottom: 10px; border-bottom: 1px solid #ece7ff; }
+    .assessment-question-head { display:flex; justify-content:space-between; align-items:flex-start; gap:14px; }
+    .assessment-question-label { display: flex; align-items: center; gap: 10px; font-weight: 800; color: #241a55; font-size: 15px; letter-spacing: -0.01em; }
+    .assessment-section-title { display: flex; align-items: center; gap: 10px; font-weight: 800; color: #241a55; margin-top: 4px; }
+    .assessment-drag-handle { font-size: 13px; color: #7c88a6; cursor: grab; user-select: none; }
+    .assessment-options { margin-top: 2px; display: grid; gap: 8px; }
+    .assessment-option { display: grid; grid-template-columns: 92px minmax(0,1fr) auto auto auto; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid #ebe6ff; }
+    .assessment-option:last-child { border-bottom: none; }
+    .assessment-option-label { font-weight: 700; color: #4b2a94; }
+    .assessment-option label.training-desc { display: inline-flex; align-items: center; gap: 8px; margin: 0; padding: 6px 10px; border-radius: 999px; background: #ffffff; border: 1px solid #d8def0; color: #40385f; font-weight: 600; }
+    .assessment-option .assess-option-correct { width: 16px; height: 16px; }
+    .assessment-block .add-question-btn { background: #ffffff; border-color: #cdbff4; color: #4b2a94; }
+    .assessment-block .add-option-btn { background: linear-gradient(135deg, #f1ebff 0%, #eef4ff 100%); border-color: #cdbff4; color: #42237e; font-weight: 700; }
+    .assessment-block .add-option-btn:hover,
+    .assessment-block .add-question-btn:hover { border-color: #8b68de; color: #4b2a94; }
+    .assessment-marking { display:flex; align-items:flex-start; gap:10px; }
+    .assessment-marking-toggle { display:grid; border:2px solid #214b5a; border-radius:10px; overflow:hidden; min-width:156px; }
+    .assessment-marking-btn { border:none; padding:4px 10px; font-weight:700; font-size:12px; text-align:left; cursor:pointer; background:#fff4f4; color:#ffffff; }
+    .assessment-marking-btn.mode-combined.active { background:#58a93d; color:#ffffff; }
+    .assessment-marking-btn.mode-combined:not(.active) { background:#e7f5e1; color:#2f6f1f; }
+    .assessment-marking-btn.mode-individual.active { background:#d41212; color:#ffffff; }
+    .assessment-marking-btn.mode-individual:not(.active) { background:#fde7e7; color:#9a1d1d; }
+    .assessment-marking-input { width:84px; border:2px solid #214b5a; border-radius:0; padding:8px 10px; font-size:18px; font-weight:700; text-align:center; background:#fff; color:#241a55; }
+    .assessment-marking-input:disabled { background:#f3f5fa; color:#5b6280; }
+    .assessment-option-marks { width:78px; border:1px solid #cad3ea; border-radius:10px; padding:8px 10px; font-size:13px; font-weight:700; text-align:center; background:#fff; color:var(--text); }
+    .assessment-option-marks:disabled { background:#f3f5fa; color:#9aa1b8; }
+    .assessment-footer { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; padding: 14px; border-radius: 16px; background: linear-gradient(135deg, #fff9ef 0%, #f6f1ff 100%); border: 1px solid #eadfc0; }
+    .assessment-footer-card { display:grid; grid-template-columns:minmax(180px,1fr) 150px; align-items:stretch; gap:0; padding:0; border-radius:16px; background:#ffffff; border:1px solid #e3dbf5; box-shadow: inset 0 1px 0 rgba(255,255,255,0.8); overflow:hidden; }
+    .assessment-footer-label { font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #6956b0; }
+    .assessment-footer-display { display:grid; place-items:center; background:linear-gradient(135deg, #2b6f90 0%, #255f7e 100%); color:#ffffff; padding:10px 18px; font-size:20px; font-weight:400; letter-spacing:0.12em; text-transform:uppercase; min-height:56px; }
+    .assessment-footer-input-wrap { display:grid; place-items:center; background:#ffffff; padding:10px 14px; }
+    .assessment-footer-input { width:100%; height:100%; min-height:40px; border:none; outline:none; font-size:28px; font-weight:700; text-align:center; color:#241a55; background:transparent; }
     .tiny-btn { border: 1px solid #cad3ea; background: #fff; border-radius: 10px; padding: 5px 9px; font-size: 11px; cursor: pointer; color: #29214d; }
     .tiny-btn:hover { border-color: var(--blue); color: var(--blue); }
+    .assessment-result { margin: 16px auto 0; padding: 18px 22px; border-radius: 16px; text-align: center; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; width: min(100%, 680px); box-shadow: 0 12px 28px rgba(39, 24, 114, 0.10); }
+    .assessment-result.pass { background: #e8f8ef; color: #1c8c4a; border: 1px solid #cfead7; }
+    .assessment-result.fail { background: #fff2f2; color: #c62828; border: 1px solid #f1caca; }
     .phase-item-header { display: flex; align-items: center; gap: 10px; width: 100%; flex-wrap: wrap; }
     .phase-item-header .activity-chip { cursor: pointer; }
-    .collapse-btn { border: 1px solid #cad3ea; background: #fff; border-radius: 10px; padding: 5px 9px; font-size: 11px; cursor: pointer; color: #29214d; }
+    .collapse-btn { border: 1px solid #cad3ea; background: #fff; border-radius: 10px; padding: 5px 9px; font-size: 11px; cursor: pointer; color: #29214d; min-width: 34px; }
     .collapse-btn:hover { border-color: var(--blue); color: var(--blue); }
     .phase-item-body.is-collapsed .phase-item-config { display: none; }
     .phase-item-body.is-collapsed .assessment-block { display: none; }
     .phase-item.dragging { opacity: 0.6; }
     .drag-handle { font-size: 12px; color: #7c88a6; cursor: grab; user-select: none; }
-    .activity-chip { background: #ece9ff; color: #2b2072; border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 600; }
+    .activity-chip { background: var(--activity-soft, #ece9ff); color: var(--activity-text, #2b2072); border-radius: 999px; padding: 5px 10px; font-size: 12px; font-weight: 700; border: 1px solid var(--activity-border, transparent); }
     .mini-btn { margin-left: auto; border: 1px solid #cad3ea; background: #fff; border-radius: 10px; padding: 7px 11px; font-size: 12px; cursor: pointer; color: #29214d; }
     .mini-btn:hover { border-color: var(--danger); color: var(--danger); }
     @media (max-width: 900px) {
@@ -149,6 +236,7 @@
       .phase-title { min-width: 100%; }
       .phase-item-config { grid-template-columns: 1fr; }
       .assessment-top { grid-template-columns: 1fr; }
+      .training-overview-activity { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -157,8 +245,6 @@
 
   <script>
     // Storage keys
-    const STORAGE_KEY = 'aipt_users';
-    const SESSION_KEY = 'aipt_session';
     const TEMPLATES_KEY = 'aipt_templates';
     const RESET_KEY = 'aipt_reset_done';
     const VIDEO_LIBRARY_KEY = 'aipt_video_library';
@@ -166,24 +252,44 @@
 
     // App base path (IIS virtual directory). Empty for local dev.
     const BASE_PATH = '/training-platform';
+    const RUNTIME_URL = new URL(window.location.href);
+    const HUB_AUTH_STORAGE_KEY = 'apac_hub_auth_user';
 
     // Role -> training templates (loaded from storage or defaults)
     let roleTrainingTemplates;
     let templatesCache = null;
     let templatesLoaded = false;
 
-    const state = { view: 'login', currentUser: null, selectedTraining: null, showAddPanel: false, isAdmin: false, showMentor: false, mentorReason: '' };
+    const state = {
+      view: 'loading',
+      currentUser: null,
+      authUser: null,
+      selectedTraining: null,
+      showAddPanel: false,
+      showProfileEditor: false,
+      isAdmin: false,
+      accessType: 'trainee',
+      showMentor: false,
+      mentorReason: '',
+      sessionResolved: false,
+      sessionError: '',
+      userLoadError: '',
+      registrationMessage: '',
+      registrationMessageType: 'error',
+      showTrainingManagementHelp: false,
+      confirmDialog: null
+    };
     const el = (id) => document.getElementById(id);
     const ACTIVITY_TYPES = [
-      { type: 'doc', label: 'Documentation reading' },
-      { type: 'lms', label: 'LMS/Workday Course' },
-      { type: 'video', label: 'Watch video' },
-      { type: 'assessment', label: 'Assessment' },
-      { type: 'text', label: 'Formatted text' },
-      { type: 'handson', label: 'Hands-on activity' },
-      { type: 'ai-chat', label: 'Mentor session' }
+      { type: 'doc', label: 'Documentation reading', theme: { base: '#fbfdff', soft: '#edf5ff', border: '#b8d2f8', borderStrong: '#6ea3ec', text: '#184b95', accent: '#6ea3ec' } },
+      { type: 'lms', label: 'LMS/Workday Course', theme: { base: '#fbfefc', soft: '#ecf9f1', border: '#b6e5ca', borderStrong: '#59b985', text: '#15613d', accent: '#59b985' } },
+      { type: 'video', label: 'Watch video', theme: { base: '#fffdfc', soft: '#fff1ed', border: '#f4c2b5', borderStrong: '#e18b75', text: '#8f2c1c', accent: '#e18b75' } },
+      { type: 'assessment', label: 'Assessment', theme: { base: '#fffef9', soft: '#fff7e9', border: '#f0d7a1', borderStrong: '#d6aa47', text: '#7a5200', accent: '#d6aa47' } },
+      { type: 'text', label: 'Formatted text', theme: { base: '#fcfbff', soft: '#f1ecff', border: '#cdbbf2', borderStrong: '#9673dc', text: '#4b2a94', accent: '#9673dc' } },
+      { type: 'handson', label: 'Hands-on activity', theme: { base: '#fcfeff', soft: '#edf8fa', border: '#b6dfe6', borderStrong: '#63afbc', text: '#135962', accent: '#63afbc' } },
+      { type: 'ai-chat', label: 'Mentor session', theme: { base: '#fffdfd', soft: '#f8eef6', border: '#e4bfd9', borderStrong: '#c678b2', text: '#7b215f', accent: '#c678b2' } }
     ];
-    let adminDraftTraining = { editingId: '', originalRole: '', roleSelect: '', roleNew: '', name: '', description: '', phases: [] };
+    let adminDraftTraining = { editingId: '', originalRole: '', roleSelect: '', roleNew: '', name: '', description: '', createdByEmail: '', contributorEmails: [], phases: [] };
     let dragState = null;
     let videoLibrary = [];
     let pdfLibrary = [];
@@ -193,6 +299,7 @@
     let lastMentorRequest = null;
     let adminTrainingMentorMissionId = '';
     let adminTrainingMentorFolderId = '';
+    let adminUserEditDraft = null;
     const foldersByMission = {};
     const foldersLoading = {};
     const pendingUploadFiles = {};
@@ -202,8 +309,6 @@
     // One-time cleanup of prior data in localStorage
     function clearExistingDataOnce() {
       if (localStorage.getItem(RESET_KEY)) return;
-      localStorage.removeItem(STORAGE_KEY);
-      localStorage.removeItem(SESSION_KEY);
       localStorage.removeItem(TEMPLATES_KEY);
       localStorage.setItem(RESET_KEY, '1');
     }
@@ -211,64 +316,200 @@
     // Storage helpers
     let usersCache = [];
     let usersLoaded = false;
+    let usersLoadResolved = false;
     const loadUsers = () => usersCache;
-    const loadSession = () => { try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch { return null; } };
-    const saveSession = (payload) => localStorage.setItem(SESSION_KEY, JSON.stringify(payload));
-    const clearSession = () => localStorage.removeItem(SESSION_KEY);
-    const findUser = (id) => loadUsers().find(u => u.employeeId === id);
+    const normalizeEmail = (value) => String(value || '').trim().toLowerCase();
+    function normalizeEmbeddedEmail(value) {
+      return String(value || '').trim().toLowerCase();
+    }
+    const normalizeAccessType = (value) => ['trainee', 'trainer', 'admin'].includes(String(value || '').trim().toLowerCase()) ? String(value || '').trim().toLowerCase() : 'trainee';
+    const FETCH_TIMEOUT_MS = 12000;
+    const currentUserEmail = () => normalizeEmail(state.currentUser?.email || state.authUser?.email || '');
+    const currentUserName = () => state.currentUser?.name || state.authUser?.name || state.authUser?.email || 'User';
+    const hasAdminAccess = () => normalizeAccessType(state.currentUser?.accessType || state.accessType) === 'admin';
+    const hasTrainerAccess = () => {
+      const access = normalizeAccessType(state.currentUser?.accessType || state.accessType);
+      return access === 'trainer' || access === 'admin';
+    };
+    const findUser = (email) => loadUsers().find(u => normalizeEmail(u.email) === normalizeEmail(email));
+    const clearSession = () => { /* SSO-backed session handled by App Service auth */ };
     const loadLibrary = (key) => { try { return JSON.parse(localStorage.getItem(key)) || []; } catch { return []; } };
     const saveLibrary = (key, list) => localStorage.setItem(key, JSON.stringify(list));
 
-    async function ensureUsersLoaded() {
-      if (usersLoaded) return;
+    function getHubAuthUser() {
+      const queryName = (RUNTIME_URL.searchParams.get('user_name') || '').trim();
+      const queryEmail = normalizeEmbeddedEmail(RUNTIME_URL.searchParams.get('user_email') || '');
+      if (queryEmail) {
+        return {
+          name: queryName || queryEmail,
+          email: queryEmail
+        };
+      }
+
       try {
-        const res = await fetch(`${BASE_PATH}/api/users`);
+        const stored = JSON.parse(window.sessionStorage.getItem(HUB_AUTH_STORAGE_KEY) || 'null');
+        const storedEmail = normalizeEmbeddedEmail(stored?.email || '');
+        if (storedEmail) {
+          return {
+            name: String(stored?.name || storedEmail).trim(),
+            email: storedEmail
+          };
+        }
+      } catch (_error) {
+        // Ignore storage read issues.
+      }
+
+      try {
+        const parentUser = window.parent && window.parent !== window ? window.parent.__hubAuthUser : null;
+        const parentEmail = normalizeEmbeddedEmail(parentUser?.email || '');
+        if (parentEmail) {
+          return {
+            name: String(parentUser?.name || parentEmail).trim(),
+            email: parentEmail
+          };
+        }
+      } catch (_error) {
+        // Ignore cross-frame access failures.
+      }
+
+      return null;
+    }
+
+    async function fetchWithTimeout(url, options = {}, timeoutMs = FETCH_TIMEOUT_MS) {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), timeoutMs);
+      try {
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    function normalizeUserShape(user) {
+      if (!user) return null;
+      return {
+        ...user,
+        email: normalizeEmail(user.email || user.employeeId),
+        trainingRole: user.trainingRole || user.role || '',
+        managerEmail: normalizeEmail(user.managerEmail || user.managerEmployeeId || ''),
+        accessType: normalizeAccessType(user.accessType || 'trainee'),
+        approvals: Array.isArray(user.approvals) ? user.approvals : [],
+        trainings: Array.isArray(user.trainings) ? user.trainings : []
+      };
+    }
+
+    function normalizeTemplatesShape(templates) {
+      const next = {};
+      Object.keys(templates || {}).forEach(role => {
+        const items = Array.isArray(templates[role]) ? templates[role] : [];
+        next[role] = items.map(item => ({
+          ...item,
+          createdByEmail: normalizeEmail(item.createdByEmail),
+          contributorEmails: Array.isArray(item.contributorEmails) ? Array.from(new Set(item.contributorEmails.map(normalizeEmail).filter(Boolean))) : []
+        }));
+      });
+      return next;
+    }
+
+    function canEditTrainingTemplate(template) {
+      if (hasAdminAccess()) return true;
+      const myEmail = currentUserEmail();
+      const createdByEmail = normalizeEmail(template?.createdByEmail);
+      const contributors = Array.isArray(template?.contributorEmails) ? template.contributorEmails.map(normalizeEmail) : [];
+      return createdByEmail === myEmail || contributors.includes(myEmail);
+    }
+
+    async function ensureUsersLoaded() {
+      if (usersLoadResolved) return usersLoaded;
+      try {
+        const res = await fetchWithTimeout(`${BASE_PATH}/api/users`, { credentials: 'include' });
         if (!res.ok) throw new Error('Users fetch failed');
         const data = await res.json();
-        usersCache = Array.isArray(data) ? data : [];
-      } catch {
+        usersCache = Array.isArray(data) ? data.map(normalizeUserShape).filter(Boolean) : [];
+        state.userLoadError = '';
+        usersLoaded = true;
+        usersLoadResolved = true;
+        return true;
+      } catch (error) {
         usersCache = [];
-        alert('Unable to load users from server.');
+        usersLoaded = false;
+        usersLoadResolved = true;
+        state.userLoadError = error?.name === 'AbortError'
+          ? 'Loading existing training profiles timed out. You can still register your own profile below.'
+          : 'Unable to load existing training profiles from the server right now. You can still register your own profile below.';
+        return false;
       }
-      usersLoaded = true;
+    }
+
+    async function fetchCurrentProfile(email) {
+      const normalizedEmail = normalizeEmail(email);
+      if (!normalizedEmail) {
+        return null;
+      }
+
+      const res = await fetchWithTimeout(`${BASE_PATH}/api/users/${encodeURIComponent(normalizedEmail)}`, {
+        credentials: 'include'
+      });
+
+      if (res.status === 404) {
+        return null;
+      }
+
+      if (!res.ok) {
+        let detail = '';
+        try { detail = await res.text(); } catch { /* ignore */ }
+        throw new Error(`Profile lookup failed (${res.status}${detail ? `): ${detail}` : ')'}`);
+      }
+
+      return normalizeUserShape(await res.json());
     }
 
     async function createUser(user) {
-      const res = await fetch(`${BASE_PATH}/api/users`, {
+      const res = await fetchWithTimeout(`${BASE_PATH}/api/users`, {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(user)
       });
       if (!res.ok) {
-        if (res.status === 409) throw new Error('Employee ID already exists.');
+        if (res.status === 409) throw new Error('User already exists.');
         throw new Error('User creation failed.');
       }
-      const created = await res.json();
+      const created = normalizeUserShape(await res.json());
       usersCache.push(created);
       return created;
     }
 
     async function updateUser(user) {
-      const res = await fetch(`${BASE_PATH}/api/users/${encodeURIComponent(user.employeeId)}`, {
+      const targetEmail = normalizeEmail(user.originalEmail || user.email);
+      const payload = { ...user };
+      delete payload.originalEmail;
+      const res = await fetchWithTimeout(`${BASE_PATH}/api/users/${encodeURIComponent(targetEmail)}`, {
         method: 'PUT',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user)
+        body: JSON.stringify(payload)
       });
       if (!res.ok) {
         let detail = '';
         try { detail = await res.text(); } catch { /* ignore */ }
         throw new Error(`User update failed (${res.status}${detail ? `): ${detail}` : ')'}`);
       }
-      const updated = await res.json();
-      const idx = usersCache.findIndex(u => u.employeeId === updated.employeeId);
+      const updated = normalizeUserShape(await res.json());
+      const idx = usersCache.findIndex(u => normalizeEmail(u.email) === targetEmail);
       if (idx >= 0) usersCache[idx] = updated;
+      if (state.currentUser && normalizeEmail(state.currentUser.email) === targetEmail) {
+        state.currentUser = updated;
+        state.accessType = normalizeAccessType(updated.accessType);
+        state.isAdmin = hasAdminAccess();
+      }
       return updated;
     }
 
-    async function removeUser(empId) {
-      const res = await fetch(`${BASE_PATH}/api/users/${encodeURIComponent(empId)}`, { method: 'DELETE' });
+    async function removeUser(email) {
+      const res = await fetchWithTimeout(`${BASE_PATH}/api/users/${encodeURIComponent(normalizeEmail(email))}`, { method: 'DELETE', credentials: 'include' });
       if (!res.ok) throw new Error('User delete failed.');
-      usersCache = usersCache.filter(u => u.employeeId !== empId);
+      usersCache = usersCache.filter(u => normalizeEmail(u.email) !== normalizeEmail(email));
     }
 
     // Template helpers
@@ -298,13 +539,14 @@
       } catch {
         normalized = loadTemplatesFromStorage() || normalizeTemplates(defaultTemplates());
       }
+      normalized = normalizeTemplatesShape(normalized);
       roleTrainingTemplates = normalized;
       templatesCache = normalized;
       templatesLoaded = true;
       localStorage.setItem(TEMPLATES_KEY, JSON.stringify(normalized));
     }
     function saveTemplates(data) {
-      const normalized = normalizeTemplates(data);
+      const normalized = normalizeTemplatesShape(normalizeTemplates(data));
       roleTrainingTemplates = normalized;
       templatesCache = normalized;
       localStorage.setItem(TEMPLATES_KEY, JSON.stringify(normalized));
@@ -321,23 +563,66 @@
     const getRoleList = () => Object.keys(roleTrainingTemplates || {});
     const getPhaseName = (phase) => typeof phase === 'string' ? phase : (phase && phase.name ? phase.name : 'Untitled Phase');
     const activityLabel = (type) => (ACTIVITY_TYPES.find(t => t.type === type) || {}).label || type;
+    const activityMeta = (type) => ACTIVITY_TYPES.find(t => t.type === type) || { theme: {} };
+    const activityThemeVars = (type) => {
+      const theme = activityMeta(type).theme || {};
+      return `--activity-base:${theme.base || '#fcfcff'}; --activity-soft:${theme.soft || '#ece9ff'}; --activity-border:${theme.border || '#cad3ea'}; --activity-border-strong:${theme.borderStrong || '#5b4bdb'}; --activity-text:${theme.text || '#2f2757'}; --activity-accent:${theme.accent || '#5b4bdb'};`;
+    };
+    const activityPngIcon = (fileName, altText) => `<img src="/resources/${fileName}" alt="${escapeHtml(altText)}" style="width:14px; height:14px; object-fit:contain; vertical-align:middle;">`;
+    const activityIcon = (type) => {
+      if (type === 'doc') return activityPngIcon('Document_Reading_Icon.png', 'Document reading');
+      if (type === 'lms') return activityPngIcon('LMS-Workday_Course_Icon.png', 'LMS/Workday course');
+      if (type === 'video') return activityPngIcon('Watch_Video_Icon.png', 'Watch video');
+      if (type === 'assessment') return activityPngIcon('Assessment_Icon.png', 'Assessment');
+      if (type === 'text') return activityPngIcon('Formatted_Text_Icon.png', 'Formatted text');
+      if (type === 'handson') return activityPngIcon('Hands-On_Activity_Icon.png', 'Hands-on activity');
+      if (type === 'ai-chat') return activityPngIcon('Mentor_Sessions_Icon.png', 'Mentor session');
+      return bookIcon();
+    };
+    const collapseArrow = (collapsed) => collapsed ? '&#9652;' : '&#9662;';
+    const normalizeMarkValue = (value) => {
+      const num = Number.parseFloat(value);
+      return Number.isFinite(num) ? num : 0;
+    };
+    const getQuestionCombinedMarks = (question) => normalizeMarkValue(question?.combinedMarks || 0);
+    const getQuestionIndividualMarks = (question) => (question?.options || []).reduce((sum, opt) => sum + ((opt && opt.correct) ? normalizeMarkValue(opt.markValue) : 0), 0);
+    const getQuestionAvailableMarks = (question) => question?.markingMode === 'individual' ? getQuestionIndividualMarks(question) : getQuestionCombinedMarks(question);
+    const getAssessmentTotalMarks = (assessment) => ((assessment?.questions) || []).reduce((sum, question) => sum + getQuestionAvailableMarks(question), 0);
+    function refreshQuestionMarksInput(phaseIdx, itemIdx, qIdx) {
+      const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+      const question = item?.assessment?.questions?.[qIdx];
+      const input = document.querySelector(`.assess-question-marks[data-phase-index="${phaseIdx}"][data-item-index="${itemIdx}"][data-question-index="${qIdx}"]`);
+      if (!question || !input || question.markingMode !== 'individual') return;
+      input.value = getQuestionIndividualMarks(question);
+    }
+    function refreshAssessmentTotalInput(phaseIdx, itemIdx) {
+      const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+      const input = document.querySelector(`.assessment-total-input[data-phase-index="${phaseIdx}"][data-item-index="${itemIdx}"]`);
+      if (!item?.assessment || !input) return;
+      input.value = getAssessmentTotalMarks(item.assessment);
+    }
     const resourceUrl = (type, fileName) => {
       if (!fileName) return '';
       const base = type === 'video' ? `${BASE_PATH}/resources/videos/` : `${BASE_PATH}/resources/documents/`;
       return `${base}${encodeURIComponent(fileName)}`;
     };
-
     function normalizeAssessment(raw) {
       const data = raw && typeof raw === 'object' ? raw : {};
       if (Array.isArray(data.questions)) {
         return {
           passingMarks: data.passingMarks || '',
           durationMinutes: data.durationMinutes || '',
+          maxRetries: data.maxRetries || '',
+          collapsed: !!data.collapsed,
           questions: data.questions.map(q => ({
             text: q.text || '',
+            collapsed: !!q.collapsed,
+            markingMode: q.markingMode === 'individual' ? 'individual' : 'combined',
+            combinedMarks: q.combinedMarks || '',
             options: Array.isArray(q.options) ? q.options.map(opt => ({
               text: opt.text || '',
-              correct: !!opt.correct
+              correct: !!opt.correct,
+              markValue: opt.markValue || ''
             })) : []
           }))
         };
@@ -348,16 +633,28 @@
         return {
           passingMarks: data.passingMarks || '',
           durationMinutes: data.durationMinutes || '',
+          maxRetries: data.maxRetries || '',
+          collapsed: !!data.collapsed,
           questions: [{
             text: data.question || '',
+            collapsed: false,
+            markingMode: 'combined',
+            combinedMarks: '',
             options: options.map(opt => ({
               text: opt,
-              correct: answers.includes(opt)
+              correct: answers.includes(opt),
+              markValue: ''
             }))
           }]
         };
       }
-      return { passingMarks: data.passingMarks || '', durationMinutes: data.durationMinutes || '', questions: [] };
+      return { passingMarks: data.passingMarks || '', durationMinutes: data.durationMinutes || '', maxRetries: data.maxRetries || '', collapsed: !!data.collapsed, questions: [] };
+    }
+
+    function parseAssessmentMaxRetries(value) {
+      const raw = String(value ?? '').trim();
+      if (!raw) return null;
+      return Math.max(0, Number.parseInt(raw, 10) || 0);
     }
 
     async function fetchLibrary(type) {
@@ -381,6 +678,48 @@
       }
       librariesLoaded = true;
       if (state.view === 'admin-trainings') renderAdminTrainings();
+    }
+
+    async function ensureSessionResolved() {
+      if (state.sessionResolved) return;
+      try {
+        const authUser = getHubAuthUser();
+        state.authUser = authUser;
+        state.sessionResolved = true;
+
+        if (!authUser?.email) {
+          state.sessionError = 'No SSO user context was provided by the Application Hub.';
+          state.view = 'unauthorized';
+          return;
+        }
+
+        state.sessionError = '';
+        state.userLoadError = '';
+        const profile = await fetchCurrentProfile(authUser.email);
+        if (profile) {
+          state.currentUser = profile;
+          state.accessType = normalizeAccessType(profile.accessType);
+          state.isAdmin = hasAdminAccess();
+          state.view = 'dashboard';
+          state.registrationMessage = '';
+          ensureUsersLoaded().then(() => {
+            if (state.view === 'dashboard' || state.view === 'admin-users') render();
+          });
+          return;
+        }
+
+        state.currentUser = null;
+        state.accessType = 'trainee';
+        state.isAdmin = hasAdminAccess();
+        state.view = 'register';
+      } catch (error) {
+        state.sessionResolved = true;
+        state.currentUser = null;
+        state.view = 'register';
+        state.userLoadError = error?.name === 'AbortError'
+          ? 'Profile lookup timed out. You can still register your training profile below.'
+          : (error?.message || 'Profile lookup failed. You can still register your training profile below.');
+      }
     }
 
     async function ensureMissionsLoaded() {
@@ -455,35 +794,50 @@
       return normalized;
     }
 
-    // Auth logic
-    async function handleLogin(data) {
-      await ensureUsersLoaded();
-      // Admin shortcut
-      if (data.employeeId === 'APAC' && data.password === 'APACadmin') {
-        state.isAdmin = true; state.currentUser = null; state.selectedTraining = null; state.view = 'admin-home'; state.showAddPanel = false;
-        saveSession({ admin: true });
-        return render();
+    async function handleRegister(data) {
+      state.registrationMessage = '';
+      state.registrationMessageType = 'error';
+      if (!state.authUser?.email) {
+        state.registrationMessage = 'Your SSO session could not be identified.';
+        render();
+        return;
       }
-      const user = findUser(data.employeeId);
-      if (!user || user.password !== data.password) return alert('Invalid Employee ID or password.');
-      state.isAdmin = false; state.currentUser = user; state.view = 'dashboard'; state.showAddPanel = false; saveSession({ employeeId: user.employeeId }); render();
-    }
-
-    async function handleRegister(data, selectedIds) {
-      await ensureUsersLoaded();
-      if (loadUsers().some(u => u.employeeId === data.employeeId)) return alert('Employee ID already exists. Please sign in.');
-      if (!data.role) return alert('Please select a role.');
-      const name = (data.name || '').trim();
-      if (!name) return alert('Please enter your name.');
-      if (data.password !== data.confirm) return alert('Passwords do not match.');
-      if (!selectedIds.length) return alert('Please select at least one training.');
-      const trainings = buildTrainingsFromTemplate(data.role, selectedIds);
-      const newUser = { employeeId: data.employeeId, name, title: data.title, role: data.role, password: data.password, managerEmployeeId: data.managerEmployeeId || '', approvals: [], trainings };
+      const email = normalizeEmail(state.authUser.email);
+      const name = (state.authUser?.name || '').trim();
+      if (!name) {
+        state.registrationMessage = 'Your Entra profile did not provide a usable name.';
+        render();
+        return;
+      }
+      const newUser = {
+        email,
+        name,
+        title: (data.title || '').trim(),
+        trainingRole: '',
+        accessType: 'trainee',
+        managerEmail: normalizeEmail(data.managerEmail || ''),
+        approvals: [],
+        trainings: []
+      };
       try {
         const created = await createUser(newUser);
-        state.isAdmin = false; state.currentUser = created; state.view = 'dashboard'; state.showAddPanel = false; saveSession({ employeeId: created.employeeId }); render();
+        state.currentUser = created;
+        state.accessType = normalizeAccessType(created.accessType);
+        state.isAdmin = hasAdminAccess();
+        state.view = 'dashboard';
+        state.showAddPanel = false;
+        state.userLoadError = '';
+        state.registrationMessage = '';
+        usersLoadResolved = false;
+        usersLoaded = false;
+        ensureUsersLoaded().then(() => {
+          if (state.view === 'dashboard') render();
+        });
+        render();
       } catch (err) {
-        alert(err.message || 'Registration failed.');
+        state.registrationMessage = err.message || 'Registration failed.';
+        state.registrationMessageType = 'error';
+        render();
       }
     }
 
@@ -578,25 +932,39 @@
     }
 
     function editProfile() {
-      const user = state.currentUser;
-      const name = prompt('Name', user.name || '') ?? user.name;
-      const title = prompt('Title', user.title || '') ?? user.title;
-      const managerEmployeeId = prompt('Manager Employee ID (optional)', user.managerEmployeeId || '') ?? user.managerEmployeeId;
-      user.name = name;
-      user.title = title;
-      user.managerEmployeeId = managerEmployeeId;
-      persistUser(user);
+      state.showProfileEditor = true;
       render();
+    }
+
+    async function saveProfileEdit(form) {
+      const user = state.currentUser;
+      if (!user) return;
+      const formData = new FormData(form);
+      const title = String(formData.get('title') || '').trim();
+      const managerEmail = normalizeEmail(formData.get('managerEmail') || '');
+      user.title = title;
+      user.managerEmail = managerEmail;
+      try {
+        await updateUser(user);
+        state.showProfileEditor = false;
+        render();
+      } catch {
+        alert('Unable to save profile updates.');
+      }
     }
 
     function getManagedUsers() {
       if (!state.currentUser) return [];
-      return loadUsers().filter(u => u.managerEmployeeId === state.currentUser.employeeId);
+      return loadUsers().filter(u => normalizeEmail(u.managerEmail) === currentUserEmail());
     }
 
     function renderApprovals() {
       const container = el('approvals-section');
       if (!container) return;
+      if (!usersLoadResolved) {
+        container.innerHTML = '<div class="card" style="margin-top:16px;"><div class="muted-box" style="min-height:120px;">Loading approval requests...</div></div>';
+        return;
+      }
       const managed = getManagedUsers();
       const pending = [];
       managed.forEach(user => {
@@ -616,12 +984,12 @@
             ${pending.map(({ user, req }) => `
               <div class="training-row" style="grid-template-columns: 1fr auto;">
                 <div>
-                  <div style="font-weight:700;">${user.name || user.employeeId}</div>
+                  <div style="font-weight:700;">${user.name || user.email}</div>
                   <div class="training-desc">${req.trainingName || 'Training'} • ${req.itemLabel || req.type || 'Item'} • Requested ${req.requestedAt || ''}</div>
                 </div>
                 <div style="display:flex; gap:8px;">
-                  <button class="light-btn" onclick="handleApproval('${user.employeeId}','${req.id}',true)">Approve</button>
-                  <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="handleApproval('${user.employeeId}','${req.id}',false)">Reject</button>
+                  <button class="light-btn" onclick="handleApproval('${user.email}','${req.id}',true)">Approve</button>
+                  <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="handleApproval('${user.email}','${req.id}',false)">Reject</button>
                 </div>
               </div>
             `).join('')}
@@ -643,9 +1011,9 @@
       `;
     }
 
-      window.handleApproval = async (employeeId, requestId, approved) => {
+      window.handleApproval = async (email, requestId, approved) => {
         await ensureUsersLoaded();
-        const user = loadUsers().find(u => u.employeeId === employeeId);
+        const user = loadUsers().find(u => normalizeEmail(u.email) === normalizeEmail(email));
         if (!user) return alert('User not found.');
         const req = (user.approvals || []).find(r => r.id === requestId);
         if (!req) return alert('Request not found.');
@@ -704,6 +1072,53 @@
       advanceToNextItem(training);
     }
 
+    function resetTrainingProgressFromPhase(training, targetPhaseIndex) {
+      const resetItemIds = [];
+      (training.phases || []).forEach((phase, phaseIdx) => {
+        if (phaseIdx < targetPhaseIndex) return;
+        (phase.items || []).forEach(item => {
+          resetItemIds.push(item.id);
+          if (item && item.type === 'assessment') {
+            item.assessmentState = {
+              index: 0,
+              answers: [],
+              completed: false,
+              passed: false,
+              scoreMarks: 0,
+              totalMarks: 0,
+              scorePct: 0,
+              startedAt: 0,
+              endsAt: 0,
+              remainingSeconds: 0,
+              timedOut: false,
+              retryCount: 0
+            };
+          }
+          if (item && item.type === 'ai-chat') {
+            item.autoMentorStarted = false;
+          }
+        });
+      });
+      training.completedItemIds = (training.completedItemIds || []).filter(id => !resetItemIds.includes(id));
+      if (Array.isArray(state.currentUser?.approvals)) {
+        state.currentUser.approvals = state.currentUser.approvals.filter(req => {
+          if (req.trainingId !== training.id) return true;
+          return req.phaseIndex < targetPhaseIndex;
+        });
+      }
+      training.currentPhaseIndex = targetPhaseIndex;
+      training.currentItemIndex = 0;
+      training.started = true;
+      training.status = 'in-progress';
+      training.lastAutoMentorItemId = '';
+      training.lastAssessmentEntryKey = '';
+      training.chatHistory = [];
+      state.showMentor = false;
+      state.mentorReason = '';
+      state.mentorPending = false;
+      ensureCurrentItem(training);
+    }
+
     function advanceToNextItem(training) {
       const phases = training.phases || [];
       while (training.currentPhaseIndex < phases.length) {
@@ -737,6 +1152,7 @@
     }
 
     function sendMessage(text) {
+      if (state.mentorPending) return;
       if (!text.trim()) return;
       const t = state.selectedTraining;
       t.chatHistory.push({ from: 'user', text, time: new Date().toLocaleTimeString() });
@@ -760,8 +1176,21 @@
       return phase?.items?.[t.currentItemIndex] || null;
     }
 
+    function refreshMentorUi() {
+      if (state.view === 'training') {
+        render();
+        return;
+      }
+      renderChat();
+    }
+
     function buildMentorPayload(item, phase, missionId, extraMessages = [], baseMessages = null) {
       const t = state.selectedTraining;
+      const phaseName = getPhaseName(phase);
+      const isDocumentActivity = item.type === 'doc' && !!item.fileName && !!t.mentorFolderId;
+      const documentPrompt = isDocumentActivity
+        ? `Read only the selected training document "${item.fileName}" for "${phaseName || t.name || 'this phase'}". Start with a concise study guide that covers: 1. what the document is about, 2. the most important concepts or configuration points, 3. what the trainee should focus on, and 4. any cautions, dependencies, or follow-up questions. Ignore unrelated documents. If the selected document is unavailable, say that clearly.`
+        : '';
       const messages = Array.isArray(baseMessages)
         ? baseMessages
         : t.chatHistory.map(m => ({
@@ -769,9 +1198,9 @@
             content: m.text
           }));
       const userContext = {
-        employeeId: state.currentUser?.employeeId,
+        email: state.currentUser?.email,
         name: state.currentUser?.name,
-        role: state.currentUser?.role,
+        trainingRole: state.currentUser?.trainingRole,
         title: state.currentUser?.title,
         trainingName: t.name,
         phaseName: getPhaseName(phase),
@@ -780,11 +1209,13 @@
       const systemContent = [
         'You are Matcha AI mentor for APAC AI Training Programs.',
         'Do not ask the trainee to introduce themselves. Do not repeat greetings or re-introduce the program on every reply. Focus only on the current question and provided context.',
-        `User: ${userContext.name || 'Unknown'} (${userContext.employeeId || 'N/A'})`,
-        `Role: ${userContext.role || 'N/A'} | Title: ${userContext.title || 'N/A'}`,
+        `User: ${userContext.name || 'Unknown'} (${userContext.email || 'N/A'})`,
+        `Training role: ${userContext.trainingRole || 'N/A'} | Title: ${userContext.title || 'N/A'}`,
         `Training: ${userContext.trainingName || 'N/A'}`,
         `Phase: ${userContext.phaseName || 'N/A'} | Activity: ${userContext.activityLabel || 'N/A'}`,
         item.mentorTopic ? `Mentor session topic: ${item.mentorTopic}` : '',
+        isDocumentActivity ? `Selected document: ${item.fileName}` : '',
+        documentPrompt,
         state.mentorReason || ''
       ].join('\n');
       const payload = {
@@ -793,8 +1224,14 @@
         messages: [{ role: 'system', content: systemContent }, ...messages, ...extraMessages],
         userContext
       };
-      if (item.type === 'doc' && item.fileName && t.mentorFolderId) {
-        payload.document = { fileName: item.fileName, folderId: t.mentorFolderId };
+      if (isDocumentActivity) {
+        payload.document = {
+          fileName: item.fileName,
+          folderId: t.mentorFolderId,
+          forceUpload: true,
+          displayName: item.fileName
+        };
+        payload.documentPrompt = documentPrompt;
       }
       return payload;
     }
@@ -806,23 +1243,25 @@
       if (!missionId) {
         t.chatHistory.push({ from: 'bot', text: 'Mentor session is not configured with a Matcha mission.', time: new Date().toLocaleTimeString() });
         persistUser(state.currentUser);
-        renderChat();
+        refreshMentorUi();
         return;
       }
       state.mentorPending = true;
       const sendBtn = el('send-btn');
       if (sendBtn) sendBtn.disabled = true;
       const pendingId = `mentor-pending-${Date.now()}`;
-      t.chatHistory.push({ from: 'bot', text: 'Preparing response, please wait...', time: new Date().toLocaleTimeString(), pending: true, id: pendingId });
+      const pendingText = item.type === 'doc'
+        ? `Uploading and reading ${item.fileName || 'the selected document'} in Matcha. Preparing the guidance now, please wait...`
+        : 'Preparing response, please wait...';
+      t.chatHistory.push({ from: 'bot', text: pendingText, time: new Date().toLocaleTimeString(), pending: true, id: pendingId });
       persistUser(state.currentUser);
-      renderChat();
+      refreshMentorUi();
       const extraMessages = options.autoKickoff
         ? [{ role: 'user', content: options.kickoffText || 'Please begin the mentor session.' }]
         : [];
       const historyMessages = options.useHistory === false ? [] : null;
       const payload = buildMentorPayload(item, phase, missionId, extraMessages, historyMessages);
       lastMentorRequest = payload;
-      if (state.view === 'training') render();
       try {
         const res = await fetch(`${BASE_PATH}/api/matcha/chat`, {
           method: 'POST',
@@ -841,7 +1280,7 @@
         state.mentorPending = false;
         if (sendBtn) sendBtn.disabled = false;
         persistUser(state.currentUser);
-        renderChat();
+        refreshMentorUi();
       } catch (err) {
         const detail = err && err.message ? ` Error: ${err.message}` : '';
         const idx = t.chatHistory.findIndex(m => m.id === pendingId);
@@ -851,7 +1290,7 @@
         state.mentorPending = false;
         if (sendBtn) sendBtn.disabled = false;
         persistUser(state.currentUser);
-        renderChat();
+        refreshMentorUi();
       }
     }
 
@@ -885,104 +1324,103 @@
     // Admin helpers
     const slugify = (str) => (str || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || `training-${Date.now()}`;
 
-    function adminLogout() {
-      clearSession();
-      state.isAdmin = false;
-      state.currentUser = null;
-      state.view = 'login';
-      state.showAddPanel = false;
+    window.gotoAdmin = (view) => {
+      state.view = view === 'admin-home' ? 'dashboard' : view;
       render();
-    }
-
-    // Admin renders
-    function renderAdminHome() {
-      document.body.innerHTML = `
-        <div class="page-shell">
-          ${adminNav('home')}
-          <div class="card" style="margin-top:16px;">
-            <div style="display:flex; flex-direction:column; gap:12px;">
-              <div style="font-weight:700; font-size:18px;">Admin Console</div>
-              <div style="color:var(--muted);">Manage users and training templates for the platform.</div>
-              <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                <button class="add-btn" style="background:#0c64f5;" onclick="gotoAdmin('admin-users')">${personIcon()} Manage Users</button>
-                <button class="add-btn" onclick="gotoAdmin('admin-trainings')">${bagIcon()} Manage Trainings</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      bindAdminNav();
-    }
-
-    window.gotoAdmin = (view) => { state.view = view; render(); };
+    };
 
     function renderAdminUsers() {
-      if (!usersLoaded) {
+      if (!usersLoadResolved) {
         document.body.innerHTML = `
           <div class="page-shell">
-            ${adminNav('users')}
+            ${trainingPlatformNav('users')}
             <div class="card" style="margin-top:16px;">
               <div class="muted-box" style="min-height:120px;">Loading users...</div>
             </div>
           </div>
         `;
-        bindAdminNav();
+        bindTrainingPlatformNav();
         ensureUsersLoaded().then(renderAdminUsers);
         return;
       }
       const users = loadUsers();
+      const loadNotice = state.userLoadError
+        ? `<div class="muted-box" style="min-height:auto; margin-bottom:12px; color:#8a5b00; border-color:#f4d9a6; background:#fff7e6;">${escapeHtml(state.userLoadError)}</div>`
+        : '';
       document.body.innerHTML = `
         <div class="page-shell">
-          ${adminNav('users')}
+          ${trainingPlatformNav('users')}
           <div class="card" style="margin-top:16px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
               <div style="font-weight:700; font-size:17px;">User Management</div>
               <div style="color:var(--muted); font-size:13px;">${users.length} user${users.length!==1?'s':''}</div>
             </div>
+            ${loadNotice}
             <div style="display:grid; gap:10px;">
               ${users.map(u => `
                 <div class="training-row" style="grid-template-columns: 1fr auto;">
                   <div>
-                    <div style="font-weight:700;">${u.name || u.employeeId}</div>
-                    <div class="training-desc">ID: ${u.employeeId} | Role: ${u.role || 'N/A'} | Title: ${u.title || 'N/A'}</div>
+                    <div style="font-weight:700;">${u.name || u.email}</div>
+                    <div class="training-desc">Email: ${u.email} | Access: ${normalizeAccessType(u.accessType)} | Title: ${u.title || 'N/A'} | Manager: ${u.managerEmail || 'N/A'}</div>
                   </div>
                   <div style="display:flex; gap:8px;">
-                    <button class="light-btn" onclick="editUser('${u.employeeId}')">Edit</button>
-                    <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="deleteUser('${u.employeeId}')">Delete</button>
+                    <button class="light-btn" onclick="editUser('${u.email}')">Edit</button>
+                    <button class="light-btn danger-btn" onclick="deleteUser('${u.email}')">Delete</button>
                   </div>
                 </div>
               `).join('') || '<div class="muted-box">No users yet.</div>'}
             </div>
           </div>
+          ${renderAdminUserEditor()}
         </div>
       `;
-      bindAdminNav();
+      bindTrainingPlatformNav();
+      bindAdminUserEditor();
     }
 
     function renderAdminTrainings() {
-      if (!librariesLoaded || !missionsLoaded) {
+      if (!hasTrainerAccess()) {
+        state.view = 'dashboard';
+        return render();
+      }
+      if (!librariesLoaded || !missionsLoaded || !usersLoadResolved) {
         document.body.innerHTML = `
           <div class="page-shell">
-            ${adminNav('trainings')}
+            ${trainingPlatformNav('trainings')}
             <div class="card" style="margin-top:16px;">
-              <div style="font-weight:700; font-size:17px; margin-bottom:12px;">Training Management</div>
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+                <div style="font-weight:700; font-size:17px;">Training Management</div>
+                <button class="light-btn" type="button" id="training-management-help-btn">${bookIcon()} Help</button>
+              </div>
               <div class="muted-box" style="min-height:120px;">Loading resources...</div>
             </div>
+            ${renderTrainingManagementHelpDialog()}
           </div>
         `;
-        bindAdminNav();
+        bindTrainingPlatformNav();
+        if (el('training-management-help-btn')) el('training-management-help-btn').onclick = openTrainingManagementHelp;
+        bindTrainingManagementHelpDialog();
         ensureLibrariesLoaded();
         ensureMissionsLoaded();
+        ensureUsersLoaded();
         return;
       }
       const roles = getRoleList();
+      const isAdminUser = hasAdminAccess();
       const editingLabel = adminDraftTraining.editingId ? `Editing: ${adminDraftTraining.name || 'Training'}` : 'Creating new training';
+      const creatorEmail = normalizeEmail(adminDraftTraining.createdByEmail || currentUserEmail());
+      const contributorCandidates = getContributorCandidates(creatorEmail);
+      const selectedContributors = new Set((adminDraftTraining.contributorEmails || []).map(normalizeEmail).filter(Boolean));
+      if (creatorEmail) selectedContributors.add(creatorEmail);
       if (adminTrainingMentorMissionId) ensureFoldersLoaded(adminTrainingMentorMissionId);
       document.body.innerHTML = `
         <div class="page-shell">
-          ${adminNav('trainings')}
+          ${trainingPlatformNav('trainings')}
           <div class="card" style="margin-top:16px;">
-            <div style="font-weight:700; font-size:17px; margin-bottom:12px;">Training Management</div>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px;">
+              <div style="font-weight:700; font-size:17px;">Training Management</div>
+              <button class="light-btn" type="button" id="training-management-help-btn">${bookIcon()} Help</button>
+            </div>
             <div class="training-desc" style="margin-bottom:10px;">${editingLabel}</div>
             <div class="form-grid">
               <div>
@@ -1005,9 +1443,29 @@
                 <label>Description</label>
                 <div class="field"><input id="admin-train-desc" placeholder="Short description" value="${adminDraftTraining.description || ''}"></div>
               </div>
+              <div>
+                <label>Created By</label>
+                <div class="field"><input id="admin-train-createdBy" placeholder="creator@alterahealth.com" value="${adminDraftTraining.createdByEmail || currentUserEmail()}" ${isAdminUser ? '' : 'disabled'}></div>
+              </div>
+              <div>
+                <label>Contributors</label>
+                  <div class="muted-box" style="min-height:auto; display:grid; gap:0; padding:8px 12px; height:138px; overflow-y:auto; place-items:start; align-content:start; justify-items:start; text-align:left;">
+                  ${contributorCandidates.map(candidate => {
+                    const email = normalizeEmail(candidate.email);
+                    const checked = selectedContributors.has(email);
+                    const locked = email === creatorEmail;
+                    return `
+                      <label style="display:flex; align-items:flex-start; justify-content:flex-start; gap:10px; padding:10px 0; border-bottom:1px solid #ebe6ff; min-height:40px; text-align:left;">
+                        <input type="checkbox" class="admin-train-contributor" value="${email}" ${checked ? 'checked' : ''} ${locked ? 'disabled' : ''}>
+                        <span style="font-weight:700; text-align:left;">${escapeHtml(candidate.name || candidate.email)}</span>
+                      </label>
+                    `;
+                  }).join('') || '<div class="training-desc">No trainer or admin profiles are available yet.</div>'}
+                </div>
+              </div>
             </div>
             <div style="margin-top:12px;">
-              <label>Default Mentor Matcha Mission</label>
+              <label class="label-with-help">Default Mentor Session <span class="hover-help" title="Select the default Matcha mission used by mentor-session activities in this training.">?</span></label>
               <div class="field">
                 <span class="icon-mini">${chatIcon()}</span>
                 <select id="admin-train-mentor">
@@ -1017,7 +1475,7 @@
               </div>
             </div>
             <div style="margin-top:12px;">
-              <label>Default Mentor Matcha Folder</label>
+              <label class="label-with-help">Temporary Document Storage <span class="hover-help" title="Select the Matcha folder used to hold temporary supporting documents for mentor-session workflows in this training.">?</span></label>
               <div class="field">
                 <span class="icon-mini">${folderIcon()}</span>
                 <select id="admin-train-mentor-folder" ${adminTrainingMentorMissionId ? '' : 'disabled'}>
@@ -1028,20 +1486,21 @@
             </div>
             ${renderPhaseBuilder()}
             <div style="display:flex; justify-content:flex-end; margin-top:12px; gap:8px;">
-              <button class="light-btn" id="clear-draft-btn" type="button">Clear Draft</button>
+              ${adminDraftTraining.editingId ? '' : `<button class="light-btn" id="clear-draft-btn" type="button">Clear Draft</button>`}
               <button class="primary" style="width:220px;" onclick="addTemplateTraining()">${adminDraftTraining.editingId ? 'Update Training' : 'Add Training'}</button>
             </div>
           </div>
 
           ${roles.map(role => {
-            const list = roleTrainingTemplates[role] || [];
+            const allList = roleTrainingTemplates[role] || [];
+            const list = isAdminUser ? allList : allList.filter(canEditTrainingTemplate);
+            if (!isAdminUser && !list.length) return '';
             return `
               <div class="group-card" style="margin-top:14px;">
                 <div class="group-header">
                   <div style="display:flex; align-items:center; gap:8px; font-weight:700;">${bagIcon()} ${role}</div>
                   <div style="display:flex; gap:8px; align-items:center;">
-                    <div class="badge">${list.length} Training${list.length!==1?'s':''}</div>
-                    <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="deleteRole('${role}')">Delete Role</button>
+                    ${isAdminUser ? `<button class="light-btn danger-btn" onclick="deleteRole('${role}')">Delete Role and Associated Trainings</button>` : ''}
                   </div>
                 </div>
                 ${list.map(t => `
@@ -1050,20 +1509,26 @@
                       <div class="train-name">${t.name}</div>
                       <div class="training-desc">${t.description || ''}</div>
                       <div class="training-desc">${t.phases.length} phases</div>
+                      <div class="training-desc">Created by: ${t.createdByEmail || 'Unassigned'} | Contributors: ${(t.contributorEmails || []).join(', ') || 'None'}</div>
                     </div>
                     <div style="display:flex; gap:8px;">
                       <button class="light-btn" onclick="editTemplateTraining('${role}','${t.id}')">Edit</button>
-                      <button class="light-btn" style="color:#c62828; border-color:#f5d7d7; background:#fff7f7;" onclick="deleteTemplateTraining('${role}','${t.id}')">Delete</button>
+                      <button class="light-btn danger-btn" onclick="deleteTemplateTraining('${role}','${t.id}')">Delete</button>
                     </div>
                   </div>
-                `).join('') || '<div class="muted-box" style="margin-top:10px;">No trainings for this role.</div>'}
+                `).join('') || '<div class="muted-box" style="margin-top:10px;">No editable trainings for this role.</div>'}
               </div>
             `;
-          }).join('') || '<div class="muted-box" style="margin-top:14px;">No roles or trainings defined.</div>'}
+          }).filter(Boolean).join('') || '<div class="muted-box" style="margin-top:14px;">No roles or trainings defined.</div>'}
+          ${renderTrainingManagementHelpDialog()}
+          ${renderConfirmDialog()}
         </div>
       `;
-      bindAdminNav();
+      if (el('training-management-help-btn')) el('training-management-help-btn').onclick = openTrainingManagementHelp;
+      bindTrainingManagementHelpDialog();
+      bindTrainingPlatformNav();
       bindAdminTrainingBuilder();
+      bindConfirmDialog();
     }
 
     function renderPhaseBuilder() {
@@ -1089,20 +1554,19 @@
                 </div>
                 <div class="training-desc">Add activities for this phase</div>
                 <div class="phase-tools" style="margin-top:8px;">
-                  ${ACTIVITY_TYPES.map(t => `<button class="chip-btn activity-add-btn" data-phase-index="${idx}" data-type="${t.type}" type="button">${t.label}</button>`).join('')}
+                  ${ACTIVITY_TYPES.map(t => `<button class="chip-btn activity-add-btn" data-phase-index="${idx}" data-type="${t.type}" type="button" style="${activityThemeVars(t.type)}">${activityIcon(t.type)} ${t.label}</button>`).join('')}
                 </div>
                 <div style="margin-top:8px; display:flex; gap:8px;">
-                  <button class="light-btn phase-collapse-all" data-phase-index="${idx}" data-action="collapse" type="button">Minimize all</button>
-                  <button class="light-btn phase-collapse-all" data-phase-index="${idx}" data-action="expand" type="button">Maximize all</button>
+                  <button class="collapse-btn phase-collapse-toggle" data-phase-index="${idx}" data-collapse="${(phase.items || []).length && (phase.items || []).every(item => item.collapsed) ? 'expand' : 'collapse'}" type="button">${(phase.items || []).length && (phase.items || []).every(item => item.collapsed) ? '&#9652;' : '&#9662;'}</button>
                 </div>
                 <div class="phase-items" data-phase-index="${idx}">
                   ${(phase.items || []).map((item, itemIdx) => `
-                    <div class="phase-item" draggable="true" data-phase-index="${idx}" data-item-index="${itemIdx}">
+                    <div class="phase-item" draggable="true" data-phase-index="${idx}" data-item-index="${itemIdx}" style="${activityThemeVars(item.type)}">
                       <span class="drag-handle">::</span>
                       <div class="phase-item-body ${item.collapsed ? 'is-collapsed' : ''}">
                         <div class="phase-item-header">
-                          <span class="activity-chip">${activityLabel(item.type)}</span>
-                          <button class="collapse-btn item-collapse-toggle" data-phase-index="${idx}" data-item-index="${itemIdx}" type="button">${item.collapsed ? 'Maximize' : 'Minimize'}</button>
+                          <span class="activity-chip">${activityIcon(item.type)} ${activityLabel(item.type)}</span>
+                          <button class="collapse-btn item-collapse-toggle" data-phase-index="${idx}" data-item-index="${itemIdx}" type="button">${collapseArrow(item.collapsed)}</button>
                         </div>
                         <div class="phase-item-config">
                           ${(item.type === 'video' || item.type === 'doc') ? `
@@ -1117,7 +1581,7 @@
                             ` : ''}
                             ${item.source === 'upload' ? `
                               <input class="item-upload-input" data-phase-index="${idx}" data-item-index="${itemIdx}" data-item-id="${item.id}" type="file" accept="${item.type === 'video' ? 'video/*' : 'application/pdf'}">
-                              ${!item.fileName ? `<button class="light-btn upload-file-btn" data-phase-index="${idx}" data-item-index="${itemIdx}" data-item-id="${item.id}" type="button" ${item.pendingFileName ? '' : 'disabled'}>Upload file</button>` : ''}
+                              ${!item.fileName ? `<button class="light-btn upload-file-btn" data-phase-index="${idx}" data-item-index="${itemIdx}" data-item-id="${item.id}" type="button" ${item.pendingFileName ? '' : 'disabled'}>Upload File</button>` : ''}
                               <input class="file-name" disabled value="${item.pendingFileName || item.fileName || ''}" placeholder="No file selected">
                               ${item.fileName ? `<a class="training-desc" href="${resourceUrl(item.type, item.fileName)}" target="_blank" rel="noreferrer">Linked: ${item.fileName}</a>` : ''}
                             ` : ''}
@@ -1162,18 +1626,38 @@
     }
 
     function renderAssessmentConfig(item, phaseIdx, itemIdx) {
-      const assessment = item.assessment || { passingMarks: '', questions: [] };
+      const assessment = item.assessment || { passingMarks: '', durationMinutes: '', maxRetries: '', questions: [] };
       const questions = assessment.questions || [];
+      const assessmentCollapsed = !!assessment.collapsed;
       return `
-        <div class="assessment-block">
+        <div class="assessment-block ${assessmentCollapsed ? 'is-collapsed' : ''}">
           <div class="assessment-header">
-            <div class="training-desc">Assessment questions</div>
-            <button class="light-btn add-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="button">Add Question</button>
+            <div>
+              <div class="assessment-footer-label">Assessment Builder</div>
+              <div class="assessment-section-title">Questions and answer options <button class="collapse-btn assessment-collapse-toggle" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="button">${collapseArrow(assessmentCollapsed)}</button></div>
+            </div>
+            <div class="assessment-header-actions">
+              <div class="assessment-total-wrap">
+                <span class="assessment-total-caption">Assessment Total Marks</span>
+                <input class="assessment-total-input" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" value="${getAssessmentTotalMarks(assessment)}" readonly>
+              </div>
+              <button class="light-btn add-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="button">Add Question</button>
+            </div>
           </div>
           ${questions.map((q, qIdx) => `
-            <div class="assessment-question" data-question-index="${qIdx}">
+            <div class="assessment-question ${q.collapsed ? 'is-collapsed' : ''}" data-question-index="${qIdx}" draggable="true" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}">
+              <div class="assessment-question-head">
+                <div class="assessment-question-label"><span class="assessment-drag-handle">::</span> <span>Question ${qIdx + 1}</span> <button class="collapse-btn assessment-question-collapse-toggle" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" type="button">${collapseArrow(!!q.collapsed)}</button></div>
+                <div class="assessment-marking">
+                  <div class="assessment-marking-toggle">
+                    <button class="assessment-marking-btn mode-combined ${q.markingMode !== 'individual' ? 'active' : ''}" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-mode="combined" type="button">Combined Marking</button>
+                    <button class="assessment-marking-btn mode-individual ${q.markingMode === 'individual' ? 'active' : ''}" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-mode="individual" type="button">Individual Marking</button>
+                  </div>
+                  <input class="assessment-marking-input assess-question-marks" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" type="number" min="0" step="any" value="${q.markingMode === 'individual' ? getQuestionIndividualMarks(q) : (q.combinedMarks || '')}" ${q.markingMode === 'individual' ? 'disabled' : ''}>
+                </div>
+              </div>
               <div class="assessment-top">
-                <input class="assess-question-text" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" placeholder="Question" value="${q.text || ''}">
+                <input class="assess-question-text" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" placeholder="Question" maxlength="200" value="${q.text || ''}">
                 <button class="tiny-btn move-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-dir="up" type="button">Up</button>
                 <button class="tiny-btn move-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-dir="down" type="button">Down</button>
                 <button class="tiny-btn remove-question-btn" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" type="button">Remove</button>
@@ -1181,7 +1665,9 @@
               <div class="assessment-options">
                 ${(q.options || []).map((opt, optIdx) => `
                   <div class="assessment-option">
-                    <input class="assess-option-text" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-option-index="${optIdx}" placeholder="Option text" value="${opt.text || ''}">
+                    <div class="assessment-option-label">Option ${optIdx + 1}</div>
+                    <input class="assess-option-text" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-option-index="${optIdx}" placeholder="Option text" maxlength="50" value="${opt.text || ''}">
+                    ${q.markingMode === 'individual' ? `<input class="assessment-option-marks assess-option-marks" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-option-index="${optIdx}" type="number" min="0" step="any" value="${opt.markValue || ''}" ${opt.correct ? '' : 'disabled'}>` : '<span></span>'}
                     <label class="training-desc">
                       <input class="assess-option-correct" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" data-question-index="${qIdx}" data-option-index="${optIdx}" type="checkbox" ${opt.correct ? 'checked' : ''}>
                       Correct
@@ -1193,8 +1679,20 @@
               </div>
             </div>
           `).join('') || '<div class="training-desc" style="margin-top:6px;">No questions yet.</div>'}
-          <input class="item-assess-pass" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" min="0" placeholder="Passing marks" value="${assessment.passingMarks || ''}">
-          <input class="item-assess-duration" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" min="0" placeholder="Assessment duration (minutes)" value="${assessment.durationMinutes || ''}">
+          <div class="assessment-footer">
+            <div class="assessment-footer-card">
+              <div class="assessment-footer-display">PASSING MARKS</div>
+              <div class="assessment-footer-input-wrap"><input class="assessment-footer-input item-assess-pass" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" min="0" step="any" placeholder="" value="${assessment.passingMarks || ''}"></div>
+            </div>
+            <div class="assessment-footer-card">
+              <div class="assessment-footer-display">TIME LIMIT</div>
+              <div class="assessment-footer-input-wrap"><input class="assessment-footer-input item-assess-duration" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" min="0" step="any" placeholder="" value="${assessment.durationMinutes || ''}"></div>
+            </div>
+            <div class="assessment-footer-card">
+              <div class="assessment-footer-display">MAX RETRIES <span class="hover-help" title="Leave Max Retries blank to allow unlimited retries. If you enter a number, the learner can retry only that many times before the full training restarts.">?</span></div>
+              <div class="assessment-footer-input-wrap"><input class="assessment-footer-input item-assess-retries" data-phase-index="${phaseIdx}" data-item-index="${itemIdx}" type="number" min="0" step="1" placeholder="" value="${assessment.maxRetries || ''}"></div>
+            </div>
+          </div>
         </div>
       `;
     }
@@ -1204,6 +1702,7 @@
       const roleNew = el('admin-role-new');
       const nameEl = el('admin-train-name');
       const descEl = el('admin-train-desc');
+      const createdByEl = el('admin-train-createdBy');
       const mentorSel = el('admin-train-mentor');
       const mentorFolderSel = el('admin-train-mentor-folder');
       const clearBtn = el('clear-draft-btn');
@@ -1211,6 +1710,11 @@
       if (roleNew) roleNew.oninput = () => adminDraftTraining.roleNew = roleNew.value;
       if (nameEl) nameEl.oninput = () => adminDraftTraining.name = nameEl.value;
       if (descEl) descEl.oninput = () => adminDraftTraining.description = descEl.value;
+      if (createdByEl) createdByEl.oninput = () => {
+        adminDraftTraining.createdByEmail = normalizeEmail(createdByEl.value);
+        adminDraftTraining.contributorEmails = resolveDraftContributorEmails(adminDraftTraining.createdByEmail);
+        renderAdminTrainings();
+      };
       if (mentorSel) mentorSel.onchange = () => {
         adminTrainingMentorMissionId = mentorSel.value;
         adminTrainingMentorFolderId = '';
@@ -1218,6 +1722,11 @@
       };
       if (mentorFolderSel) mentorFolderSel.onchange = () => adminTrainingMentorFolderId = mentorFolderSel.value;
       if (clearBtn) clearBtn.onclick = () => { clearAdminDraft(); renderAdminTrainings(); };
+      document.querySelectorAll('.admin-train-contributor').forEach(input => {
+        input.onchange = () => {
+          adminDraftTraining.contributorEmails = resolveDraftContributorEmails(adminDraftTraining.createdByEmail);
+        };
+      });
 
       const addPhaseBtn = el('add-phase-btn');
       if (addPhaseBtn) addPhaseBtn.onclick = () => {
@@ -1253,7 +1762,7 @@
             fileName: '',
             pendingFileName: '',
             textContent: '',
-            assessment: { passingMarks: '', questions: [] },
+            assessment: { passingMarks: '', durationMinutes: '', maxRetries: '', collapsed: false, questions: [] },
             missionId: '',
             mentorTopic: '',
             collapsed: false
@@ -1285,12 +1794,11 @@
         };
       });
 
-      document.querySelectorAll('.phase-collapse-all').forEach(btn => {
+      document.querySelectorAll('.phase-collapse-toggle').forEach(btn => {
         btn.onclick = () => {
           const phaseIdx = Number(btn.dataset.phaseIndex);
-          const action = btn.dataset.action;
           const items = adminDraftTraining.phases[phaseIdx]?.items || [];
-          const collapse = action === 'collapse';
+          const collapse = btn.dataset.collapse === 'collapse';
           items.forEach(item => { item.collapsed = collapse; });
           renderAdminTrainings();
         };
@@ -1382,8 +1890,34 @@
           const itemIdx = Number(btn.dataset.itemIndex);
           const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
           if (!item) return;
-          item.assessment = item.assessment || { passingMarks: '', questions: [] };
-          item.assessment.questions.push({ text: '', type: 'single', options: [] });
+          item.assessment = item.assessment || { passingMarks: '', durationMinutes: '', maxRetries: '', collapsed: false, questions: [] };
+          item.assessment.questions.push({ text: '', type: 'single', collapsed: false, markingMode: 'combined', combinedMarks: '', options: [] });
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.assessment-collapse-toggle').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.assessment = item.assessment || { passingMarks: '', durationMinutes: '', maxRetries: '', collapsed: false, questions: [] };
+          const nextCollapsed = !item.assessment.collapsed;
+          item.assessment.collapsed = nextCollapsed;
+          (item.assessment.questions || []).forEach(question => { question.collapsed = nextCollapsed; });
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.assessment-question-collapse-toggle').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const qIdx = Number(btn.dataset.questionIndex);
+          const question = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx]?.assessment?.questions?.[qIdx];
+          if (!question) return;
+          question.collapsed = !question.collapsed;
           renderAdminTrainings();
         };
       });
@@ -1416,6 +1950,64 @@
           list[nextIdx] = temp;
           renderAdminTrainings();
         };
+      });
+
+      document.querySelectorAll('.assessment-marking-btn').forEach(btn => {
+        btn.onclick = () => {
+          const phaseIdx = Number(btn.dataset.phaseIndex);
+          const itemIdx = Number(btn.dataset.itemIndex);
+          const qIdx = Number(btn.dataset.questionIndex);
+          const question = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx]?.assessment?.questions?.[qIdx];
+          if (!question) return;
+          question.markingMode = btn.dataset.mode === 'individual' ? 'individual' : 'combined';
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.assess-question-marks').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const qIdx = Number(input.dataset.questionIndex);
+          const question = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx]?.assessment?.questions?.[qIdx];
+          if (!question || question.markingMode === 'individual') return;
+          question.combinedMarks = input.value;
+          refreshAssessmentTotalInput(phaseIdx, itemIdx);
+        };
+      });
+
+      document.querySelectorAll('.assessment-question').forEach(questionEl => {
+        questionEl.addEventListener('dragstart', () => {
+          dragState = {
+            phaseIndex: Number(questionEl.dataset.phaseIndex),
+            itemIndex: Number(questionEl.dataset.itemIndex),
+            questionIndex: Number(questionEl.dataset.questionIndex),
+            dragType: 'assessment-question'
+          };
+          questionEl.classList.add('dragging');
+        });
+        questionEl.addEventListener('dragend', () => {
+          questionEl.classList.remove('dragging');
+          dragState = null;
+        });
+        questionEl.addEventListener('dragover', (event) => {
+          if (!dragState || dragState.dragType !== 'assessment-question') return;
+          event.preventDefault();
+        });
+        questionEl.addEventListener('drop', () => {
+          if (!dragState || dragState.dragType !== 'assessment-question') return;
+          const phaseIdx = Number(questionEl.dataset.phaseIndex);
+          const itemIdx = Number(questionEl.dataset.itemIndex);
+          const targetQuestionIndex = Number(questionEl.dataset.questionIndex);
+          if (dragState.phaseIndex !== phaseIdx || dragState.itemIndex !== itemIdx) return;
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          const questions = item?.assessment?.questions || [];
+          if (!questions.length || dragState.questionIndex === targetQuestionIndex) return;
+          const [moved] = questions.splice(dragState.questionIndex, 1);
+          const insertIndex = targetQuestionIndex > dragState.questionIndex ? targetQuestionIndex - 1 : targetQuestionIndex;
+          questions.splice(insertIndex, 0, moved);
+          renderAdminTrainings();
+        });
       });
 
       document.querySelectorAll('.assess-question-text').forEach(input => {
@@ -1479,8 +2071,24 @@
           const question = item?.assessment?.questions?.[qIdx];
           if (!question) return;
           question.options[optIdx].correct = input.checked;
+          if (!input.checked) question.options[optIdx].markValue = '';
           const correctCount = question.options.filter(opt => opt.correct).length;
           question.multi = correctCount > 1;
+          renderAdminTrainings();
+        };
+      });
+
+      document.querySelectorAll('.assess-option-marks').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const qIdx = Number(input.dataset.questionIndex);
+          const optIdx = Number(input.dataset.optionIndex);
+          const option = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx]?.assessment?.questions?.[qIdx]?.options?.[optIdx];
+          if (!option || !option.correct) return;
+          option.markValue = input.value;
+          refreshQuestionMarksInput(phaseIdx, itemIdx, qIdx);
+          refreshAssessmentTotalInput(phaseIdx, itemIdx);
         };
       });
 
@@ -1490,7 +2098,7 @@
           const itemIdx = Number(input.dataset.itemIndex);
           const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
           if (!item) return;
-          item.assessment = item.assessment || { passingMarks: '', questions: [] };
+          item.assessment = item.assessment || { passingMarks: '', durationMinutes: '', maxRetries: '', collapsed: false, questions: [] };
           item.assessment.passingMarks = input.value;
         };
       });
@@ -1501,8 +2109,18 @@
           const itemIdx = Number(input.dataset.itemIndex);
           const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
           if (!item) return;
-          item.assessment = item.assessment || { passingMarks: '', durationMinutes: '', questions: [] };
+          item.assessment = item.assessment || { passingMarks: '', durationMinutes: '', maxRetries: '', collapsed: false, questions: [] };
           item.assessment.durationMinutes = input.value;
+        };
+      });
+      document.querySelectorAll('.item-assess-retries').forEach(input => {
+        input.oninput = () => {
+          const phaseIdx = Number(input.dataset.phaseIndex);
+          const itemIdx = Number(input.dataset.itemIndex);
+          const item = adminDraftTraining.phases[phaseIdx]?.items?.[itemIdx];
+          if (!item) return;
+          item.assessment = item.assessment || { passingMarks: '', durationMinutes: '', maxRetries: '', collapsed: false, questions: [] };
+          item.assessment.maxRetries = input.value;
         };
       });
 
@@ -1586,57 +2204,437 @@
     }
 
     function clearAdminDraft() {
-      adminDraftTraining = { editingId: '', originalRole: '', roleSelect: '', roleNew: '', name: '', description: '', phases: [] };
+      const creatorEmail = currentUserEmail();
+      adminDraftTraining = { editingId: '', originalRole: '', roleSelect: '', roleNew: '', name: '', description: '', createdByEmail: creatorEmail, contributorEmails: creatorEmail ? [creatorEmail] : [], phases: [] };
       adminTrainingMentorMissionId = '';
       adminTrainingMentorFolderId = '';
       Object.keys(pendingUploadFiles).forEach(key => delete pendingUploadFiles[key]);
     }
 
-    function adminNav(active) {
+    function trainingPlatformNav(active) {
       return `
         <div class="nav">
           <div class="nav-left">
             <div class="home-icon">${homeIcon()}</div>
             <div>
-              <div class="nav-title">APAC AI Training Platform Admin</div>
-              <div class="nav-sub">${active === 'home' ? 'Admin console' : active === 'users' ? 'User management' : 'Training management'}</div>
+              <div class="nav-title">APAC AI Training Platform</div>
+              <div class="nav-sub">${active === 'users' ? 'User management' : active === 'trainings' ? 'Training management' : 'Welcome back, ' + escapeHtml(state.currentUser?.name || state.currentUser?.email || 'User')}</div>
             </div>
           </div>
           <div class="nav-actions">
-            <button class="link-btn${active==='home'?' active':''}" onclick="gotoAdmin('admin-home')">${homeSmallIcon()} Home</button>
-            <button class="link-btn${active==='users'?' active':''}" onclick="gotoAdmin('admin-users')">${personIcon()} Users</button>
-            <button class="link-btn${active==='trainings'?' active':''}" onclick="gotoAdmin('admin-trainings')">${bagIcon()} Trainings</button>
-            <button class="link-btn logout" onclick="adminLogout()">${logoutIcon()} Logout</button>
+            <button class="link-btn${active==='home'?' active':''}" id="training-nav-home">${homeSmallIcon()} Home</button>
+            ${hasTrainerAccess() ? `<button class="link-btn${active==='trainings'?' active':''}" id="training-nav-trainings">${bagIcon()} Training Management</button>` : ''}
+            ${hasAdminAccess() ? `<button class="link-btn${active==='users'?' active':''}" id="training-nav-users">${personIcon()} User Management</button>` : ''}
+            <button class="link-btn" id="training-nav-profile">${personIcon()} Edit Profile</button>
           </div>
         </div>
       `;
     }
 
-    function bindAdminNav() {
-      // placeholder for future shared admin nav behavior
+    function bindTrainingPlatformNav() {
+      if (el('training-nav-home')) el('training-nav-home').onclick = () => {
+        state.view = 'dashboard';
+        state.selectedTraining = null;
+        state.showMentor = false;
+        state.mentorReason = '';
+        render();
+      };
+      if (el('training-nav-trainings')) el('training-nav-trainings').onclick = () => {
+        state.view = 'admin-trainings';
+        render();
+      };
+      if (el('training-nav-users')) el('training-nav-users').onclick = () => {
+        state.view = 'admin-users';
+        render();
+      };
+      if (el('training-nav-profile')) el('training-nav-profile').onclick = () => {
+        state.showProfileEditor = true;
+        state.view = 'dashboard';
+        render();
+      };
+    }
+
+    function getContributorCandidates(creatorEmail='') {
+      const creator = normalizeEmail(creatorEmail);
+      const eligibleUsers = loadUsers()
+        .filter(user => {
+          const accessType = normalizeAccessType(user.accessType);
+          return accessType === 'trainer' || accessType === 'admin';
+        })
+        .map(user => ({
+          email: normalizeEmail(user.email),
+          name: user.name || user.email || '',
+          accessType: normalizeAccessType(user.accessType)
+        }))
+        .filter(user => user.email);
+      if (creator && !eligibleUsers.some(user => user.email === creator)) {
+        eligibleUsers.push({
+          email: creator,
+          name: creator,
+          accessType: 'trainer'
+        });
+      }
+      return eligibleUsers.sort((a, b) => (a.name || a.email).localeCompare(b.name || b.email));
+    }
+
+    function resolveDraftContributorEmails(creatorEmail='') {
+      const creator = normalizeEmail(creatorEmail || adminDraftTraining.createdByEmail || currentUserEmail());
+      const selected = Array.from(document.querySelectorAll('.admin-train-contributor:checked'))
+        .map(input => normalizeEmail(input.value))
+        .filter(Boolean);
+      if (creator) selected.push(creator);
+      return Array.from(new Set(selected));
+    }
+
+    function openAdminUserEditor(user) {
+      adminUserEditDraft = {
+        originalEmail: user.email || '',
+        email: user.email || '',
+        name: user.name || '',
+        title: user.title || '',
+        managerEmail: user.managerEmail || '',
+        accessType: normalizeAccessType(user.accessType),
+        trainings: Array.isArray(user.trainings) ? user.trainings : [],
+        approvals: Array.isArray(user.approvals) ? user.approvals : []
+      };
+      renderAdminUsers();
+    }
+
+    function closeAdminUserEditor() {
+      adminUserEditDraft = null;
+      renderAdminUsers();
+    }
+
+    function renderAdminUserEditor() {
+      if (!adminUserEditDraft) return '';
+      return `
+        <div class="admin-user-modal-backdrop" id="admin-user-modal-backdrop">
+          <div class="admin-user-modal" role="dialog" aria-modal="true" aria-labelledby="admin-user-modal-title">
+            <div class="admin-user-modal-header">
+              <div>
+                <div id="admin-user-modal-title" class="admin-user-modal-title">Edit User</div>
+                <div class="admin-user-modal-sub">Access type, title, and manager email can be updated here.</div>
+              </div>
+              <button class="light-btn" type="button" onclick="closeAdminUserEditor()">Close</button>
+            </div>
+            <div class="form-grid">
+              <div>
+                <label>Email</label>
+                <div class="field"><input id="admin-user-email" value="${adminUserEditDraft.email || ''}" type="email"></div>
+              </div>
+              <div>
+                <label>Name</label>
+                <div class="field"><input id="admin-user-name" value="${adminUserEditDraft.name || ''}"></div>
+              </div>
+              <div>
+                <label>Title</label>
+                <div class="field"><input id="admin-user-title" value="${adminUserEditDraft.title || ''}"></div>
+              </div>
+              <div>
+                <label>Manager Email</label>
+                <div class="field"><input id="admin-user-managerEmail" value="${adminUserEditDraft.managerEmail || ''}" type="email"></div>
+              </div>
+              <div>
+                <label>Access Type</label>
+                <div class="field">
+                  <select id="admin-user-accessType">
+                    <option value="trainee" ${normalizeAccessType(adminUserEditDraft.accessType) === 'trainee' ? 'selected' : ''}>Trainee</option>
+                    <option value="trainer" ${normalizeAccessType(adminUserEditDraft.accessType) === 'trainer' ? 'selected' : ''}>Trainer</option>
+                    <option value="admin" ${normalizeAccessType(adminUserEditDraft.accessType) === 'admin' ? 'selected' : ''}>Admin</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="admin-user-actions">
+              <button class="light-btn" type="button" onclick="closeAdminUserEditor()">Cancel</button>
+              <button class="add-btn" type="button" onclick="saveAdminUserEdit()">Save Changes</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderConfirmDialog() {
+      if (!state.confirmDialog) return '';
+      const dialog = state.confirmDialog;
+      return `
+        <div class="admin-user-modal-backdrop" id="confirm-dialog-backdrop">
+          <div class="admin-user-modal" role="dialog" aria-modal="true" aria-labelledby="confirm-dialog-title" style="width:min(560px, 96vw);">
+            <div class="admin-user-modal-header">
+              <div>
+                <div id="confirm-dialog-title" class="admin-user-modal-title">${escapeHtml(dialog.title || 'Confirm')}</div>
+                <div class="admin-user-modal-sub">${escapeHtml(dialog.message || '')}</div>
+              </div>
+              <button class="light-btn" type="button" id="confirm-dialog-close">Close</button>
+            </div>
+            <div class="admin-user-actions">
+              <button class="light-btn" type="button" id="confirm-dialog-cancel">Cancel</button>
+              <button class="light-btn danger-btn" type="button" id="confirm-dialog-confirm">${escapeHtml(dialog.confirmLabel || 'Confirm')}</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function openTrainingManagementHelp() {
+      state.showTrainingManagementHelp = true;
+      renderAdminTrainings();
+    }
+
+    function closeTrainingManagementHelp() {
+      state.showTrainingManagementHelp = false;
+      renderAdminTrainings();
+    }
+
+    function renderTrainingManagementHelpDialog() {
+      if (!state.showTrainingManagementHelp) return '';
+      return `
+        <div class="admin-user-modal-backdrop" id="training-help-backdrop">
+          <div class="admin-user-modal" role="dialog" aria-modal="true" aria-labelledby="training-help-title" style="width:min(860px, 96vw);">
+            <div class="admin-user-modal-header">
+              <div>
+                <div id="training-help-title" class="admin-user-modal-title">Training Management Help</div>
+                <div class="admin-user-modal-sub">Detailed guidance for creating, editing, and deleting a training.</div>
+              </div>
+              <button class="light-btn" type="button" onclick="closeTrainingManagementHelp()">Close</button>
+            </div>
+            <div class="training-help-layout">
+              <div class="training-help-topics">
+                <div class="training-help-topic-title">Topics</div>
+                <a href="#training-help-create">Create a training</a>
+                <a href="#training-help-phases">Phases and ordering</a>
+                <a href="#training-help-mentor">Mentor defaults</a>
+                <a href="#training-help-doc">Documentation reading</a>
+                <a href="#training-help-lms">LMS/Workday course</a>
+                <a href="#training-help-video">Watch video</a>
+                <a href="#training-help-assessment">Assessment</a>
+                <a href="#training-help-text">Formatted text</a>
+                <a href="#training-help-handson">Hands-on activity</a>
+                <a href="#training-help-ai-chat">Mentor session</a>
+                <a href="#training-help-edit">Edit a training</a>
+                <a href="#training-help-delete">Delete a training</a>
+                <a href="#training-help-recommended">Recommended setup</a>
+              </div>
+              <div class="training-help-content">
+              <div id="training-help-create" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Create a training</div>
+                <ol style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Start with the role. You can either attach the training to an existing role or create a new role name. The role becomes the grouping users will see when they add or access training.</li>
+                  <li>Enter a clear training name. This should describe the learning path, for example a product, team capability, or onboarding stream.</li>
+                  <li>Enter a short description. This is what users will read before opening the training, so keep it outcome-focused.</li>
+                  <li>Confirm the creator. The creator is automatically retained as a contributor and cannot be removed from contributor ownership.</li>
+                  <li>Select contributors from trainer and admin users. Contributors can edit the training later, while non-contributors will not see it in Training Management.</li>
+                  <li>Set the mentor defaults if the training includes mentor interactions. These defaults reduce repeated setup later across phases and activities.</li>
+                  <li>Add phases in the intended learning order. Each phase acts as a step in the training journey.</li>
+                  <li>Inside each phase, add the required activities. Activities can be reordered and collapsed while building.</li>
+                  <li>Populate each activity with its required content before saving. Some activity types require links, some require uploaded content, and some require assessment structure.</li>
+                  <li>Save the training using <strong>Add Training</strong> for a new training or <strong>Update Training</strong> when editing an existing one.</li>
+                </ol>
+              </div>
+              <div id="training-help-phases" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Phases and ordering</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Use <strong>Add Phase</strong> to create the major sections of the training.</li>
+                  <li>Give each phase a meaningful name such as Introduction, Core Workflow, Validation, or Go-live Readiness.</li>
+                  <li>Within a phase, add one or more activities based on what the learner needs to do.</li>
+                  <li>Activities can be dragged to reorder inside the same phase.</li>
+                  <li>Each activity can be collapsed to reduce visual clutter while you continue building the rest of the training.</li>
+                  <li>Remove a phase only when you no longer need any of the activities inside it.</li>
+                </ul>
+              </div>
+              <div id="training-help-mentor" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Mentor defaults</div>
+                <ol style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li><strong>Default Mentor Session</strong> selects the Matcha mission that mentor-session activities will use by default when this training is created or edited.</li>
+                  <li><strong>Temporary Document Storage</strong> selects the Matcha folder used to hold temporary supporting documents that the mentor session may reference during the training flow.</li>
+                  <li>These values act as defaults for the training and help keep mentor-session activities consistent across phases.</li>
+                </ol>
+              </div>
+              <div id="training-help-doc" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Documentation reading</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Supports three source types: <strong>URL link</strong>, <strong>Upload PDF</strong>, and <strong>Link existing PDF</strong> from the documents library.</li>
+                  <li>For uploads, the builder lets you choose a PDF file and then upload it into the training document store.</li>
+                  <li>For library mode, you can reuse a PDF that already exists in the documents folder.</li>
+                  <li>When linked successfully, the activity shows the selected document name.</li>
+                  <li>This activity is appropriate for SOPs, deployment guides, design documents, and reference manuals.</li>
+                </ul>
+              </div>
+              <div id="training-help-lms" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">LMS/Workday course</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Stores a course link for Workday, LMS, or another hosted learning platform.</li>
+                  <li>Use it when the trainee must complete an external learning module as part of the training path.</li>
+                  <li>The main required field is the course URL.</li>
+                </ul>
+              </div>
+              <div id="training-help-video" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Watch video</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Supports three source types: <strong>URL link</strong>, <strong>Upload video</strong>, and <strong>Link existing video</strong> from the videos library.</li>
+                  <li>Uploads allow new video content to be attached directly to the training.</li>
+                  <li>Library mode allows reuse of a video already stored in the shared video folder.</li>
+                  <li>This activity is suited for demonstrations, walkthroughs, and narrated explanations.</li>
+                </ul>
+              </div>
+              <div id="training-help-assessment" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Assessment</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Supports multiple questions inside one assessment activity.</li>
+                  <li>Questions can be added, removed, collapsed, expanded, dragged, and reordered.</li>
+                  <li>Each question supports multiple options, and options can be marked as correct or incorrect.</li>
+                  <li>Each question supports <strong>Combined Marking</strong> or <strong>Individual Marking</strong>.</li>
+                  <li>Combined marking awards marks only when the full answer is correct. Individual marking lets you assign marks per correct option.</li>
+                  <li>The builder calculates question totals and overall assessment total marks automatically.</li>
+                  <li>Passing marks, time limit, and max retries can be set for the assessment.</li>
+                  <li>If <strong>Max Retries</strong> is left blank, the learner can retry the assessment an unlimited number of times.</li>
+                  <li>If a retry limit is entered and the learner exhausts those retries, the full training is restarted from the beginning.</li>
+                  <li>This activity is intended for knowledge validation, comprehension checks, or formal sign-off points in the training path.</li>
+                </ul>
+              </div>
+              <div id="training-help-text" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Formatted text</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Provides an inline text area for instructional content.</li>
+                  <li>Supports basic HTML formatting for richer presentation where needed.</li>
+                  <li>Use it for short guidance, step summaries, notes, reminders, or context-setting between activities.</li>
+                </ul>
+              </div>
+              <div id="training-help-handson" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Hands-on activity</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Provides a text area to describe the practice task the learner must perform.</li>
+                  <li>Use it for sandbox work, validation exercises, configuration tasks, or practical walkthrough steps.</li>
+                  <li>The activity should clearly state what the trainee must do and what outcome they should achieve.</li>
+                </ul>
+              </div>
+              <div id="training-help-ai-chat" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Mentor session</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Lets you attach a specific Matcha mission to the activity.</li>
+                  <li>Requires a mentor session topic so the AI conversation is scoped to the right subject.</li>
+                  <li>Can inherit the training-level mentor defaults, while still allowing activity-level mission selection.</li>
+                  <li>Use it where the learner should ask questions, receive guided explanation, or explore a topic interactively before moving to the next section.</li>
+                </ul>
+              </div>
+              <div id="training-help-edit" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Edit a training</div>
+                <ol style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Click <strong>Edit</strong> on a training you are allowed to modify.</li>
+                  <li>Update role, title, description, creator, contributors, mentor mission, phases, or activities as needed.</li>
+                  <li>Reorder phases and activities to reflect the right learning sequence.</li>
+                  <li>For assessments, verify questions, answers, marks, passing marks, and time limit before saving.</li>
+                  <li>Trainers can edit only trainings where they are contributors. Admins can edit any training.</li>
+                </ol>
+              </div>
+              <div id="training-help-delete" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Delete a training</div>
+                <ol style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Use <strong>Delete</strong> on a training card to remove only that training.</li>
+                  <li>Use <strong>Delete Role and Associated Trainings</strong> to remove the entire role grouping and everything inside it.</li>
+                  <li>Both delete actions require confirmation in an in-page dialog before removal.</li>
+                  <li>Role deletion is available only to admins.</li>
+                </ol>
+              </div>
+              <div id="training-help-recommended" class="training-help-section">
+                <div style="font-weight:800; font-size:15px; margin-bottom:8px;">Recommended setup approach</div>
+                <ul style="margin:0; padding-left:20px; display:grid; gap:6px;">
+                  <li>Keep phase names outcome-based and easy to understand.</li>
+                  <li>Use contributors rather than single ownership so the training remains maintainable.</li>
+                  <li>Use mentor sessions for guided explanation and assessments for validation.</li>
+                  <li>Keep descriptions brief and place detailed instruction inside the activity content.</li>
+                </ul>
+              </div>
+              </div>
+            </div>
+            <div class="admin-user-actions">
+              <button class="add-btn" type="button" onclick="closeTrainingManagementHelp()">Close Help</button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindAdminUserEditor() {
+      const backdrop = el('admin-user-modal-backdrop');
+      if (!backdrop) return;
+      backdrop.onclick = (event) => {
+        if (event.target === backdrop) closeAdminUserEditor();
+      };
+    }
+
+    function closeConfirmDialog() {
+      state.confirmDialog = null;
+      render();
+    }
+
+    function bindConfirmDialog() {
+      const backdrop = el('confirm-dialog-backdrop');
+      if (!backdrop) return;
+      const close = () => closeConfirmDialog();
+      backdrop.onclick = (event) => {
+        if (event.target === backdrop) close();
+      };
+      if (el('confirm-dialog-close')) el('confirm-dialog-close').onclick = close;
+      if (el('confirm-dialog-cancel')) el('confirm-dialog-cancel').onclick = close;
+      if (el('confirm-dialog-confirm')) {
+        el('confirm-dialog-confirm').onclick = () => {
+          const action = state.confirmDialog?.onConfirm;
+          state.confirmDialog = null;
+          if (typeof action === 'function') action();
+        };
+      }
+    }
+
+    function bindTrainingManagementHelpDialog() {
+      const backdrop = el('training-help-backdrop');
+      if (!backdrop) return;
+      backdrop.onclick = (event) => {
+        if (event.target === backdrop) closeTrainingManagementHelp();
+      };
     }
 
     // Admin actions
-    window.editUser = async (empId) => {
+    window.editUser = async (email) => {
       await ensureUsersLoaded();
-      const u = loadUsers().find(x => x.employeeId === empId);
+      const u = loadUsers().find(x => normalizeEmail(x.email) === normalizeEmail(email));
       if (!u) return alert('User not found.');
-      const name = prompt('Name', u.name || '') ?? u.name;
-      const title = prompt('Title', u.title || '') ?? u.title;
-      const role = prompt('Role', u.role || '') ?? u.role;
-      const managerEmployeeId = prompt('Manager Employee ID (optional)', u.managerEmployeeId || '') ?? u.managerEmployeeId;
-      u.name = name; u.title = title; u.role = role; u.managerEmployeeId = managerEmployeeId;
+      openAdminUserEditor(u);
+    };
+    window.closeAdminUserEditor = closeAdminUserEditor;
+    window.saveAdminUserEdit = async () => {
+      if (!adminUserEditDraft) return;
+      const email = normalizeEmail(el('admin-user-email')?.value || '');
+      const name = (el('admin-user-name')?.value || '').trim();
+      const title = (el('admin-user-title')?.value || '').trim();
+      const managerEmail = normalizeEmail(el('admin-user-managerEmail')?.value || '');
+      const accessType = normalizeAccessType(el('admin-user-accessType')?.value || 'trainee');
+      if (!email) return alert('Email is required.');
+      if (!name) return alert('Name is required.');
+      const payload = {
+        ...loadUsers().find(x => normalizeEmail(x.email) === normalizeEmail(adminUserEditDraft.originalEmail)),
+        email,
+        name,
+        title,
+        managerEmail,
+        accessType,
+        originalEmail: adminUserEditDraft.originalEmail
+      };
       try {
-        await updateUser(u);
+        await updateUser(payload);
+        adminUserEditDraft = null;
         render();
-      } catch {
-        alert('User update failed.');
+      } catch (error) {
+        alert(error.message || 'User update failed.');
       }
     };
-    window.deleteUser = async (empId) => {
+    window.deleteUser = async (email) => {
       if (!confirm('Delete this user?')) return;
       try {
-        await removeUser(empId);
+        await removeUser(email);
+        if (adminUserEditDraft && normalizeEmail(adminUserEditDraft.originalEmail) === normalizeEmail(email)) {
+          adminUserEditDraft = null;
+        }
         render();
       } catch {
         alert('User delete failed.');
@@ -1684,6 +2682,8 @@
       if (missingMentorSession) return alert('Mentor session items need a Matcha mission and topic.');
       const desc = (adminDraftTraining.description || '').trim();
       const id = adminDraftTraining.editingId || slugify(`${role}-${name}`);
+      const createdByEmail = normalizeEmail(el('admin-train-createdBy')?.value || adminDraftTraining.createdByEmail || currentUserEmail());
+      const contributorEmails = resolveDraftContributorEmails(createdByEmail);
       const list = roleTrainingTemplates[role] || [];
       if (adminDraftTraining.editingId && adminDraftTraining.originalRole && adminDraftTraining.originalRole !== role) {
         const originalList = (roleTrainingTemplates[adminDraftTraining.originalRole] || []).filter(t => t.id !== adminDraftTraining.editingId);
@@ -1693,9 +2693,9 @@
       const mentorMissionId = adminTrainingMentorMissionId || '';
       const mentorFolderId = adminTrainingMentorFolderId || '';
       if (existing) {
-        existing.name = name; existing.description = desc; existing.phases = phases; existing.mentorMissionId = mentorMissionId; existing.mentorFolderId = mentorFolderId;
+        existing.name = name; existing.description = desc; existing.phases = phases; existing.mentorMissionId = mentorMissionId; existing.mentorFolderId = mentorFolderId; existing.createdByEmail = createdByEmail || existing.createdByEmail || currentUserEmail(); existing.contributorEmails = contributorEmails;
       } else {
-        list.push({ id, name, description: desc, phases, mentorMissionId, mentorFolderId });
+        list.push({ id, name, description: desc, phases, mentorMissionId, mentorFolderId, createdByEmail: createdByEmail || currentUserEmail(), contributorEmails });
       }
       const updated = { ...roleTrainingTemplates, [role]: list };
       saveTemplates(updated);
@@ -1707,6 +2707,7 @@
       const list = roleTrainingTemplates[role] || [];
       const t = list.find(x => x.id === id);
       if (!t) return alert('Training not found.');
+      if (!canEditTrainingTemplate(t)) return alert('You can only edit trainings you created or contribute to.');
       adminDraftTraining = {
         editingId: t.id,
         originalRole: role,
@@ -1714,6 +2715,8 @@
         roleNew: '',
         name: t.name || '',
         description: t.description || '',
+        createdByEmail: t.createdByEmail || '',
+        contributorEmails: Array.from(new Set([t.createdByEmail || '', ...(Array.isArray(t.contributorEmails) ? t.contributorEmails : [])].map(normalizeEmail).filter(Boolean))),
         phases: (t.phases || []).map(phase => ({
           id: phase.id || `phase-${Date.now()}`,
           name: phase.name || '',
@@ -1741,18 +2744,36 @@
     };
 
     window.deleteTemplateTraining = (role, id) => {
-      if (!confirm('Delete this training?')) return;
-      const list = (roleTrainingTemplates[role] || []).filter(t => t.id !== id);
-      const updated = { ...roleTrainingTemplates, [role]: list };
-      saveTemplates(updated);
+      const sourceList = roleTrainingTemplates[role] || [];
+      const target = sourceList.find(t => t.id === id);
+      if (target && !canEditTrainingTemplate(target)) return alert('You can only delete trainings you created or contribute to.');
+      state.confirmDialog = {
+        title: 'Delete Training',
+        message: `Delete "${target?.name || 'this training'}"? This cannot be undone.`,
+        confirmLabel: 'Delete Training',
+        onConfirm: () => {
+          const list = sourceList.filter(t => t.id !== id);
+          const updated = { ...roleTrainingTemplates, [role]: list };
+          saveTemplates(updated);
+          render();
+        }
+      };
       render();
     };
 
     window.deleteRole = (role) => {
-      if (!confirm('Delete this role and its trainings?')) return;
-      const updated = { ...roleTrainingTemplates };
-      delete updated[role];
-      saveTemplates(updated);
+      if (!hasAdminAccess()) return alert('Only admins can delete an entire training role.');
+      state.confirmDialog = {
+        title: 'Delete Role and Associated Trainings',
+        message: `Delete the role "${role}" and every training inside it? This cannot be undone.`,
+        confirmLabel: 'Delete Role',
+        onConfirm: () => {
+          const updated = { ...roleTrainingTemplates };
+          delete updated[role];
+          saveTemplates(updated);
+          render();
+        }
+      };
       render();
     };
 
@@ -1769,86 +2790,114 @@
         `;
         return;
       }
-      const session = loadSession();
-      if (session && !usersLoaded) {
-        ensureUsersLoaded().then(render);
+      if (!state.sessionResolved) {
+        ensureSessionResolved().then(render);
         document.body.innerHTML = `
           <div class="page-shell">
             <div class="card" style="margin-top:16px;">
-              <div class="muted-box" style="min-height:120px;">Loading users...</div>
+              <div class="muted-box" style="min-height:120px;">Loading your SSO session...</div>
             </div>
           </div>
         `;
         return;
       }
-      if (!usersLoaded && state.view !== 'login' && state.view !== 'register') {
-        ensureUsersLoaded().then(render);
-        document.body.innerHTML = `
-          <div class="page-shell">
-            <div class="card" style="margin-top:16px;">
-              <div class="muted-box" style="min-height:120px;">Loading users...</div>
-            </div>
-          </div>
-        `;
-        return;
+      state.isAdmin = hasAdminAccess();
+      if (state.view === 'unauthorized') return renderUnauthorized();
+      if (state.view === 'register') return renderRegistration();
+      if (state.view === 'admin-users') {
+        if (hasAdminAccess()) return renderAdminUsers();
+        state.view = 'dashboard';
       }
-      if (!state.currentUser && !state.isAdmin && session) {
-        if (session.admin) { state.isAdmin = true; state.view = 'admin-home'; }
-        else if (session.employeeId) {
-          const u = findUser(session.employeeId); if (u) { state.currentUser = u; state.view = 'dashboard'; }
-        }
+      if (state.view === 'admin-trainings') {
+        if (hasTrainerAccess()) return renderAdminTrainings();
+        state.view = 'dashboard';
       }
-      if (state.isAdmin) {
-        if (state.view === 'admin-users') return renderAdminUsers();
-        if (state.view === 'admin-trainings') return renderAdminTrainings();
-        return renderAdminHome();
+      if (state.view === 'admin-home') {
+        state.view = 'dashboard';
       }
-      if (state.view === 'login') return renderAuth('login');
-      if (state.view === 'register') return renderAuth('register');
       if (state.view === 'dashboard') return renderDashboard();
       if (state.view === 'training') return renderTraining();
+      return renderDashboard();
     }
 
-    // Auth render
-    function renderAuth(mode) {
-      const isLogin = mode === 'login';
-      const authFields = isLogin ? `
-        <div class="form-grid single">
-          ${authField('Employee ID','employeeId','e.g., EMP001','person')}
-          ${authField('AITP Password','password','Your password','lock', false, 'password')}
-        </div>
-      ` : `
-        <div class="form-grid">
-          ${authField('Employee ID','employeeId','e.g., EMP001','person')}
-          ${authField('Name','name','e.g., Jane Doe','person')}
-          ${authField('Role','role','Select a role','bag', true)}
-          ${authField('Title','title','e.g., Senior Developer','idcard')}
-          <div><label>Manager Employee ID (optional)</label><div class="field"><span class="icon-mini">${personIcon()}</span><input name="managerEmployeeId" placeholder="e.g., MGR001"></div></div>
-          ${authField('AITP Password','password','Create password','lock', false, 'password')}
-          ${authField('Confirm Password','confirm','Confirm password','lock', false, 'password')}
-        </div>
-      `;
-      document.body.innerHTML = `<div class="auth-wrap"><div class="auth-card"><div class="auth-header"><div class="icon-circle">${isLogin ? lockIcon() : userAddIcon()}</div><div class="auth-title">APAC AI Training Platform</div><div class="auth-sub">${isLogin ? 'Sign in to continue your learning journey' : 'Register to start your AI learning journey'}</div></div><form id="auth-form">${authFields}${!isLogin ? trainingSelectBlock() : ''}<button class="primary" type="submit" ${isLogin ? 'style="margin-top:14px;"' : ''}>${isLogin ? 'Sign In' : 'Register & Start Training'}</button></form><div class="footer-text">${isLogin ? "New user? <a href='#' id='toggle-link'>Register here</a>" : "Already have an account? <a href='#' id='toggle-link'>Sign in here</a>"}</div></div></div>`;
-      const toggle = document.getElementById('toggle-link'); if (toggle) toggle.onclick = (e) => { e.preventDefault(); state.view = isLogin ? 'register' : 'login'; render(); };
-      if (!isLogin) initRoleSelector();
+    function renderUnauthorized() {
+      const detail = state.sessionError
+        ? `<div class="muted-box" style="min-height:auto; margin:0 0 14px; color:#8a1f1f; border-color:#f0c2c2; background:#fff1f1;">${escapeHtml(state.sessionError)}</div>`
+        : '';
+      document.body.innerHTML = `<div class="auth-wrap"><div class="auth-card"><div class="auth-header"><div class="icon-circle">${lockIcon()}</div><div class="auth-title">APAC AI Training Platform</div><div class="auth-sub">The Application Hub did not pass a usable SSO identity into training.</div></div>${detail}<div class="footer-text">Open the Training Platform from the Application Hub after Microsoft sign-in has completed.</div></div></div>`;
+    }
+
+    function renderRegistration() {
+      const authName = state.authUser?.name || '';
+      const authEmail = state.authUser?.email || '';
+      const loadWarning = state.userLoadError
+        ? `<div class="muted-box" style="min-height:auto; margin:0 0 14px; color:#8a5b00; border-color:#f4d9a6; background:#fff7e6;">${escapeHtml(state.userLoadError)}</div>`
+        : '';
+      const registrationMessage = state.registrationMessage
+        ? `<div class="muted-box" style="min-height:auto; margin:0 0 14px; color:${state.registrationMessageType === 'success' ? '#155724' : '#8a1f1f'}; border-color:${state.registrationMessageType === 'success' ? '#b8e0c2' : '#f0c2c2'}; background:${state.registrationMessageType === 'success' ? '#edf9f0' : '#fff1f1'};">${escapeHtml(state.registrationMessage)}</div>`
+        : '';
+      document.body.innerHTML = `<div class="auth-wrap"><div class="auth-card"><div class="auth-header"><div class="icon-circle">${userAddIcon()}</div><div class="auth-title">Complete Training Registration</div><div class="auth-sub">Your Microsoft account is authenticated. Finish your training profile once, then you can select trainings from the home page.</div></div>${loadWarning}${registrationMessage}<form id="auth-form"><div class="form-grid"><div><label>Email</label><div class="field"><span class="icon-mini">${personIcon()}</span><input value="${authEmail}" disabled></div></div><div><label>Name</label><div class="field"><span class="icon-mini">${personIcon()}</span><input value="${escapeHtml(authName)}" disabled></div></div>${authField('Title','title','e.g., Systems Engineer','idcard') }<div><label>Manager Email Address</label><div class="field"><span class="icon-mini">${personIcon()}</span><input name="managerEmail" placeholder="manager@alterahealth.com" type="email"></div></div><div><label>Access Type</label><div class="field"><span class="icon-mini">${lockIcon()}</span><input value="Trainee" disabled></div></div></div><button class="primary" type="submit">Register & Open Dashboard</button></form></div></div>`;
       document.getElementById('auth-form').onsubmit = async (e) => {
-        e.preventDefault(); const data = Object.fromEntries(new FormData(e.target).entries());
-        if (isLogin) return handleLogin(data);
-        const selected = Array.from(document.querySelectorAll('.training-item.selected')).map(c => c.dataset.id);
-        await handleRegister(data, selected);
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target).entries());
+        await handleRegister(data);
       };
     }
 
-    function authField(label, name, placeholder, icon, isSelect=false, type='text') {
+    function authField(label, name, placeholder, icon, isSelect=false, type='text', value='') {
       if (isSelect) {
         const options = Object.keys(roleTrainingTemplates).map(r => `<option value="${r}">${r}</option>`).join('');
         return `<div><label>${label}</label><div class="field"><span class="icon-mini">${bagIcon()}</span><select name="${name}" id="role-select"><option value="">Select a role</option>${options}</select></div></div>`;
       }
-      return `<div><label>${label}</label><div class="field"><span class="icon-mini">${icon === 'person' ? personIcon() : icon === 'idcard' ? idIcon() : lockIcon()}</span><input name="${name}" placeholder="${placeholder}" type="${type}" required></div></div>`;
+      return `<div><label>${label}</label><div class="field"><span class="icon-mini">${icon === 'person' ? personIcon() : icon === 'idcard' ? idIcon() : lockIcon()}</span><input name="${name}" placeholder="${placeholder}" type="${type}" value="${escapeHtml(value)}" required></div></div>`;
     }
 
     function trainingSelectBlock() {
       return `<div style="margin:10px 0 6px;"><label>Select A Training <span style="color:#7c88a6; font-size:12px;">(Please select a role first)</span></label><div id="training-block" class="training-panel"><div id="training-placeholder" class="muted-box">${bagLargeIcon()}<div style="margin-top:6px;">Please select your role to view available trainings</div></div><div id="training-options" class="training-list" style="display:none;"></div></div></div>`;
+    }
+
+    function renderProfileEditorModal(user) {
+      return `
+        <div class="admin-user-modal-backdrop" id="profile-edit-modal-backdrop">
+          <div class="admin-user-modal" role="dialog" aria-modal="true" aria-labelledby="profile-edit-modal-title">
+            <div class="admin-user-modal-header">
+              <div>
+                <div id="profile-edit-modal-title" class="admin-user-modal-title">Edit Profile</div>
+                <div class="admin-user-modal-sub">Update your name, title, and manager email inside the training platform.</div>
+              </div>
+              <button class="light-btn" type="button" id="close-profile-edit">Close</button>
+            </div>
+            <form id="profile-edit-form">
+              <div class="form-grid">
+                <div>
+                  <label>Email</label>
+                  <div class="field"><span class="icon-mini">${personIcon()}</span><input value="${escapeHtml(user.email || '')}" disabled></div>
+                </div>
+                <div>
+                  <label>Name</label>
+                  <div class="field"><span class="icon-mini">${personIcon()}</span><input value="${escapeHtml(user.name || '')}" disabled></div>
+                </div>
+                <div>
+                  <label>Title</label>
+                  <div class="field"><span class="icon-mini">${idIcon()}</span><input name="title" value="${escapeHtml(user.title || '')}"></div>
+                </div>
+                <div>
+                  <label>Manager Email Address</label>
+                  <div class="field"><span class="icon-mini">${personIcon()}</span><input name="managerEmail" type="email" value="${escapeHtml(user.managerEmail || '')}" placeholder="manager@alterahealth.com"></div>
+                </div>
+                <div>
+                  <label>Access Type</label>
+                  <div class="field"><span class="icon-mini">${lockIcon()}</span><input value="${escapeHtml(normalizeAccessType(user.accessType))}" disabled></div>
+                </div>
+              </div>
+              <div class="admin-user-actions">
+                <button class="light-btn" type="button" id="cancel-profile-edit">Cancel</button>
+                <button class="add-btn" type="submit">Save Profile</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      `;
     }
 
     function initRoleSelector() {
@@ -1877,13 +2926,30 @@
     // Dashboard render
     function renderDashboard() {
       const user = state.currentUser;
-      document.body.innerHTML = `<div class="page-shell"><div class="nav"><div class="nav-left"><div class="home-icon">${homeIcon()}</div><div><div class="nav-title">APAC AI Training Platform</div><div class="nav-sub">Welcome back, ${user.name || user.employeeId}</div></div></div><div class="nav-actions"><button class="link-btn" id="edit-profile">${personIcon()} Edit Profile</button><button class="link-btn" id="change-pass">${lockIcon()} Change Password</button><button class="link-btn logout" id="logout">${logoutIcon()} Logout</button></div></div><div style="margin-top:16px;" class="profile-card"><div class="profile-meta"><div class="label">Employee Profile</div><div style="font-weight:700;">Name: ${user.name || 'N/A'}</div><div style="font-weight:700;">Employee ID: ${user.employeeId}</div><div style="font-weight:700;">Title: ${user.title || 'N/A'}</div><div style="font-weight:700;">Manager ID: ${user.managerEmployeeId || 'N/A'}</div></div><div><div class="label" style="text-align:right;">Total Trainings</div><div class="big-count">${user.trainings.length}</div></div></div><div id="approvals-section"></div><div class="section-row"><div class="section-title">My Trainings</div><button class="add-btn" id="toggle-add">${plusIcon()} Add New Training</button></div>${state.showAddPanel ? addTrainingPanel() : ''}<div id="groups"></div></div>`;
-      el('logout').onclick = () => { clearSession(); state.currentUser = null; state.isAdmin = false; state.view = 'login'; state.showAddPanel = false; render(); };
-      el('edit-profile').onclick = () => editProfile();
-      el('change-pass').onclick = () => alert('Password change flow not implemented in this demo.');
+      const managedUsers = getManagedUsers();
+      const profileEditor = state.showProfileEditor ? renderProfileEditorModal(user) : '';
+      if (!usersLoadResolved) {
+        ensureUsersLoaded().then(() => {
+          if (state.view === 'dashboard') render();
+        });
+      }
+      document.body.innerHTML = `<div class="page-shell">${trainingPlatformNav('home')}<div style="margin-top:16px;" class="profile-card"><div class="profile-meta"><div class="label">Training Profile</div><div style="font-weight:700;">Name: ${user.name || 'N/A'}</div><div style="font-weight:700;">Email: ${user.email || 'N/A'}</div><div style="font-weight:700;">Title: ${user.title || 'N/A'}</div><div style="font-weight:700;">Manager Email: ${user.managerEmail || 'N/A'}</div><div style="font-weight:700;">Access: ${normalizeAccessType(user.accessType)}</div></div><div><div class="label" style="text-align:right;">Total Trainings</div><div class="big-count">${user.trainings.length}</div></div></div>${profileEditor}<div id="approvals-section"></div><div class="section-row"><div class="section-title">My Trainings</div><button class="add-btn" id="toggle-add">${plusIcon()} Add New Training</button></div>${state.showAddPanel ? addTrainingPanel() : ''}<div id="groups"></div><div class="section-row"><div class="section-title">My Team Trainings</div><div class="badge">${managedUsers.length} Report${managedUsers.length === 1 ? '' : 's'}</div></div><div id="managed-groups"></div></div>`;
+      bindTrainingPlatformNav();
+      if (el('cancel-profile-edit')) el('cancel-profile-edit').onclick = () => { state.showProfileEditor = false; render(); };
+      if (el('close-profile-edit')) el('close-profile-edit').onclick = () => { state.showProfileEditor = false; render(); };
+      if (el('profile-edit-modal-backdrop')) {
+        el('profile-edit-modal-backdrop').onclick = (event) => {
+          if (event.target === el('profile-edit-modal-backdrop')) {
+            state.showProfileEditor = false;
+            render();
+          }
+        };
+      }
+      if (el('profile-edit-form')) el('profile-edit-form').onsubmit = async (event) => { event.preventDefault(); await saveProfileEdit(event.target); };
       el('toggle-add').onclick = () => { state.showAddPanel = !state.showAddPanel; render(); };
       if (state.showAddPanel) initAddTraining();
       renderGroups();
+      renderManagedGroups();
       renderApprovals();
     }
 
@@ -1910,6 +2976,21 @@
       container.innerHTML = groups.map(g => `<div class="group-card" style="margin-top:14px;"><div class="group-header"><div style="display:flex; align-items:center; gap:8px; font-weight:700;">${bagIcon()} ${g.role}</div><div class="badge">${g.items.length} Training${g.items.length>1?'s':''}</div></div>${g.items.map(renderTrainingRow).join('')}</div>`).join('');
     }
 
+    function renderManagedGroups() {
+      const container = el('managed-groups');
+      if (!container) return;
+      if (!usersLoadResolved) {
+        container.innerHTML = '<div class="muted-box">Loading direct-report training profiles...</div>';
+        return;
+      }
+      const managedUsers = getManagedUsers();
+      if (!managedUsers.length) {
+        container.innerHTML = '<div class="muted-box">No direct reports found for your manager email.</div>';
+        return;
+      }
+      container.innerHTML = `<div class="reports-grid">${managedUsers.map(renderManagedUserCard).join('')}</div>`;
+    }
+
     function groupByRole(list) {
       const map = {};
       list.forEach(t => { map[t.role] = map[t.role] || []; map[t.role].push(t); });
@@ -1932,6 +3013,39 @@
       return `<div class="training-row" data-id="${t.id}"><div><div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span>${bookIcon()}</span><div class="train-name">${t.name}</div></div><div class="progress-wrap"><span>Progress</span><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div><span>${t.currentPhaseIndex}/${t.phases.length}</span><span class="status-chip ${s.cls}">${statusDot()} ${s.text}</span></div></div><div style="display:flex; align-items:center; gap:10px;">${actions}</div></div>`;
     }
 
+    function renderManagedUserCard(user) {
+      const trainings = Array.isArray(user.trainings) ? user.trainings : [];
+      const groups = groupByRole(trainings);
+      return `
+        <div class="report-card">
+          <div class="report-head">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px; font-weight:700;">${personIcon()} ${user.name || user.email}</div>
+              <div class="report-meta">Email: ${user.email} | Title: ${user.title || 'N/A'}</div>
+            </div>
+            <div class="badge">${trainings.length} Training${trainings.length === 1 ? '' : 's'}</div>
+          </div>
+          ${groups.length ? groups.map(group => `
+            <div class="report-training-group">
+              <div class="group-header">
+                <div style="display:flex; align-items:center; gap:8px; font-weight:700;">${bagIcon()} ${group.role}</div>
+                <div class="badge">${group.items.length} Item${group.items.length === 1 ? '' : 's'}</div>
+              </div>
+              ${group.items.map(renderReadOnlyTrainingRow).join('')}
+            </div>
+          `).join('') : '<div class="muted-box" style="margin-top:14px; min-height:120px;">No trainings assigned.</div>'}
+        </div>
+      `;
+    }
+
+    function renderReadOnlyTrainingRow(t) {
+      const s = statusLabel(t.status);
+      const pct = progressPct(t);
+      const phaseCount = Array.isArray(t.phases) ? t.phases.length : 0;
+      const currentPhase = phaseCount ? Math.min((Number.isFinite(t.currentPhaseIndex) ? t.currentPhaseIndex : 0) + 1, phaseCount) : 0;
+      return `<div class="training-row"><div><div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;"><span>${bookIcon()}</span><div class="train-name">${t.name}</div></div><div class="training-desc">${t.description || 'Training assigned to this user.'}</div><div class="progress-wrap" style="margin-top:8px;"><span>Progress</span><div class="progress-bar"><div class="progress-fill" style="width:${pct}%;"></div></div><span>${currentPhase}/${phaseCount}</span><span class="status-chip ${s.cls}">${statusDot()} ${s.text}</span></div></div><div style="color:#564f79; font-size:13px; font-weight:600;">Read only</div></div>`;
+    }
+
     window.startTrainingFlow = (id, mode) => {
       const user = state.currentUser;
       const t = user.trainings.find(x => x.id === id);
@@ -1939,27 +3053,9 @@
       ensureTrainingState(t);
       syncTrainingMetadata(t);
         if (mode === 'restart') {
-          t.currentPhaseIndex = 0;
-          t.currentItemIndex = 0;
-          t.started = false;
-          t.status = 'not-started';
-          t.completedItemIds = [];
-          t.lastAutoMentorItemId = '';
-          (t.phases || []).forEach(phase => {
-            (phase.items || []).forEach(item => {
-              if (item && item.type === 'assessment') {
-                item.assessmentState = { index: 0, answers: [], completed: false, passed: false, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false };
-              }
-              if (item && item.type === 'ai-chat') {
-                item.autoMentorStarted = false;
-              }
-            });
-          });
-          if (Array.isArray(user.approvals)) {
-            user.approvals = user.approvals.filter(req => req.trainingId !== t.id);
-          }
-        t.chatHistory = [{ from: 'bot', text: `Welcome to ${t.name}! We'll be going through ${t.phases.length} phases together. Currently, you're in Phase 1: ${getPhaseName(t.phases[0])}. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.`, time: new Date().toLocaleTimeString() }];
+          resetEntireTraining(t, '');
       } else if (mode === 'resume') {
+        t.systemNotice = '';
         t.started = true;
         t.status = t.status === 'completed' ? 'completed' : 'in-progress';
       }
@@ -1984,7 +3080,7 @@
         const stateObj = currentItem.assessmentState || {};
         const hasScore = stateObj.completed || stateObj.passed || stateObj.scorePct > 0;
         if (hasScore) {
-          currentItem.assessmentState = { index: 0, answers: [], completed: false, passed: false, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false };
+          currentItem.assessmentState = { index: 0, answers: [], completed: false, passed: false, scoreMarks: 0, totalMarks: 0, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false, retryCount: 0 };
         } else {
           const answersList = Array.isArray(stateObj.answers) ? stateObj.answers : [];
           const hasAnyAnswer = answersList.some(a => (Array.isArray(a) ? a.length > 0 : a !== undefined && a !== null));
@@ -2011,15 +3107,14 @@
               <div class="home-icon">${homeIcon()}</div>
               <div>
                 <div class="nav-title">${t.name}</div>
-                <div class="nav-sub">Phase ${phaseNum} of ${total}</div>
               </div>
             </div>
             <div class="nav-actions">
               <button class="link-btn" id="back-dash">${homeSmallIcon()} Dashboard</button>
-              <button class="link-btn logout" id="logout">${logoutIcon()} Logout</button>
             </div>
           </div>
           <div class="card training-layout">
+            ${t.systemNotice ? `<div class="muted-box" style="min-height:auto; margin-bottom:12px; place-items:start; text-align:left; color:#8a1f1f; border-color:#f0c2c2; background:#fff1f1;">${escapeHtml(t.systemNotice)}</div>` : ''}
             <div class="training-top">
               <div class="home-icon" style="width:42px; height:42px;">${bookIcon()}</div>
               <div>
@@ -2028,10 +3123,10 @@
                 <div style="font-size:12px; color:#4b556b; margin-top:4px;">${t.currentPhaseIndex}/${total} phases</div>
               </div>
             </div>
-            <div class="phase-tabs">${t.phases.map((p,i)=>`<div class="phase-tab ${i===t.currentPhaseIndex ? 'current' : i < t.currentPhaseIndex ? 'done' : ''}"><span>${i+1}. ${getPhaseName(p)}</span></div>`).join('')}</div>
+            <div class="phase-tabs">${t.phases.map((p,i)=>`<div class="phase-tab ${i===t.currentPhaseIndex ? 'current' : i < t.currentPhaseIndex ? 'done phase-tab--clickable' : ''}" data-phase-index="${i}"><span>${i+1}. ${getPhaseName(p)}</span></div>`).join('')}</div>
             ${!t.started ? `
               <div class="card" style="margin-top:12px;">
-                <div style="font-weight:700; margin-bottom:6px;">How this training will progress</div>
+                <div style="font-weight:800; margin-bottom:6px; font-size:18px; letter-spacing:-0.02em; color:var(--blue-dark);">How this training will progress</div>
                 ${overviewHtml}
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:10px;">
                   ${t.mentorMissionId ? `<button class="link-btn" id="mentor-btn">${chatIcon()} Get My Mentor</button>` : '<span></span>'}
@@ -2043,57 +3138,99 @@
               <div class="chat-shell" style="margin-top:12px;">
                 <div class="chat-box" id="chat-box"></div>
                 <div class="chat-input">
-                  <input id="chat-input" placeholder="Type your message or answer here..." autocomplete="off">
-                  <button id="send-btn">Send</button>
+                  <input id="chat-input" placeholder="${state.mentorPending ? 'Matcha is preparing a response...' : 'Type your message or answer here...'}" autocomplete="off" ${state.mentorPending ? 'disabled' : ''}>
+                  <button id="send-btn" ${state.mentorPending ? 'disabled' : ''}>Send</button>
                 </div>
-              </div>
-              <div class="card" style="margin-top:12px;">
-                <div style="font-weight:700; margin-bottom:8px;">Last Matcha Request Payload</div>
-                <pre style="margin:0; white-space:pre-wrap; font-size:12px; color:#2f3c60;">${escapeHtml(JSON.stringify(lastMentorRequest || { info: 'No mentor payload yet. Send a message to see it.' }, null, 2))}</pre>
               </div>
             ` : ''}
           </div>
         </div>
       `;
-      el('logout').onclick = () => { clearSession(); state.currentUser = null; state.isAdmin = false; state.view = 'login'; state.showAddPanel = false; render(); };
       el('back-dash').onclick = () => { state.view = 'dashboard'; state.selectedTraining = null; state.showMentor = false; state.mentorReason = ''; render(); };
         const mentorBtn = el('mentor-btn');
         if (mentorBtn) mentorBtn.onclick = () => {
           const item = currentItem || getCurrentTrainingItem() || {};
-          state.mentorReason = `User requested mentor support during ${activityLabel(item.type || 'activity')}.`;
+          state.mentorReason = item.type === 'doc' && item.fileName
+            ? `User requested mentor support for the document "${item.fileName}".`
+            : `User requested mentor support during ${activityLabel(item.type || 'activity')}.`;
           if (state.selectedTraining) state.selectedTraining.chatHistory = [];
           state.showMentor = true;
-          sendMentorMessage('', item, { autoKickoff: true, kickoffText: `Do you need help with ${activityLabel(item.type || 'this activity')}?`, useHistory: false });
+          const kickoffText = item.type === 'doc' && item.fileName
+            ? `Please read the selected document "${item.fileName}" and help me understand it for "${getPhaseName(currentPhase) || t.name || 'this phase'}". Use only that document.`
+            : `Do you need help with ${activityLabel(item.type || 'this activity')}?`;
+          sendMentorMessage('', item, { autoKickoff: true, kickoffText, useHistory: false });
           render();
         };
       const startBtn = el('start-training-btn');
       if (startBtn) startBtn.onclick = () => startTraining(t);
+        document.querySelectorAll('.phase-tab--clickable').forEach(tab => {
+          tab.onclick = () => {
+            const targetPhaseIndex = Number(tab.dataset.phaseIndex);
+            if (!Number.isInteger(targetPhaseIndex)) return;
+            const targetPhase = t.phases?.[targetPhaseIndex];
+            const ok = confirm(`Return to "${getPhaseName(targetPhase)}"? All progress for this phase and every phase after it will be lost.`);
+            if (!ok) return;
+            resetTrainingProgressFromPhase(t, targetPhaseIndex);
+            persistUser(state.currentUser);
+            render();
+          };
+        });
         const completeBtn = el('complete-item-btn');
         if (completeBtn) completeBtn.onclick = () => handleCompleteItem(t, currentPhase, currentItem);
         setupAssessmentTimer(t, currentItem);
         if (showMentor) {
           renderChat();
-          el('send-btn').onclick = () => { const val = el('chat-input').value; sendMessage(val); el('chat-input').value=''; };
-          el('chat-input').addEventListener('keyup', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); el('send-btn').click(); }});
+          el('send-btn').onclick = () => {
+            if (state.mentorPending) return;
+            const val = el('chat-input').value;
+            sendMessage(val);
+            el('chat-input').value='';
+          };
+          el('chat-input').addEventListener('keyup', (e)=>{ if(e.key==='Enter' && !state.mentorPending){ e.preventDefault(); el('send-btn').click(); }});
           autoStartMentorSession(currentItem);
         }
       }
 
     function renderTrainingOverview(t) {
       const phases = t.phases || [];
-      return phases.map((phase, idx) => {
+      const phaseCards = phases.map((phase, idx) => {
         const items = (phase.items || []).map(item => {
-          if (item.type === 'doc' && (item.fileName || item.url)) return `Document (${item.fileName || 'link'})`;
-          if (item.type === 'video' && (item.fileName || item.url)) return `Video (${item.fileName || 'link'})`;
-          if (item.type === 'lms' && item.lmsLink) return 'LMS/Workday course';
-          if (item.type === 'handson') return 'Hands-on activity';
-          if (item.type === 'assessment') return 'Assessment';
-          if (item.type === 'text') return 'Formatted text';
-          if (item.type === 'ai-chat') return `Mentor session${item.mentorTopic ? ` (${item.mentorTopic})` : ''}`;
-          return activityLabel(item.type);
-        }).join(', ') || 'No activities yet.';
-        return `<div class="training-desc" style="margin-top:6px;"><strong>Phase ${idx + 1}: ${getPhaseName(phase)}</strong><div>${items}</div></div>`;
+          if (item.type === 'doc' && (item.fileName || item.url)) return `<li class="training-overview-activity"><span class="training-overview-activity-label">Document</span><span class="training-overview-activity-text">${item.fileName || 'Linked document'}</span></li>`;
+          if (item.type === 'video' && (item.fileName || item.url)) return `<li class="training-overview-activity"><span class="training-overview-activity-label">Video</span><span class="training-overview-activity-text">${item.fileName || 'Linked video'}</span></li>`;
+          if (item.type === 'lms' && item.lmsLink) return '<li class="training-overview-activity"><span class="training-overview-activity-label">LMS</span><span class="training-overview-activity-text">Workday or linked course module</span></li>';
+          if (item.type === 'handson') return '<li class="training-overview-activity"><span class="training-overview-activity-label">Hands-on</span><span class="training-overview-activity-text">Applied practice activity</span></li>';
+          if (item.type === 'assessment') return '<li class="training-overview-activity"><span class="training-overview-activity-label">Assessment</span><span class="training-overview-activity-text">Knowledge validation</span></li>';
+          if (item.type === 'text') return '<li class="training-overview-activity"><span class="training-overview-activity-label">Read-through</span><span class="training-overview-activity-text">Guided text content</span></li>';
+          if (item.type === 'ai-chat') return `<li class="training-overview-activity"><span class="training-overview-activity-label">Mentor</span><span class="training-overview-activity-text">${item.mentorTopic || 'Interactive mentor session'}</span></li>`;
+          return `<li class="training-overview-activity"><span class="training-overview-activity-label">${activityLabel(item.type)}</span><span class="training-overview-activity-text">Included in this phase</span></li>`;
+        }).join('') || '<li class="training-overview-activity"><span class="training-overview-activity-label">Info</span><span class="training-overview-activity-text">No activities configured yet.</span></li>';
+        const itemCount = (phase.items || []).length;
+        return `
+          <article class="training-overview-phase">
+            <div class="training-overview-phase-top">
+              <div>
+                <div class="training-overview-phase-label">Phase ${idx + 1}</div>
+                <div class="training-overview-phase-name">${getPhaseName(phase)}</div>
+              </div>
+              <div class="training-overview-phase-count">${itemCount} ${itemCount === 1 ? 'activity' : 'activities'}</div>
+            </div>
+            <ul class="training-overview-phase-list">${items}</ul>
+          </article>
+        `;
       }).join('');
+      return `
+        <div class="training-overview">
+          <div class="training-overview-hero">
+            <div class="training-overview-kicker">Learning journey</div>
+            <div class="training-overview-title">${t.name}</div>
+            <div class="training-overview-text">
+              The training path is split into ${phases.length} focused phases. Each phase combines guided reading,
+              mentor interaction, hands-on practice, or assessment so the progression feels deliberate rather than linear.
+            </div>
+          </div>
+          <div class="training-overview-grid">${phaseCards}</div>
+        </div>
+      `;
     }
 
     function renderCurrentItem(training, phase, item) {
@@ -2105,7 +3242,7 @@
       const approved = approvalReq && approvalReq.status === 'approved';
       const rejected = approvalReq && approvalReq.status === 'rejected';
       const requires = requiresApproval(item);
-      const details = renderItemDetails(training, item);
+      const details = renderItemDetails(training, phase, item);
       const buttonLabel = requires && approved ? 'Continue' : getCompleteLabel(item);
       const disableComplete = requires && !!pending;
       const allowMentor = item.type !== 'ai-chat' && item.type !== 'assessment' && !!training.mentorMissionId;
@@ -2114,6 +3251,12 @@
       const pendingNote = pending ? `<div class="training-desc" style="margin-top:6px; color:#c62828;">Awaiting manager approval.</div>` : '';
       const approvedNote = approved ? `<div class="training-desc" style="margin-top:6px; color:#1c8c4a;">Congratulations, your manager has approved.</div>` : '';
       const rejectedNote = rejected ? `<div class="training-desc" style="margin-top:6px; color:#c62828;">Sorry, your manager has rejected the outcome, please try again.</div>` : '';
+      const header = item.type === 'ai-chat'
+        ? `<div style="display:flex; align-items:center; gap:12px; margin-top:4px;">
+             <span style="display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; border-radius:14px; background:#f8eef6; color:#7b215f;">${activityIcon(item.type).replace('width:14px; height:14px;', 'width:24px; height:24px;')}</span>
+             <div style="font-size:22px; font-weight:800; letter-spacing:-0.02em; color:#211852;">${activityLabel(item.type)}</div>
+           </div>`
+        : `<div class="training-desc" style="margin-top:4px;">Current activity: ${activityIcon(item.type)} ${activityLabel(item.type)}</div>`;
       const actionsRow = (allowMentor || showCompleteButton) ? `
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; gap:10px;">
             ${allowMentor ? `<button class="link-btn" id="mentor-btn">${chatIcon()} Get My Mentor</button>` : '<span></span>'}
@@ -2122,8 +3265,7 @@
       ` : '';
       return `
         <div class="card" style="margin-top:12px;">
-          <div style="font-weight:700;">Phase ${training.currentPhaseIndex + 1}: ${getPhaseName(phase)}</div>
-          <div class="training-desc" style="margin-top:4px;">Current activity: ${activityLabel(item.type)}</div>
+          ${header}
           ${details}
           ${approvalNote}
           ${pendingNote}
@@ -2134,10 +3276,13 @@
       `;
     }
 
-    function renderItemDetails(training, item) {
+    function renderItemDetails(training, phase, item) {
       if (item.type === 'doc') {
         const link = item.fileName ? resourceUrl(item.type, item.fileName) : item.url;
-        return link ? `<div class="training-desc" style="margin-top:8px;">Document: <a href="${link}" target="_blank" rel="noreferrer">${item.fileName || item.url}</a></div>` : '<div class="training-desc" style="margin-top:8px;">No document explained yet.</div>';
+        const topic = getPhaseName(phase) || item.mentorTopic || training.name || 'this topic';
+        return link
+          ? `<div class="training-desc" style="margin-top:8px;"><strong>Read the following document</strong> to understand <strong>${topic}</strong>.</div><div class="training-desc" style="margin-top:8px;"><a href="${link}" target="_blank" rel="noreferrer">${item.fileName || item.url}</a></div>`
+          : '<div class="training-desc" style="margin-top:8px;">No document linked yet.</div>';
       }
       if (item.type === 'video') {
         const link = item.fileName ? resourceUrl(item.type, item.fileName) : item.url;
@@ -2156,8 +3301,7 @@
         return renderAssessment(training, item);
       }
       if (item.type === 'ai-chat') {
-        const next = getNextItemSummary(training);
-        return `<div class="training-desc" style="margin-top:8px;">Mentor session placeholder. Continue chatting until you're ready to proceed.</div>${next ? `<div class="training-desc" style="margin-top:6px;">Next up: ${next}</div>` : ''}`;
+        return `<div class="training-desc" style="margin-top:12px; font-size:15px; line-height:1.7; color:#4f4873;">Use this mentor session to discuss the selected section with a trained AI guide. Review the guidance, ask follow-up questions as needed, and press <strong>I am ready for next section</strong> once you have what you need to continue.</div>`;
       }
       return '';
     }
@@ -2189,11 +3333,14 @@
           answers: [],
           completed: false,
           passed: false,
+          scoreMarks: 0,
+          totalMarks: 0,
           scorePct: 0,
           startedAt: 0,
           endsAt: 0,
           remainingSeconds: 0,
-          timedOut: false
+          timedOut: false,
+          retryCount: 0
         };
       }
       return item.assessmentState;
@@ -2238,6 +3385,9 @@
       const isMulti = isMultiSelectQuestion(q);
       const selected = state.answers[idx] ?? (isMulti ? [] : null);
       const passing = normalizePassingMarks(assessment.passingMarks || 0);
+      const maxRetries = parseAssessmentMaxRetries(assessment.maxRetries);
+      const retriesUsed = Math.max(0, Number.parseInt(state.retryCount || 0, 10) || 0);
+      const retriesRemaining = maxRetries === null ? null : Math.max(0, maxRetries - retriesUsed);
       const timeRemaining = durationMinutes
         ? (() => {
             const endsAt = state.endsAt || (state.startedAt ? state.startedAt + (durationMinutes * 60000) : 0);
@@ -2246,12 +3396,14 @@
             return `<div class="training-desc" id="assessment-timer-${item.id}" style="margin-top:6px;">Time remaining: ${formatTime(remaining)}</div>`;
           })()
         : '';
+      const earnedMarks = normalizeMarkValue(state.scoreMarks || 0);
+      const totalMarks = normalizeMarkValue(state.totalMarks || questions.reduce((sum, question) => sum + getQuestionAvailableMarks(question), 0));
       const resultNote = state.completed
         ? (state.passed
-          ? `<div class="training-desc" style="margin-top:8px; color:#1c8c4a;">Passed (${state.scorePct}% >= ${passing}%).</div>`
-          : `<div class="training-desc" style="margin-top:8px; color:#c62828;">${state.timedOut ? 'Time expired. ' : ''}Failed (${state.scorePct}% < ${passing}%). Please try again.</div>`)
+          ? `<div class="assessment-result pass">Passed (${earnedMarks}/${totalMarks} marks, pass mark ${passing})</div>`
+          : `<div class="assessment-result fail">${state.timedOut ? 'Time expired. ' : ''}Failed (${earnedMarks}/${totalMarks} marks, pass mark ${passing}).${retriesRemaining === null ? ' Unlimited retries available.' : (retriesRemaining > 0 ? ` ${retriesRemaining} retr${retriesRemaining === 1 ? 'y' : 'ies'} remaining.` : ' No retries remaining.')}</div>`)
         : '';
-      const retryBtn = state.completed && !state.passed
+      const retryBtn = state.completed && !state.passed && (retriesRemaining === null || retriesRemaining > 0)
         ? `<button class="light-btn" onclick="retryAssessment('${training.id}','${item.id}')">Retry assessment</button>`
         : '';
       const canNext = isMulti ? Array.isArray(selected) && selected.length > 0 : selected !== undefined && selected !== null;
@@ -2271,6 +3423,7 @@
           `).join('')}
         </div>
         ${timeRemaining}
+        <div class="training-desc" style="margin-top:6px;">Allowed retries: ${maxRetries === null ? 'Unlimited' : maxRetries} | Retries used: ${retriesUsed}</div>
         ${resultNote}
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:12px;">
           ${retryBtn}
@@ -2306,7 +3459,36 @@
       return 'I have completed this activity';
     }
 
+    function resetEntireTraining(training, noticeText) {
+      training.currentPhaseIndex = 0;
+      training.currentItemIndex = 0;
+      training.started = false;
+      training.status = 'not-started';
+      training.completedItemIds = [];
+      training.lastAutoMentorItemId = '';
+      training.lastAssessmentEntryKey = '';
+      training.systemNotice = noticeText || '';
+      (training.phases || []).forEach(phase => {
+        (phase.items || []).forEach(item => {
+          if (item && item.type === 'assessment') {
+            item.assessmentState = { index: 0, answers: [], completed: false, passed: false, scoreMarks: 0, totalMarks: 0, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false, retryCount: 0 };
+          }
+          if (item && item.type === 'ai-chat') {
+            item.autoMentorStarted = false;
+          }
+        });
+      });
+      if (Array.isArray(state.currentUser?.approvals)) {
+        state.currentUser.approvals = state.currentUser.approvals.filter(req => req.trainingId !== training.id);
+      }
+      training.chatHistory = [{ from: 'bot', text: `Welcome to ${training.name}! We'll be going through ${training.phases.length} phases together. Currently, you're in Phase 1: ${getPhaseName(training.phases[0])}. Let me know when you're ready to begin, or ask me any questions! Also, share a quick intro about yourself so I can tailor the journey.`, time: new Date().toLocaleTimeString() }];
+      state.showMentor = false;
+      state.mentorReason = '';
+      state.mentorPending = false;
+    }
+
     function startTraining(training) {
+      training.systemNotice = '';
       training.started = true;
       training.currentPhaseIndex = 0;
       training.currentItemIndex = 0;
@@ -2352,8 +3534,8 @@
           render();
           return;
         }
-        if (!state.currentUser.managerEmployeeId) {
-          return alert('Manager approval required. Please add a manager Employee ID in your profile.');
+        if (!state.currentUser.managerEmail) {
+          return alert('Manager approval required. Please add a manager email address in your profile.');
         }
         requestApproval(state.currentUser, training, training.currentPhaseIndex, training.currentItemIndex, item);
         persistUser(state.currentUser);
@@ -2421,25 +3603,44 @@
         return chosen === correctIndices[0];
       }
 
+      function scoreQuestion(question, chosen) {
+        if (question?.markingMode === 'individual') {
+          const chosenArr = Array.isArray(chosen) ? chosen : (chosen === undefined || chosen === null ? [] : [chosen]);
+          const chosenSet = new Set(chosenArr);
+          return (question?.options || []).reduce((sum, opt, idx) => {
+            if (!opt || !opt.correct || !chosenSet.has(idx)) return sum;
+            return sum + normalizeMarkValue(opt.markValue);
+          }, 0);
+        }
+        return isAnswerCorrect(question, chosen) ? normalizeMarkValue(question?.combinedMarks) : 0;
+      }
+
       function finalizeAssessment(training, item, opts = {}) {
         const questions = Array.isArray(item.assessment?.questions) ? item.assessment.questions : [];
         if (!questions.length) return;
         const stateObj = getAssessmentState(item);
         const passing = normalizePassingMarks(item.assessment?.passingMarks || 0);
-        let correct = 0;
+        const maxRetries = parseAssessmentMaxRetries(item.assessment?.maxRetries);
+        const totalMarks = questions.reduce((sum, q) => sum + getQuestionAvailableMarks(q), 0);
+        let earnedMarks = 0;
         questions.forEach((q, qIdx) => {
           const chosen = stateObj.answers[qIdx];
-          if (isAnswerCorrect(q, chosen)) correct += 1;
+          earnedMarks += scoreQuestion(q, chosen);
         });
-        const scorePct = Math.round((correct / questions.length) * 100);
+        const scorePct = totalMarks > 0 ? Math.round((earnedMarks / totalMarks) * 100) : 0;
         stateObj.completed = true;
-        stateObj.passed = scorePct >= passing;
+        stateObj.passed = earnedMarks >= passing;
+        stateObj.scoreMarks = earnedMarks;
+        stateObj.totalMarks = totalMarks;
         stateObj.scorePct = scorePct;
         if (opts.timedOut) stateObj.timedOut = true;
         const timerKey = `${training.id}::${item.id}`;
         const timerId = assessmentTimers.get(timerKey);
         if (timerId) clearInterval(timerId);
         assessmentTimers.delete(timerKey);
+        if (!stateObj.passed && maxRetries !== null && stateObj.retryCount >= maxRetries) {
+          resetEntireTraining(training, `Assessment retry limit reached for ${activityLabel(item.type)}. The training has been restarted from the beginning.`);
+        }
         persistUser(state.currentUser);
         render();
       }
@@ -2476,11 +3677,12 @@
         if (!training || training.id !== trainingId) return;
         const item = getItemById(training, itemId);
         if (!item) return;
+        const previousState = getAssessmentState(item);
         const timerKey = `${training.id}::${item.id}`;
         const timerId = assessmentTimers.get(timerKey);
         if (timerId) clearInterval(timerId);
         assessmentTimers.delete(timerKey);
-        item.assessmentState = { index: 0, answers: [], completed: false, passed: false, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false };
+        item.assessmentState = { index: 0, answers: [], completed: false, passed: false, scoreMarks: 0, totalMarks: 0, scorePct: 0, startedAt: 0, endsAt: 0, remainingSeconds: 0, timedOut: false, retryCount: (previousState.retryCount || 0) + 1 };
         persistUser(state.currentUser);
         render();
       };
@@ -2591,6 +3793,12 @@
     function lockIcon() { return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 1 1 8 0v3"></path></svg>`; }
     function userAddIcon() { return `<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="16" y1="11" x2="22" y2="11"></line></svg>`; }
     function personIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>`; }
+    function trashIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"></path><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`; }
+    function editIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>`; }
+    function uploadIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>`; }
+    function refreshIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.5 9a9 9 0 0 1 14.1-3.4L23 10"></path><path d="M20.5 15a9 9 0 0 1-14.1 3.4L1 14"></path></svg>`; }
+    function arrowUpIcon() { return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>`; }
+    function arrowDownIcon() { return `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>`; }
     function idIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"></rect><line x1="7" y1="7" x2="7" y2="7"></line><line x1="7" y1="11" x2="13" y2="11"></line><line x1="7" y1="15" x2="11" y2="15"></line></svg>`; }
     function bagIcon() { return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V6a4 4 0 0 1 8 0v1"></path><rect x="4" y="7" width="16" height="13" rx="2"></rect></svg>`; }
     function bagLargeIcon() { return `<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 7V6a4 4 0 0 1 8 0v1"></path><rect x="4" y="7" width="16" height="13" rx="2"></rect></svg>`; }
@@ -2598,6 +3806,12 @@
     function homeSmallIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>`; }
     function bookIcon() { return `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 17A2.5 2.5 0 0 0 4 14.5V5.5A2.5 2.5 0 0 1 6.5 3H20v14H6.5z"></path></svg>`; }
     function chatIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a4 4 0 0 1-4 4H7l-4 4V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path></svg>`; }
+    function docIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>`; }
+    function gradCapIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m2 8 10-5 10 5-10 5Z"></path><path d="M6 10.5v4.5c0 1.7 2.7 3 6 3s6-1.3 6-3v-4.5"></path></svg>`; }
+    function videoIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="15" height="12" rx="2"></rect><path d="m17 10 5-3v10l-5-3z"></path></svg>`; }
+    function clipboardIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"></rect><path d="M9 4H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2"></path></svg>`; }
+    function textIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3"></path><path d="M9 20h6"></path><path d="M12 4v16"></path></svg>`; }
+    function wrenchIcon() { return `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.2 2.2-3.5-3.5Z"></path></svg>`; }
     function folderIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h5l2 2h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>`; }
     function logoutIcon() { return `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>`; }
     function statusDot() { return `<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="6"></circle></svg>`; }

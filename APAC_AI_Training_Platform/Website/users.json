@@ -1,11 +1,11 @@
 [
   {
-    "employeeId": "700775q",
+    "email": "700775q",
     "name": "Prateek Srivastava",
     "title": "Director Technical Services",
-    "role": "Integration Consulting",
-    "password": "112233",
-    "managerEmployeeId": "1",
+    "trainingRole": "Integration Consulting",
+    "accessType": "trainee",
+    "managerEmail": "1",
     "approvals": [
       {
         "id": "req-1768149732433",
@@ -538,12 +538,12 @@
     ]
   },
   {
-    "employeeId": "1",
+    "email": "1",
     "name": "Manager",
     "title": "Vice President Professional Services",
-    "role": "Systems Engineering",
-    "password": "112233",
-    "managerEmployeeId": "APAC",
+    "trainingRole": "Systems Engineering",
+    "accessType": "trainee",
+    "managerEmail": "apac",
     "approvals": [],
     "trainings": [
       {
@@ -596,12 +596,12 @@
     ]
   },
   {
-    "employeeId": "700775",
+    "email": "700775",
     "name": "Prateek Srivastava",
     "title": "Director Technical Services",
-    "role": "Integration Consulting",
-    "password": "112233",
-    "managerEmployeeId": "1",
+    "trainingRole": "Integration Consulting",
+    "accessType": "trainee",
+    "managerEmail": "1",
     "approvals": [],
     "trainings": [
       {
@@ -1301,12 +1301,12 @@
     ]
   },
   {
-    "employeeId": "123123",
+    "email": "123123",
     "name": "Jane Doe",
     "title": "Director Tech Serv",
-    "role": "Integration Consulting",
-    "password": "1111",
-    "managerEmployeeId": "700775",
+    "trainingRole": "Integration Consulting",
+    "accessType": "trainee",
+    "managerEmail": "700775",
     "approvals": [],
     "trainings": [
       {
@@ -1909,5 +1909,15 @@
         ]
       }
     ]
+  },
+  {
+    "email": "prateek.srivastava@alterahealth.com",
+    "name": "Prateek Srivastava",
+    "title": "",
+    "trainingRole": "",
+    "accessType": "admin",
+    "managerEmail": "",
+    "approvals": [],
+    "trainings": []
   }
 ]
