@@ -1,0 +1,3018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Project — APAC WBS Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+  <link rel="stylesheet" href="vendor/theme.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <script src="session-guard.js"></script>
+  <script type="module" src="vendor/material-web.js"></script>
+</head>
+<body class="wbs-page">
+  <!-- Compact project header bar -->
+  <header class="proj-header">
+    <a class="proj-header__back" href="index.html" title="Back to Projects">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </a>
+    <h1 class="proj-header__title" id="projTitle">Loading…</h1>
+    <span class="proj-header__divider"></span>
+    <span class="proj-header__client" id="projClient"></span>
+    <span class="proj-header__sow" id="projSow"></span>
+    <span class="chip" id="projStatusChip">…</span>
+    <span class="proj-header__spacer"></span>
+    <span class="chip" id="readOnlyChip" title="Your account has view-only access" hidden>
+      <span class="material-symbols-outlined" style="font-size:16px; vertical-align:-3px;">visibility</span> View only
+    </span>
+    <button type="button" class="md-btn md-btn--outlined md-btn--icon-square" id="editProjBtn" title="Edit project details">
+      <span class="material-symbols-outlined">edit</span>
+    </button>
+    <button type="button" class="md-btn md-btn--outlined" id="saveBtnTop">
+      <span class="material-symbols-outlined">save</span> Save
+    </button>
+    <a class="md-btn md-btn--outlined" id="exportBtn" target="_blank" rel="noopener">
+      <span class="material-symbols-outlined">table_chart</span> Export
+    </a>
+  </header>
+
+  <!-- Tab strip -->
+  <nav class="proj-tabs" role="tablist">
+    <button class="proj-tab proj-tab--active" data-tab="wbs" role="tab">
+      <span class="material-symbols-outlined">account_tree</span> WBS
+    </button>
+    <button class="proj-tab" data-tab="timeline" role="tab">
+      <span class="material-symbols-outlined">timeline</span> Timeline
+    </button>
+    <button class="proj-tab" data-tab="plan" role="tab">
+      <span class="material-symbols-outlined">groups</span> Resource Plan
+    </button>
+    <button class="proj-tab" data-tab="history" role="tab">
+      <span class="material-symbols-outlined">history</span> History <span class="proj-tab__count" id="historyCount"></span>
+    </button>
+    <button class="proj-tab" data-tab="ai" role="tab" id="aiTabBtn" hidden>
+      <span class="material-symbols-outlined">smart_toy</span> AI Assistant
+    </button>
+  </nav>
+
+  <!-- TAB: WBS -->
+  <section class="tab-panel tab-panel--active" data-panel="wbs">
+    <div class="wbs-toolbar">
+      <div class="wbs-totals">
+        <div><strong>Grand total:</strong> <span id="grandTotalHours">…</span> hrs <span class="muted">(≈ <span id="grandTotalDays">…</span> days)</span></div>
+        <div class="wbs-totals__buffered" id="bufferedTotalLine" hidden>
+          <strong>Buffered total:</strong> <span id="bufferedTotalHours">…</span> hrs <span class="muted">(≈ <span id="bufferedTotalDays">…</span> days)</span>
+        </div>
+      </div>
+      <span class="wbs-toolbar__spacer"></span>
+      <button type="button" class="md-btn md-btn--outlined" id="manageColsBtn">
+        <span class="material-symbols-outlined">view_column</span> Columns (<span id="colsCount">…</span>)
+      </button>
+      <button type="button" class="md-btn md-btn--filled" id="addRootBtn">
+        <span class="material-symbols-outlined">add</span> Add level-1 task
+      </button>
+    </div>
+
+    <div class="wbs-table-wrap">
+      <table class="wbs-grid" id="wbsTable">
+        <thead></thead>
+        <tbody></tbody>
+        <tfoot></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: Timeline -->
+  <section class="tab-panel" data-panel="timeline" hidden>
+    <div class="timeline-toolbar">
+      <label class="filter-check">
+        <md-checkbox id="lvl1Only"></md-checkbox> Level 1
+      </label>
+      <label class="filter-check">
+        <md-checkbox id="lvl12Only"></md-checkbox> Level 1+2
+      </label>
+      <span class="wbs-toolbar__spacer"></span>
+      <span class="muted" id="timelineSummary"></span>
+    </div>
+    <div class="gantt-wrap" id="ganttWrap">
+      <div class="gantt-empty muted">Add tasks and a start date to see a timeline.</div>
+    </div>
+  </section>
+
+  <!-- TAB: Resource Plan -->
+  <section class="tab-panel" data-panel="plan" hidden>
+    <h3 class="plan-section-title">Monthly Hours</h3>
+    <div class="plan-table-wrap">
+      <table class="plan-table" id="planMonthly">
+        <thead></thead><tbody></tbody><tfoot></tfoot>
+      </table>
+    </div>
+
+    <hr class="plan-divider" />
+    <h3 class="plan-section-title">Cost Estimate</h3>
+    <div class="plan-cost-toolbar">
+      <md-outlined-select id="costingPicker" label="Costing profile">
+        <md-select-option value=""><div slot="headline">— Select —</div></md-select-option>
+      </md-outlined-select>
+      <button type="button" class="md-btn md-btn--filled" id="applyCostingBtn" disabled>
+        <span class="material-symbols-outlined">calculate</span> Apply
+      </button>
+      <span class="muted" id="costingStatus"></span>
+    </div>
+    <div class="plan-table-wrap" id="planCostWrap" hidden>
+      <table class="plan-table" id="planCost">
+        <thead></thead><tbody></tbody><tfoot></tfoot>
+      </table>
+    </div>
+
+    <hr class="plan-divider" />
+    <h3 class="plan-section-title">Actual Hours</h3>
+    <div class="plan-cost-toolbar">
+      <span class="muted" id="actualsStatus">Estimated breakdown by level-1 phase; enter actuals per resource.</span>
+      <span style="flex:1"></span>
+      <button type="button" class="md-btn md-btn--outlined" id="actualsEditBtn">
+        <span class="material-symbols-outlined">edit</span> <span id="actualsEditBtnLabel">Edit</span>
+      </button>
+      <button type="button" class="md-btn md-btn--outlined" id="manageActualsRowsBtn" hidden>
+        <span class="material-symbols-outlined">add</span> Rows (<span id="actualsRowsCount">…</span>)
+      </button>
+    </div>
+    <div class="plan-table-wrap">
+      <table class="plan-table" id="planActuals">
+        <thead></thead><tbody></tbody><tfoot></tfoot>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: History -->
+  <section class="tab-panel" data-panel="history" hidden>
+    <div class="history-table-wrap">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th style="width:80px">Version</th>
+            <th style="width:120px">Status</th>
+            <th style="width:160px">Saved</th>
+            <th style="width:200px">By</th>
+            <th>What changed</th>
+            <th style="width:60px"></th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="6" class="muted" style="text-align:center; padding:24px;">Loading…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: AI Assistant -->
+  <section class="tab-panel" data-panel="ai" hidden>
+    <div class="ai-layout">
+      <aside class="ai-rail">
+        <div class="ai-rail__head">
+          <h3>Conversations</h3>
+          <md-icon-button id="aiNewConvoBtn" title="New chat">
+            <span class="material-symbols-outlined">add</span>
+          </md-icon-button>
+        </div>
+        <ul class="ai-convo-list" id="aiConvoList">
+          <li class="ai-rail__empty">No conversations yet.</li>
+        </ul>
+      </aside>
+      <div class="ai-chat">
+        <div class="ai-chat__head">
+          <h3 id="aiChatTitle">New chat</h3>
+          <!-- Quick-prompt pills sit inline, between the title and the Analyse
+               button (rendered from AI_QUICK_PROMPTS in JS). -->
+          <div class="ai-quick-prompts" id="aiQuickPrompts"></div>
+          <md-outlined-button id="aiAnalyseBtn" title="Run a structured assessment">
+            <span class="material-symbols-outlined">insights</span> Analyse this project
+          </md-outlined-button>
+          <span class="ai-disclaimer">
+            <span class="material-symbols-outlined" style="font-size:13px; vertical-align:-2px;">info</span>
+            AI responses are advisory and limited to your WBS data + PMP/PRINCE2 guidance.
+          </span>
+        </div>
+        <div class="ai-thread" id="aiThread">
+          <div class="ai-thread__empty">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <p>Ask a question about this project, or click <strong>Analyse this project</strong> for a structured assessment grounded in PMP/PRINCE2 methodology.</p>
+          </div>
+        </div>
+        <div class="ai-input-row">
+          <textarea id="aiInput" placeholder="Ask about scope, schedule, resources, risks…" rows="1"></textarea>
+          <md-filled-button id="aiSendBtn">
+            <span class="material-symbols-outlined">send</span> Send
+          </md-filled-button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Floating Action Button -->
+  <button type="button" class="ai-fab" id="aiFab" title="Open AI Assistant" hidden>
+    <span class="material-symbols-outlined">smart_toy</span>
+  </button>
+
+  <!-- AI Assistant drawer (slides in from right) -->
+  <aside class="drawer drawer--ai" id="aiDrawer" hidden>
+    <div class="drawer__head">
+      <strong><span class="material-symbols-outlined" style="vertical-align:-5px; margin-right:4px;">smart_toy</span> AI Assistant</strong>
+      <div style="display:flex; align-items:center; gap:2px;">
+        <md-icon-button id="aiDrawerPin" title="Pin to side (keep visible while you edit)">
+          <span class="material-symbols-outlined">push_pin</span>
+        </md-icon-button>
+        <md-icon-button id="aiDrawerClose" title="Close"><span class="material-symbols-outlined">close</span></md-icon-button>
+      </div>
+    </div>
+    <div class="drawer__body">
+      <div class="ai-chat">
+        <div class="ai-chat__head">
+          <button type="button" class="ai-convo-picker" id="aiDrawerConvoPicker" title="Switch conversation">
+            <span class="ai-convo-picker__title" id="aiDrawerTitle">New chat</span>
+            <span class="material-symbols-outlined">expand_more</span>
+          </button>
+          <md-outlined-button id="aiDrawerAnalyseBtn">
+            <span class="material-symbols-outlined">insights</span> Analyse
+          </md-outlined-button>
+        </div>
+        <!-- Popover list of past conversations, anchored under the picker. -->
+        <div class="ai-convo-popover" id="aiDrawerConvoPopover" hidden>
+          <div class="ai-convo-popover__head">
+            <strong>Conversations</strong>
+            <md-icon-button id="aiDrawerConvoNew" title="Start new chat">
+              <span class="material-symbols-outlined">add</span>
+            </md-icon-button>
+          </div>
+          <ul class="ai-convo-list ai-convo-list--popover" id="aiDrawerConvoList">
+            <li class="ai-rail__empty">No conversations yet.</li>
+          </ul>
+        </div>
+        <!-- Quick-prompt pills (drawer version): same content as tab, scrolls horizontally. -->
+        <div class="ai-quick-prompts" id="aiDrawerQuickPrompts"></div>
+        <div class="ai-thread" id="aiDrawerThread">
+          <div class="ai-thread__empty">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <p>Ask a question or click <strong>Analyse</strong>. Use the title dropdown above to switch between past conversations.</p>
+          </div>
+        </div>
+        <div class="ai-input-row">
+          <textarea id="aiDrawerInput" placeholder="Ask the analyst…" rows="1"></textarea>
+          <md-filled-button id="aiDrawerSendBtn">
+            <span class="material-symbols-outlined">send</span>
+          </md-filled-button>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Edit Project side panel (slides in from right) -->
+  <aside class="drawer drawer--wide" id="editPanel" hidden>
+    <div class="drawer__head">
+      <strong>Edit project</strong>
+      <button type="button" class="md-btn md-btn--icon" id="editClose"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="drawer__body">
+      <form id="projForm" class="form-grid form-grid--single" autocomplete="off">
+        <md-outlined-text-field id="clientNameField" name="clientName" label="Client" required></md-outlined-text-field>
+        <md-menu id="clientMenu" anchor="clientNameField" positioning="popover"></md-menu>
+        <md-outlined-text-field name="projectName" label="Project name" required></md-outlined-text-field>
+        <md-outlined-text-field name="sowOrTaskId" label="SOW / Task ID"></md-outlined-text-field>
+        <md-outlined-select name="status" label="Status">
+          <md-select-option value="Draft"><div slot="headline">Draft</div></md-select-option>
+          <md-select-option value="Final"><div slot="headline">Final</div></md-select-option>
+          <md-select-option value="Revised"><div slot="headline">Revised</div></md-select-option>
+          <md-select-option value="Approved"><div slot="headline">Approved (locks WBS)</div></md-select-option>
+        </md-outlined-select>
+        <md-outlined-select name="productId" label="Product">
+          <md-select-option value=""><div slot="headline">— None —</div></md-select-option>
+        </md-outlined-select>
+        <md-outlined-select name="solutionId" label="Solution">
+          <md-select-option value=""><div slot="headline">— None —</div></md-select-option>
+        </md-outlined-select>
+        <md-outlined-select name="moduleId" label="Module">
+          <md-select-option value=""><div slot="headline">— None —</div></md-select-option>
+        </md-outlined-select>
+        <div class="form-readonly">
+          <dl class="status-grid">
+            <dt>Created</dt><dd id="metaCreated">—</dd>
+            <dt>Modified</dt><dd id="metaModified">—</dd>
+          </dl>
+        </div>
+      </form>
+    </div>
+    <div class="drawer__foot">
+      <button type="button" class="md-btn md-btn--text" id="editPanelDone">Done</button>
+    </div>
+  </aside>
+
+  <!-- Notes popover -->
+  <div class="popover" id="notesPopover" hidden>
+    <div class="popover__head">
+      <strong>Notes</strong>
+      <md-icon-button id="notesClose"><span class="material-symbols-outlined">close</span></md-icon-button>
+    </div>
+    <md-outlined-text-field id="notesTextarea" type="textarea" rows="6" placeholder="Add notes for this task…"></md-outlined-text-field>
+    <div class="popover__actions">
+      <md-text-button id="notesCancel">Cancel</md-text-button>
+      <md-filled-button id="notesApply">Apply</md-filled-button>
+    </div>
+  </div>
+
+  <!-- Dependencies popover -->
+  <div class="popover popover--wide" id="depsPopover" hidden>
+    <div class="popover__head">
+      <strong>Dependencies</strong>
+      <md-icon-button id="depsClose"><span class="material-symbols-outlined">close</span></md-icon-button>
+    </div>
+    <p class="popover__hint">Select tasks that must finish before this task starts.</p>
+    <div class="deps-search">
+      <md-outlined-text-field id="depsSearch" label="Filter by name or WBS #…"></md-outlined-text-field>
+    </div>
+    <div class="deps-list" id="depsList"></div>
+    <div class="popover__actions">
+      <md-text-button id="depsCancel">Cancel</md-text-button>
+      <md-filled-button id="depsApply">Apply</md-filled-button>
+    </div>
+  </div>
+
+  <!-- Shared scrim used by edit panel -->
+  <div class="drawer-scrim" id="drawerScrim" hidden></div>
+
+  <!-- Sticky save bar (only shown when dirty) -->
+  <div class="save-bar" id="saveBar" hidden>
+    <span class="save-bar__msg" id="saveMsg">Unsaved changes</span>
+    <button type="button" class="md-btn md-btn--text" id="discardBtn">
+      <span class="material-symbols-outlined">undo</span> Discard
+    </button>
+    <button type="button" class="md-btn md-btn--filled" id="saveBtn">
+      <span class="material-symbols-outlined">save</span> Save version
+    </button>
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Confirmation modal -->
+  <div id="confirmOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:2000;"></div>
+  <div id="confirmModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--md-sys-color-surface); border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:2001; min-width:320px; max-width:420px;">
+    <div style="padding:24px;">
+      <div id="confirmTitle" style="font-size:16px; font-weight:500; color:var(--md-sys-color-on-surface); margin-bottom:12px;"></div>
+      <div id="confirmMessage" style="font-size:14px; color:var(--md-sys-color-on-surface-variant); line-height:1.5; margin-bottom:24px;"></div>
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:8px; padding:16px 24px; border-top:1px solid var(--md-sys-color-outline-variant);">
+      <md-text-button id="confirmCancel">Cancel</md-text-button>
+      <md-filled-button id="confirmOk" style="background-color:var(--md-sys-color-error);">Delete</md-filled-button>
+    </div>
+  </div>
+
+  <!-- Columns (resources) modal -->
+  <div id="columnsOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000;"></div>
+  <div id="columnsModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--md-sys-color-surface); border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:1001; min-width:400px; max-width:500px;">
+    <div style="padding:24px 24px 16px;">
+      <div style="font-size:16px; font-weight:500; color:var(--md-sys-color-on-surface); margin-bottom:16px;">Select columns (resources)</div>
+      <form id="columnsForm" style="max-height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+        <div id="resourcesList"></div>
+      </form>
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:8px; padding:16px 24px; border-top:1px solid var(--md-sys-color-outline-variant);">
+      <md-text-button onclick="document.getElementById('columnsOverlay').style.display='none'; document.getElementById('columnsModal').style.display='none';">Done</md-text-button>
+    </div>
+  </div>
+
+  <!-- Actuals rows (resources) modal — add-only sibling of the columns modal. -->
+  <div id="actualsRowsOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:1000;"></div>
+  <div id="actualsRowsModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--md-sys-color-surface); border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.15); z-index:1001; min-width:400px; max-width:500px;">
+    <div style="padding:24px 24px 16px;">
+      <div style="font-size:16px; font-weight:500; color:var(--md-sys-color-on-surface); margin-bottom:6px;">Add rows (resources)</div>
+      <div style="font-size:12px; color:var(--md-sys-color-on-surface-variant); margin-bottom:16px;">
+        Adds an actuals-only row. The resource does <strong>not</strong> appear as a WBS column.
+      </div>
+      <form id="actualsRowsForm" style="max-height:400px; overflow-y:auto; display:flex; flex-direction:column; gap:8px;">
+        <div id="actualsResourcesList"></div>
+      </form>
+    </div>
+    <div style="display:flex; justify-content:flex-end; gap:8px; padding:16px 24px; border-top:1px solid var(--md-sys-color-outline-variant);">
+      <md-text-button onclick="document.getElementById('actualsRowsOverlay').style.display='none'; document.getElementById('actualsRowsModal').style.display='none';">Done</md-text-button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { schedule } from "./scheduleEngine.js";
+
+    // ============================================================
+    // UTILITIES
+    // ============================================================
+    function escapeHtml(s) {
+      return String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+    }
+    function formatModified(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (isNaN(d)) return iso;
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+    function statusChipClass(status) {
+      const s = (status || "").toLowerCase();
+      if (s === "draft")    return "chip chip--draft";
+      if (s === "final")    return "chip chip--final";
+      if (s === "revised")  return "chip chip--revised";
+      if (s === "approved") return "chip chip--approved";
+      return "chip";
+    }
+    function showToast(msg, kind = "ok") {
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.className = `toast toast--${kind}`;
+      el.hidden = false;
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => { el.hidden = true; }, 3500);
+    }
+
+    function showConfirm(title, message, onConfirm, onCancel) {
+      document.getElementById("confirmTitle").textContent = title;
+      document.getElementById("confirmMessage").textContent = message;
+      document.getElementById("confirmOverlay").style.display = "block";
+      document.getElementById("confirmModal").style.display = "block";
+
+      const handleOk = () => {
+        cleanup();
+        onConfirm?.();
+      };
+
+      const handleCancel = () => {
+        cleanup();
+        onCancel?.();
+      };
+
+      const cleanup = () => {
+        document.getElementById("confirmOverlay").style.display = "none";
+        document.getElementById("confirmModal").style.display = "none";
+        document.getElementById("confirmOk").removeEventListener("click", handleOk);
+        document.getElementById("confirmCancel").removeEventListener("click", handleCancel);
+      };
+
+      document.getElementById("confirmOk").addEventListener("click", handleOk);
+      document.getElementById("confirmCancel").addEventListener("click", handleCancel);
+    }
+
+    function workingDays(startIso, endIso) {
+      if (!startIso || !endIso) return 0;
+      const start = new Date(startIso + "T00:00:00Z");
+      const end = new Date(endIso + "T00:00:00Z");
+      if (end <= start) return 0;
+      let n = 0;
+      const cur = new Date(start);
+      while (cur < end) {
+        const dow = cur.getUTCDay();
+        if (dow !== 0 && dow !== 6) n++;
+        cur.setUTCDate(cur.getUTCDate() + 1);
+      }
+      return n;
+    }
+    function roundHalf(v) { return Math.round(v * 2) / 2; }
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    const state = {
+      projectId: null,
+      pristine: null,
+      project: null,
+      resources: [],
+      tasks: [],
+      schedule: {},
+      allResources: [],
+      clients: [],
+      costingProfiles: [],
+      // Actual hours per resource (migration 010). Keyed by resourceId.
+      // Includes plan resources (auto-zeroed) AND actuals-only additions.
+      actuals: new Map(),
+      // View / edit toggle for the Actuals grid. When false: inputs disabled,
+      // Rows + delete affordances hidden. Independent of the global SaveBar.
+      actualsEditMode: false,
+      nextTempId: -1,
+      activeTab: "wbs",
+      versions: null,
+    };
+    function newTempId() { return state.nextTempId--; }
+
+    // Status-lock helpers. When the project's status is "Approved", the WBS
+    // is locked: tasks, hours, dependencies, resources, costing, and most
+    // Edit-Project fields are non-editable. The user can still flip the
+    // status away from Approved (the dropdown stays enabled) and the Actuals
+    // grid is still editable. Driven by state.project.status (the in-progress
+    // value), so the lock releases the moment the user picks a different
+    // status — no need to save first.
+    function isStatusApproved() {
+      return !!(state.project && state.project.status === "Approved");
+    }
+    function isWbsEditable() {
+      return !READONLY && !isStatusApproved();
+    }
+
+    // READONLY is set from /api/me before the first render. When true, every
+    // mutation affordance (edit/save/add/delete/revert) is removed from the UI;
+    // the backend independently rejects writes from read-only accounts.
+    let READONLY = false;
+
+    // CAN_APPROVE is also fetched from /api/me. Gates whether the user can
+    // flip the project's status TO or FROM "Approved" (migration 012). The
+    // server independently enforces this on PUT /api/projects/:id.
+    let CAN_APPROVE = false;
+
+    function currentEditable() {
+      return {
+        project: {
+          clientName: state.project.clientName,
+          projectName: state.project.projectName,
+          sowOrTaskId: state.project.sowOrTaskId,
+          status: state.project.status,
+          startDate: state.project.startDate,
+          bufferPercent: state.project.bufferPercent,
+          costingProfileId: state.project.costingProfileId,
+          productId: state.project.productId ?? null,
+          solutionId: state.project.solutionId ?? null,
+          moduleId: state.project.moduleId ?? null,
+        },
+        resources: state.resources.map((r) => ({
+          resourceId: r.resourceId,
+          bufferPercent: r.bufferPercent,
+        })),
+        // Actual hours per resource (migration 010). Serialised for the
+        // dirty-tracking diff in checkDirty() AND posted on save.
+        actuals: [...state.actuals.entries()]
+          .sort((a, b) => a[0] - b[0])
+          .map(([resourceId, actualHours]) => ({ resourceId, actualHours })),
+        tasks: state.tasks.map((t) => ({
+          taskId: t.taskId,
+          parentTaskId: t.parentTaskId ?? null,
+          depth: t.depth,
+          sortOrder: t.sortOrder,
+          rowNumber: t.rowNumber,
+          taskName: t.taskName,
+          isConcurrent: !!t.isConcurrent,
+          notes: t.notes,
+          durationDays: t.durationDays,
+          resourceHours: { ...t.resourceHours },
+          dependsOnTaskIds: [...(t.dependsOnTaskIds || [])],
+        })),
+      };
+    }
+    function checkDirty() {
+      const now = JSON.stringify(currentEditable());
+      const dirty = now !== state.pristine;
+      document.getElementById("saveBar").hidden = !dirty;
+      window.onbeforeunload = dirty ? (e) => { e.preventDefault(); return ""; } : null;
+      return dirty;
+    }
+    function markPristine() {
+      state.pristine = JSON.stringify(currentEditable());
+      checkDirty();
+    }
+
+    // ============================================================
+    // ROLL-UP / TOTALS — for parent rows, sum from LEAF descendants only
+    // ============================================================
+    function childrenOf(taskId) {
+      const pid = taskId ?? 0;
+      return state.tasks.filter((t) => (t.parentTaskId ?? 0) === pid).sort((a, b) => a.sortOrder - b.sortOrder);
+    }
+    function isLeaf(taskId) { return childrenOf(taskId).length === 0; }
+    function descendantsOf(taskId) {
+      const out = [];
+      const stack = [taskId];
+      while (stack.length) {
+        const id = stack.pop();
+        for (const c of childrenOf(id)) {
+          out.push(c.taskId);
+          stack.push(c.taskId);
+        }
+      }
+      return out;
+    }
+    function rolledHours(task, resourceId) {
+      if (isLeaf(task.taskId)) return Number(task.resourceHours[resourceId] || 0);
+      let total = 0;
+      for (const did of descendantsOf(task.taskId)) {
+        const child = state.tasks.find((t) => t.taskId === did);
+        if (child && isLeaf(did)) {
+          total += Number(child.resourceHours[resourceId] || 0);
+        }
+      }
+      return total;
+    }
+    function rolledRowTotal(task) {
+      return state.resources.reduce((s, r) => s + rolledHours(task, r.resourceId), 0);
+    }
+    function columnTotal(resourceId) {
+      return state.tasks.filter((t) => isLeaf(t.taskId))
+        .reduce((s, t) => s + Number(t.resourceHours[resourceId] || 0), 0);
+    }
+    function grandTotal() {
+      return state.tasks.filter((t) => isLeaf(t.taskId))
+        .reduce((s, t) => s + Object.values(t.resourceHours).reduce((a, v) => a + Number(v || 0), 0), 0);
+    }
+    function bufferedColumnTotal(resourceId) {
+      const r = state.resources.find((x) => x.resourceId === resourceId);
+      const buf = r ? Number(r.bufferPercent || 0) : 0;
+      return roundHalf(columnTotal(resourceId) * (1 + buf / 100));
+    }
+    function bufferedGrandTotal() {
+      return state.resources.reduce((s, r) => s + bufferedColumnTotal(r.resourceId), 0);
+    }
+    function anyResourceHasBuffer() {
+      return state.resources.some((r) => Number(r.bufferPercent || 0) > 0);
+    }
+
+    // ============================================================
+    // TREE MUTATIONS
+    // ============================================================
+    function renumberRows() {
+      function walk(parentId, prefix) {
+        const kids = childrenOf(parentId);
+        kids.forEach((k, i) => {
+          const num = prefix ? `${prefix}.${i + 1}` : String(i + 1);
+          k.rowNumber = num;
+          k.sortOrder = i + 1;
+          walk(k.taskId, num);
+        });
+      }
+      walk(0, "");
+    }
+    function reschedule() {
+      const start = (state.project.startDate || new Date().toISOString().slice(0, 10)).slice(0, 10);
+      const out = schedule(state.tasks, start);
+      state.schedule = {};
+      for (const [id, row] of out.entries()) {
+        state.schedule[id] = {
+          startDate: row.startDate,
+          endDate: row.endDate,
+          totalHours: row.totalHours,
+          isLeaf: row.isLeaf,
+        };
+      }
+    }
+    function afterMutation() {
+      renumberRows();
+      reschedule();
+      renderWbs();
+      checkDirty();
+    }
+    function makeBlankTask(parentId, depth) {
+      return {
+        taskId: newTempId(),
+        parentTaskId: parentId,
+        depth,
+        sortOrder: 0,
+        rowNumber: "",
+        taskName: "",
+        isConcurrent: false,
+        notes: null,
+        durationDays: null,
+        resourceHours: {},
+        dependsOnTaskIds: [],
+        isEditing: true,
+      };
+    }
+    function focusNewRow(taskId) {
+      requestAnimationFrame(() => {
+        const inp = document.querySelector(`[data-task-input="${taskId}"]`);
+        if (inp) { inp.focus(); inp.select?.(); }
+      });
+    }
+    function addSibling(taskId) {
+      const target = state.tasks.find((t) => t.taskId === taskId);
+      if (!target) return;
+      const newTask = makeBlankTask(target.parentTaskId ?? null, target.depth);
+      newTask.sortOrder = (target.sortOrder ?? 0) + 0.5;
+      const idx = state.tasks.indexOf(target);
+      state.tasks.splice(idx + 1, 0, newTask);
+      afterMutation();
+      focusNewRow(newTask.taskId);
+    }
+    function addChild(taskId) {
+      const target = state.tasks.find((t) => t.taskId === taskId);
+      if (!target) return;
+      if (target.depth >= 4) { showToast("Max WBS depth is 4 levels.", "err"); return; }
+      const newTask = makeBlankTask(target.taskId, target.depth + 1);
+      const sibs = childrenOf(target.taskId);
+      newTask.sortOrder = sibs.length > 0 ? (sibs[sibs.length - 1].sortOrder ?? 0) + 1 : 1;
+      state.tasks.push(newTask);
+      afterMutation();
+      focusNewRow(newTask.taskId);
+    }
+    function addRoot() {
+      const roots = childrenOf(null);
+      const newTask = makeBlankTask(null, 1);
+      newTask.sortOrder = roots.length > 0 ? (roots[roots.length - 1].sortOrder ?? 0) + 1 : 1;
+      state.tasks.push(newTask);
+      afterMutation();
+      focusNewRow(newTask.taskId);
+    }
+    function deleteTask(taskId) {
+      const target = state.tasks.find((t) => t.taskId === taskId);
+      if (!target) return;
+      const descendants = descendantsOf(taskId);
+      const allIds = new Set([taskId, ...descendants]);
+      if (allIds.size > 1) {
+        showConfirm(
+          "Delete task and subtasks?",
+          `"${target.taskName || "(untitled)"}" and ${allIds.size - 1} descendant task(s) will be deleted.`,
+          () => {
+            state.tasks = state.tasks.filter((t) => !allIds.has(t.taskId));
+            for (const t of state.tasks) {
+              t.dependsOnTaskIds = (t.dependsOnTaskIds || []).filter((id) => !allIds.has(id));
+            }
+            afterMutation();
+          }
+        );
+      } else {
+        state.tasks = state.tasks.filter((t) => !allIds.has(t.taskId));
+        for (const t of state.tasks) {
+          t.dependsOnTaskIds = (t.dependsOnTaskIds || []).filter((id) => !allIds.has(id));
+        }
+        afterMutation();
+      }
+    }
+    function toggleConcurrent(taskId) {
+      const target = state.tasks.find((t) => t.taskId === taskId);
+      if (!target) return;
+      target.isConcurrent = !target.isConcurrent;
+      afterMutation();
+    }
+    // Can this task be indented? Only if it has a preceding sibling (becomes its child).
+    function canIndent(t) {
+      if (t.depth >= 4) return false;
+      const sibs = childrenOf(t.parentTaskId ?? null);
+      const idx = sibs.findIndex((s) => s.taskId === t.taskId);
+      return idx > 0;
+    }
+    function indentTask(taskId) {
+      const t = state.tasks.find((x) => x.taskId === taskId);
+      if (!t || !canIndent(t)) return;
+      const sibs = childrenOf(t.parentTaskId ?? null);
+      const myIdx = sibs.findIndex((s) => s.taskId === taskId);
+      const newParent = sibs[myIdx - 1];
+      // Re-parent t (and shift entire subtree's depth)
+      const subtreeIds = new Set([taskId, ...descendantsOf(taskId)]);
+      const depthDelta = (newParent.depth + 1) - t.depth;
+      for (const id of subtreeIds) {
+        const x = state.tasks.find((y) => y.taskId === id);
+        if (x) x.depth = Math.min(4, x.depth + depthDelta);
+      }
+      t.parentTaskId = newParent.taskId;
+      afterMutation();
+    }
+    function outdentTask(taskId) {
+      const t = state.tasks.find((x) => x.taskId === taskId);
+      if (!t || t.depth <= 1) return;
+      const parent = state.tasks.find((x) => x.taskId === t.parentTaskId);
+      if (!parent) return;
+      const subtreeIds = new Set([taskId, ...descendantsOf(taskId)]);
+      for (const id of subtreeIds) {
+        const x = state.tasks.find((y) => y.taskId === id);
+        if (x) x.depth = Math.max(1, x.depth - 1);
+      }
+      t.parentTaskId = parent.parentTaskId ?? null;
+      afterMutation();
+    }
+    // Per-row edit-mode toggle. isEditing is UI-only (not persisted, not in dirty).
+    function setEditing(taskId, on) {
+      const t = state.tasks.find((x) => x.taskId === taskId);
+      if (!t) return;
+      t.isEditing = !!on;
+      renderWbsBody();
+      if (on) {
+        // Focus the task-name input on entry to edit mode
+        requestAnimationFrame(() => {
+          const inp = document.querySelector(`input[data-action="rename"][data-task="${taskId}"]`);
+          if (inp) { inp.focus(); inp.select?.(); }
+        });
+      }
+    }
+    function commitEdit(taskId) {
+      // No-op other than exiting edit mode; changes already live in state.
+      setEditing(taskId, false);
+    }
+    function cancelEdit(taskId) {
+      const t = state.tasks.find((x) => x.taskId === taskId);
+      if (!t) return;
+      // For a brand-new untitled row, Cancel discards it. Otherwise just exit.
+      if (t.taskId < 0 && !t.taskName?.trim()) {
+        deleteTask(taskId);
+      } else {
+        setEditing(taskId, false);
+      }
+    }
+
+    // ============================================================
+    // HEADER + EDIT PANEL
+    // ============================================================
+    function renderHeader() {
+      document.getElementById("projTitle").textContent = state.project.projectName || "(untitled)";
+      document.getElementById("projClient").textContent = state.project.clientName || "";
+      document.getElementById("projSow").textContent = state.project.sowOrTaskId || "";
+      const chip = document.getElementById("projStatusChip");
+      chip.className = statusChipClass(state.project.status);
+      chip.textContent = state.project.status;
+      document.getElementById("exportBtn").href = `/apps/wbs/api/projects/${state.projectId}/export/xlsx`;
+    }
+
+    function fillForm() {
+      const f = document.getElementById("projForm");
+      f.clientName.value = state.project.clientName || "";
+      f.projectName.value = state.project.projectName || "";
+      f.sowOrTaskId.value = state.project.sowOrTaskId || "";
+      f.status.value = state.project.status || "Draft";
+      f.productId.value = state.project.productId ?? "";
+      f.solutionId.value = state.project.solutionId ?? "";
+      f.moduleId.value = state.project.moduleId ?? "";
+      document.getElementById("metaCreated").textContent =
+        `${formatModified(state.project.createdAtUtc)} by ${state.project.createdBy}`;
+      document.getElementById("metaModified").textContent =
+        `${formatModified(state.project.modifiedAtUtc)} by ${state.project.modifiedBy}`;
+
+      // Wire up the client combobox after form is loaded
+      setupClientCombobox();
+    }
+    function bindFormEvents() {
+      const f = document.getElementById("projForm");
+      f.addEventListener("input", (e) => {
+        const t = e.target, name = t.name;
+        if (!name) return;
+        if (name === "productId" || name === "solutionId" || name === "moduleId") {
+          state.project[name] = t.value ? Number(t.value) : null;
+        }
+        else state.project[name] = t.value;
+        renderHeader();
+        // Status flips lock state — re-apply form locking + re-render the
+        // affected surfaces (WBS, resource plan footer) immediately so the
+        // user sees the lock release / engage without waiting for a save.
+        if (name === "status") applyStatusLock();
+        checkDirty();
+      });
+    }
+
+    // Reflects the project's current (in-progress) status in the UI. When
+    // Approved: disables every Edit-Project field except the status dropdown
+    // itself, hides the "Add level-1 task" button, and re-renders WBS so the
+    // per-row action buttons (and footer buffer % inputs) drop out / come
+    // back. Permission read-only is layered on top by applyReadOnly() and
+    // the isWbsEditable() helper inside each render path.
+    function applyStatusLock() {
+      const locked = isStatusApproved();
+      const form = document.getElementById("projForm");
+      if (form) {
+        for (const el of form.querySelectorAll("md-outlined-text-field, md-outlined-select")) {
+          // Status stays editable in the normal lock scenario — it's the user's
+          // way out of the lock. BUT if the project is currently Approved
+          // and the user doesn't have CanApprove, they can't flip it back —
+          // disable the dropdown for them too. (They can still edit actuals.)
+          if (el.name === "status") {
+            el.disabled = READONLY || (locked && !CAN_APPROVE);
+          } else {
+            el.disabled = locked || READONLY;
+          }
+        }
+      }
+      // Hide the "+ level-1 task" toolbar button when locked. (applyReadOnly
+      // hides it permanently for permission-read-only users; we only toggle
+      // it for the status-lock case here.)
+      const addRoot = document.getElementById("addRootBtn");
+      if (addRoot && !READONLY) addRoot.hidden = locked;
+      // Manage Columns (resources in WBS): locked when status-locked.
+      const cols = document.getElementById("manageColsBtn");
+      if (cols && !READONLY) cols.hidden = locked;
+      // Cost Estimate controls: changing the costing profile mutates project
+      // metadata, so it's locked too.
+      const picker = document.getElementById("costingPicker");
+      if (picker) picker.disabled = locked || READONLY;
+      const applyBtn = document.getElementById("applyCostingBtn");
+      if (applyBtn) {
+        if (locked || READONLY) applyBtn.disabled = true;
+        else applyBtn.disabled = !picker?.value;
+      }
+      // Re-render the WBS so per-row actions / footer buffer % inputs
+      // reflect the new editability.
+      if (state.tasks && state.tasks.length) renderWbs();
+      // Re-render Resource Plan + History so their lock-gated affordances
+      // (cost Apply, revert, etc.) reflect the new state too.
+      if (state.tasks && state.tasks.length) {
+        try { renderResourcePlan(); } catch {}
+      }
+      if (state.versions) {
+        try { loadHistory(); } catch {}
+      }
+    }
+
+    function openEditPanel() {
+      document.getElementById("editPanel").hidden = false;
+      document.getElementById("drawerScrim").hidden = false;
+    }
+    function closeEditPanel() {
+      document.getElementById("editPanel").hidden = true;
+      document.getElementById("drawerScrim").hidden = true;
+    }
+
+    // ============================================================
+    // RESOURCE EDITOR (inside the edit panel)
+    // ============================================================
+    function renderResources() {
+      // Update resource counts in the UI
+      document.getElementById("colsCount").textContent = `${state.resources.length}`;
+    }
+    function renderColumnsModal() {
+      // Render resource checkboxes in the modal
+      const list = document.getElementById("resourcesList");
+      const have = new Set(state.resources.map((r) => r.resourceId));
+      list.innerHTML = state.allResources.map((r) => `
+        <label style="display: flex; align-items: center; gap: 8px; padding: 8px; cursor: pointer;">
+          <md-checkbox data-rid="${r.resourceId}" ${have.has(r.resourceId) ? "checked" : ""}></md-checkbox>
+          <span style="flex: 1;">
+            <strong>${escapeHtml(r.shortCode)}</strong> — ${escapeHtml(r.roleName)}
+          </span>
+        </label>
+      `).join("");
+    }
+    // ============================================================
+    // WBS TAB — new layout
+    // ============================================================
+    function renderWbs() {
+      renderWbsHeader();
+      renderWbsBody();
+      renderWbsFooter();
+      renderWbsTotals();
+    }
+
+    function renderWbsHeader() {
+      const thead = document.querySelector("#wbsTable thead");
+      thead.innerHTML = `
+        <tr>
+          <th class="wbs-col-row">Row</th>
+          <th class="wbs-col-task">Task</th>
+          <th class="wbs-col-comments">Comments</th>
+          <th class="wbs-col-conc" title="Concurrent with prev sibling">Conc.</th>
+          ${state.resources.map((r) => `<th class="wbs-col-hours" title="${escapeHtml(r.roleName)}">${escapeHtml(r.shortCode)}</th>`).join("")}
+          <th class="wbs-col-total">Total</th>
+          <th class="wbs-col-days">Days</th>
+          <th class="wbs-col-actions"></th>
+        </tr>`;
+    }
+
+    function rowClass(t) {
+      let cls = `wbs-row wbs-row--depth-${t.depth}`;
+      if (!isLeaf(t.taskId)) cls += " wbs-row--parent";
+      return cls;
+    }
+
+    function renderWbsBody() {
+      const tbody = document.querySelector("#wbsTable tbody");
+
+      if (state.tasks.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="999" class="muted" style="padding: 32px; text-align: center;">No tasks yet. Click <b>Add level-1 task</b> to begin.</td></tr>`;
+        return;
+      }
+
+      // Build DFS order
+      const byParent = new Map();
+      for (const t of state.tasks) {
+        const pid = t.parentTaskId ?? 0;
+        if (!byParent.has(pid)) byParent.set(pid, []);
+        byParent.get(pid).push(t);
+      }
+      for (const arr of byParent.values()) arr.sort((a, b) => a.sortOrder - b.sortOrder);
+      const dfs = [];
+      function walk(pid) {
+        for (const t of byParent.get(pid) || []) { dfs.push(t); walk(t.taskId); }
+      }
+      walk(0);
+
+      const rowNumByTaskId = new Map(state.tasks.map((t) => [t.taskId, t.rowNumber || String(t.taskId)]));
+
+      tbody.innerHTML = dfs.map((t) => {
+        const leaf = isLeaf(t.taskId);
+        const editing = !!t.isEditing;
+        const sched = state.schedule[t.taskId] || {};
+        const days = workingDays(sched.startDate, sched.endDate);
+        const total = rolledRowTotal(t);
+
+        // ----- Task name cell -----
+        const taskCell = editing
+          ? `<td class="wbs-col-task">
+              <input type="text" class="wbs-task-name"
+                     data-action="rename" data-task="${t.taskId}" data-task-input="${t.taskId}"
+                     value="${escapeHtml(t.taskName)}" placeholder="(untitled)" />
+            </td>`
+          : `<td class="wbs-col-task wbs-cell--readonly">
+              <span class="wbs-task-name-text">${escapeHtml(t.taskName || "(untitled)")}</span>
+            </td>`;
+
+        // ----- Comments cell -----
+        const commentsCell = editing
+          ? `<td class="wbs-col-comments">
+              <input type="text" class="wbs-notes-input"
+                     data-action="notes-inline" data-task="${t.taskId}"
+                     value="${escapeHtml(t.notes || "")}" placeholder="—" />
+            </td>`
+          : `<td class="wbs-col-comments wbs-cell--readonly">
+              <span class="wbs-notes-text">${escapeHtml(t.notes || "—")}</span>
+            </td>`;
+
+        // ----- Concurrent cell -----
+        let concCell;
+        if (editing && leaf) {
+          concCell = `<td class="wbs-col-conc">
+            <label class="wbs-checkbox">
+              <input type="checkbox" data-action="concurrent-cb" data-task="${t.taskId}" ${t.isConcurrent ? "checked" : ""} />
+            </label>
+          </td>`;
+        } else {
+          concCell = `<td class="wbs-col-conc">${t.isConcurrent ? '<span class="material-symbols-outlined wbs-check">check</span>' : ""}</td>`;
+        }
+
+        // ----- Hours cells -----
+        const hoursCells = state.resources.map((r) => {
+          if (editing && leaf) {
+            const v = t.resourceHours[r.resourceId] ?? "";
+            return `<td class="wbs-col-hours"><input type="number" min="0" step="0.5"
+                       class="wbs-hours-input"
+                       data-action="hours" data-task="${t.taskId}" data-res="${r.resourceId}"
+                       value="${v > 0 ? v : ""}" /></td>`;
+          }
+          const v = rolledHours(t, r.resourceId);
+          return `<td class="wbs-col-hours wbs-cell--rolled">${v > 0 ? Number(v).toFixed(2).replace(/\.?0+$/, "") : "·"}</td>`;
+        }).join("");
+
+        // ----- Days cell (durationDays override goes here in edit mode) -----
+        let daysCell;
+        if (editing && leaf) {
+          const cur = t.durationDays && t.durationDays > 0 ? t.durationDays : (days || "");
+          const overrideClass = t.durationDays && t.durationDays > 0 ? " wbs-buf-input--override" : "";
+          daysCell = `<td class="wbs-col-days">
+            <input type="number" min="0" step="1" class="wbs-buf-input${overrideClass}"
+                   data-action="duration-inline" data-task="${t.taskId}"
+                   value="${cur}" title="Manual duration override (0 = auto from hours/8)" />
+          </td>`;
+        } else {
+          const overridden = t.durationDays && t.durationDays > 0;
+          daysCell = `<td class="wbs-col-days">${days > 0
+            ? `<span${overridden ? ' style="color:var(--md-sys-color-primary); font-weight:600;" title="Manual override"' : ''}>${days}<small>d</small></span>`
+            : '<span class="muted">—</span>'}</td>`;
+        }
+
+        // ----- Dependencies (always clickable) -----
+        const depCount = (t.dependsOnTaskIds || []).length;
+        const depsClass = depCount > 0 ? "wbs-icon-btn wbs-icon-btn--has-deps" : "wbs-icon-btn";
+        const depsRefs = (t.dependsOnTaskIds || []).map((id) => rowNumByTaskId.get(id)).filter(Boolean).join(", ");
+        const depsTitle = depCount > 0 ? `Depends on: ${depsRefs}` : "Set dependencies";
+        const depsBtn = `<button class="${depsClass}" data-action="deps" data-task="${t.taskId}" title="${escapeHtml(depsTitle)}">
+            <span class="material-symbols-outlined">link</span>
+            ${depCount > 0 ? `<span class="wbs-icon-btn__count">${depCount}</span>` : ""}
+          </button>`;
+
+        // ----- Action column -----
+        const isNewRow = t.taskId < 0 && !t.taskName;
+        let actions;
+        if (!isWbsEditable()) {
+          // No per-row affordances when the user can't edit the WBS
+          // (permission read-only OR project status === "Approved").
+          actions = "";
+        } else if (editing) {
+          actions = `
+            <button class="md-btn md-btn--icon md-btn--icon-success" data-action="commit-edit" data-task="${t.taskId}" title="Done (Enter)">
+              <span class="material-symbols-outlined">check</span>
+            </button>
+            <button class="md-btn md-btn--icon md-btn--icon-danger" data-action="cancel-edit" data-task="${t.taskId}" title="${isNewRow ? "Cancel — discard new row (Esc)" : "Close editor (Esc)"}">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+            <button class="md-btn md-btn--icon" data-action="add-sibling" data-task="${t.taskId}" title="Add sibling below">
+              <span class="material-symbols-outlined">add_box</span>
+            </button>
+            <button class="md-btn md-btn--icon" data-action="add-child" data-task="${t.taskId}" title="Add child" ${t.depth >= 4 ? "disabled" : ""}>
+              <span class="material-symbols-outlined">subdirectory_arrow_right</span>
+            </button>
+            <button class="md-btn md-btn--icon" data-action="indent" data-task="${t.taskId}" title="Indent" ${!canIndent(t) ? "disabled" : ""}>
+              <span class="material-symbols-outlined">format_indent_increase</span>
+            </button>
+            <button class="md-btn md-btn--icon" data-action="outdent" data-task="${t.taskId}" title="Outdent" ${t.depth <= 1 ? "disabled" : ""}>
+              <span class="material-symbols-outlined">format_indent_decrease</span>
+            </button>
+            ${depsBtn}`;
+        } else {
+          actions = `
+            <button class="md-btn md-btn--icon" data-action="edit-row" data-task="${t.taskId}" title="Edit row">
+              <span class="material-symbols-outlined">edit</span>
+            </button>
+            <button class="md-btn md-btn--icon" data-action="add-sibling" data-task="${t.taskId}" title="Add sibling below">
+              <span class="material-symbols-outlined">add_box</span>
+            </button>
+            ${depsBtn}
+            <button class="md-btn md-btn--icon md-btn--icon-danger" data-action="delete" data-task="${t.taskId}" title="Delete">
+              <span class="material-symbols-outlined">delete_outline</span>
+            </button>`;
+        }
+
+        return `
+          <tr class="${rowClass(t)}${editing ? " wbs-row--editing" : ""}">
+            <td class="wbs-col-row">
+              <span class="wbs-row-num" style="padding-left: ${(t.depth - 1) * 18}px;">${escapeHtml(t.rowNumber || "")}</span>
+            </td>
+            ${taskCell}
+            ${commentsCell}
+            ${concCell}
+            ${hoursCells}
+            <td class="wbs-col-total"><strong>${total > 0 ? Number(total).toFixed(2).replace(/\.?0+$/, "") : "·"}</strong></td>
+            ${daysCell}
+            <td class="wbs-col-actions">${actions}</td>
+          </tr>`;
+      }).join("");
+    }
+
+    function renderWbsFooter() {
+      const tfoot = document.querySelector("#wbsTable tfoot");
+      if (state.tasks.length === 0 || state.resources.length === 0) { tfoot.innerHTML = ""; return; }
+      // Actuals row
+      const actuals = state.resources.map((r) => `<td class="wbs-col-hours wbs-cell--actual">${columnTotal(r.resourceId).toFixed(2).replace(/\.?0+$/, "")}</td>`).join("");
+      // Buffer % row (editable)
+      const buffer = state.resources.map((r, i) => `<td class="wbs-col-hours"><input type="number" min="0" max="200" step="5"
+                       class="wbs-buf-input wbs-buf-input--show-spin"
+                       data-action="footer-buf" data-idx="${i}" value="${escapeHtml(String(r.bufferPercent || 0))}" ${!isWbsEditable() ? "disabled" : ""} /></td>`).join("");
+      // Buffered row
+      const buffered = state.resources.map((r) => `<td class="wbs-col-hours wbs-cell--buffered">${bufferedColumnTotal(r.resourceId).toFixed(1)}</td>`).join("");
+
+      tfoot.innerHTML = `
+        <tr class="wbs-foot-row wbs-foot-row--actuals">
+          <td colspan="4">Actuals</td>
+          ${actuals}
+          <td class="wbs-col-total"><strong>${grandTotal().toFixed(2).replace(/\.?0+$/, "")}</strong></td>
+          <td class="wbs-col-days"></td>
+          <td></td>
+        </tr>
+        <tr class="wbs-foot-row wbs-foot-row--buffer">
+          <td colspan="4">Buffer %</td>
+          ${buffer}
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr class="wbs-foot-row wbs-foot-row--buffered">
+          <td colspan="4">Buffered</td>
+          ${buffered}
+          <td class="wbs-col-total"><strong>${bufferedGrandTotal().toFixed(1)}</strong></td>
+          <td></td>
+          <td></td>
+        </tr>`;
+    }
+
+    function renderWbsTotals() {
+      const gt = grandTotal();
+      document.getElementById("grandTotalHours").textContent = gt.toFixed(2).replace(/\.?0+$/, "");
+      document.getElementById("grandTotalDays").textContent = (gt / 8).toFixed(1);
+      const bufLine = document.getElementById("bufferedTotalLine");
+      if (anyResourceHasBuffer()) {
+        bufLine.hidden = false;
+        const bt = bufferedGrandTotal();
+        document.getElementById("bufferedTotalHours").textContent = bt.toFixed(1);
+        document.getElementById("bufferedTotalDays").textContent = (bt / 8).toFixed(1);
+      } else {
+        bufLine.hidden = true;
+      }
+    }
+
+    function bindWbsEvents() {
+      const tbl = document.getElementById("wbsTable");
+      tbl.addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action]");
+        if (!btn || btn.disabled) return;
+        const action = btn.dataset.action;
+        const taskId = Number(btn.dataset.task);
+        if (action === "add-child")    addChild(taskId);
+        else if (action === "add-sibling") addSibling(taskId);
+        else if (action === "delete")  deleteTask(taskId);
+        else if (action === "deps")    openDepsPopover(taskId, btn);
+        else if (action === "indent")  indentTask(taskId);
+        else if (action === "outdent") outdentTask(taskId);
+        else if (action === "edit-row") setEditing(taskId, true);
+        else if (action === "commit-edit") commitEdit(taskId);
+        else if (action === "cancel-edit") cancelEdit(taskId);
+      });
+      tbl.addEventListener("change", (e) => {
+        const inp = e.target;
+        if (inp.dataset?.action === "concurrent-cb") {
+          const id = Number(inp.dataset.task);
+          const t = state.tasks.find((x) => x.taskId === id);
+          if (t) { t.isConcurrent = inp.checked; reschedule(); renderWbs(); checkDirty(); }
+        } else if (inp.dataset?.action === "footer-buf") {
+          const idx = Number(inp.dataset.idx);
+          state.resources[idx].bufferPercent = Number(inp.value) || 0;
+          renderResources();
+          renderWbsFooter();
+          renderWbsTotals();
+          checkDirty();
+        }
+      });
+      tbl.addEventListener("input", (e) => {
+        const inp = e.target;
+        const action = inp.dataset?.action;
+        if (action === "duration-inline") {
+          const id = Number(inp.dataset.task);
+          const t = state.tasks.find((x) => x.taskId === id);
+          if (!t) return;
+          const v = Number(inp.value);
+          t.durationDays = (Number.isFinite(v) && v > 0) ? Math.round(v) : null;
+          reschedule();
+          renderWbsTotals();
+          checkDirty();
+        } else if (action === "rename") {
+          const id = Number(inp.dataset.task);
+          const t = state.tasks.find((x) => x.taskId === id);
+          if (t) { t.taskName = inp.value; checkDirty(); }
+        } else if (action === "notes-inline") {
+          const id = Number(inp.dataset.task);
+          const t = state.tasks.find((x) => x.taskId === id);
+          if (t) { t.notes = inp.value || null; checkDirty(); }
+        } else if (action === "hours") {
+          const id = Number(inp.dataset.task);
+          const rid = Number(inp.dataset.res);
+          const t = state.tasks.find((x) => x.taskId === id);
+          if (!t) return;
+          const v = Number(inp.value);
+          if (!Number.isFinite(v) || v <= 0) delete t.resourceHours[rid];
+          else t.resourceHours[rid] = v;
+          reschedule();
+          renderWbsBody();
+          renderWbsFooter();
+          renderWbsTotals();
+          requestAnimationFrame(() => {
+            const el = document.querySelector(`input[data-action="hours"][data-task="${id}"][data-res="${rid}"]`);
+            if (el) { el.focus(); el.setSelectionRange?.(el.value.length, el.value.length); }
+          });
+          checkDirty();
+        }
+      });
+      // Enter commits the row, Escape cancels — works on any editable input in an editing row.
+      tbl.addEventListener("keydown", (e) => {
+        const inp = e.target.closest("input[data-task]");
+        if (!inp) return;
+        const id = Number(inp.dataset.task);
+        const t = state.tasks.find((x) => x.taskId === id);
+        if (!t || !t.isEditing) return;
+        if (e.key === "Enter") { e.preventDefault(); commitEdit(id); }
+        else if (e.key === "Escape") { e.preventDefault(); cancelEdit(id); }
+      });
+      document.getElementById("addRootBtn").addEventListener("click", addRoot);
+
+      // Columns modal
+      document.getElementById("manageColsBtn").addEventListener("click", () => {
+        document.getElementById("columnsOverlay").style.display = "block";
+        document.getElementById("columnsModal").style.display = "block";
+        renderColumnsModal();
+      });
+
+      document.getElementById("columnsOverlay").addEventListener("click", () => {
+        document.getElementById("columnsOverlay").style.display = "none";
+        document.getElementById("columnsModal").style.display = "none";
+      });
+
+      document.getElementById("resourcesList").addEventListener("change", async (e) => {
+        const cb = e.target.closest("md-checkbox");
+        if (!cb) return;
+        const rid = Number(cb.dataset.rid);
+        const isChecked = cb.checked;
+
+        if (isChecked) {
+          // Adding resource
+          const meta = state.allResources.find((r) => r.resourceId === rid);
+          if (!meta) return;
+          state.resources.push({ resourceId: meta.resourceId, roleName: meta.roleName, shortCode: meta.shortCode, bufferPercent: 0 });
+          renderResources();
+          afterMutation();
+        } else {
+          // Removing resource - check if it has hours
+          const hasHours = state.tasks.some((t) => t.resourceHours[rid] && t.resourceHours[rid] > 0);
+          if (hasHours) {
+            showConfirm(
+              "Remove resource?",
+              "Any hours assigned to this resource will be deleted.",
+              () => {
+                const idx = state.resources.findIndex((r) => r.resourceId === rid);
+                if (idx >= 0) {
+                  const removed = state.resources[idx];
+                  state.resources.splice(idx, 1);
+                  for (const t of state.tasks) delete t.resourceHours[removed.resourceId];
+                  renderResources();
+                  afterMutation();
+                }
+              },
+              () => {
+                cb.checked = true;
+              }
+            );
+          } else {
+            const idx = state.resources.findIndex((r) => r.resourceId === rid);
+            if (idx >= 0) {
+              const removed = state.resources[idx];
+              state.resources.splice(idx, 1);
+              for (const t of state.tasks) delete t.resourceHours[removed.resourceId];
+              renderResources();
+              afterMutation();
+            }
+          }
+        }
+      });
+    }
+
+    // ============================================================
+    // DEPS POPOVER
+    // ============================================================
+    let depsForTaskId = null;
+    let depsDraft = new Set();
+    function openDepsPopover(taskId, anchorBtn) {
+      const t = state.tasks.find((x) => x.taskId === taskId);
+      if (!t) return;
+      depsForTaskId = taskId;
+      depsDraft = new Set(t.dependsOnTaskIds || []);
+      document.getElementById("depsSearch").value = "";
+      renderDepsList();
+      const pop = document.getElementById("depsPopover");
+      pop.hidden = false;
+      const rect = anchorBtn.getBoundingClientRect();
+      pop.style.left = `${Math.min(window.innerWidth - 480, rect.left - 320)}px`;
+      pop.style.top = `${rect.bottom + window.scrollY + 6}px`;
+    }
+    function renderDepsList() {
+      const depsSearchField = document.getElementById("depsSearch");
+      const filter = (depsSearchField.value || "").toLowerCase().trim();
+      const rowNumByTaskId = new Map(state.tasks.map((t) => [t.taskId, t.rowNumber || ""]));
+      const eligible = state.tasks.filter((t) => t.taskId !== depsForTaskId);
+      const filtered = filter
+        ? eligible.filter((t) => (t.taskName || "").toLowerCase().includes(filter) || (rowNumByTaskId.get(t.taskId) || "").toLowerCase().includes(filter))
+        : eligible;
+      filtered.sort((a, b) => {
+        const ac = depsDraft.has(a.taskId) ? 0 : 1;
+        const bc = depsDraft.has(b.taskId) ? 0 : 1;
+        if (ac !== bc) return ac - bc;
+        return (a.rowNumber || "").localeCompare(b.rowNumber || "", undefined, { numeric: true });
+      });
+      const list = document.getElementById("depsList");
+      list.innerHTML = filtered.length === 0
+        ? `<p class="muted" style="padding: 16px; text-align: center;">No matching tasks.</p>`
+        : filtered.map((t) => `
+            <label class="deps-row">
+              <input type="checkbox" data-task="${t.taskId}" ${depsDraft.has(t.taskId) ? "checked" : ""} />
+              <span class="deps-row__num">${escapeHtml(rowNumByTaskId.get(t.taskId) || "")}</span>
+              <span class="deps-row__name">${escapeHtml(t.taskName || "(untitled)")}</span>
+            </label>`).join("");
+    }
+    function bindDepsPopover() {
+      document.getElementById("depsList").addEventListener("change", (e) => {
+        if (e.target.tagName !== "INPUT") return;
+        const id = Number(e.target.dataset.task);
+        if (e.target.checked) depsDraft.add(id);
+        else depsDraft.delete(id);
+      });
+      document.getElementById("depsSearch").addEventListener("input", renderDepsList);
+      document.getElementById("depsClose").addEventListener("click", closeDepsPopover);
+      document.getElementById("depsCancel").addEventListener("click", closeDepsPopover);
+      document.getElementById("depsApply").addEventListener("click", applyDeps);
+    }
+    function closeDepsPopover() { depsForTaskId = null; document.getElementById("depsPopover").hidden = true; }
+    function applyDeps() {
+      if (depsForTaskId == null) return;
+      const t = state.tasks.find((x) => x.taskId === depsForTaskId);
+      if (!t) return;
+      t.dependsOnTaskIds = [...depsDraft];
+      closeDepsPopover();
+      reschedule();
+      renderWbs();
+      checkDirty();
+    }
+
+    // ============================================================
+    // NOTES POPOVER (still available — bound to rows that need long notes)
+    // ============================================================
+    let popoverTaskId = null;
+    function openNotesPopover(taskId, anchorBtn) {
+      const t = state.tasks.find((x) => x.taskId === taskId);
+      if (!t) return;
+      popoverTaskId = taskId;
+      const pop = document.getElementById("notesPopover");
+      const notesField = document.getElementById("notesTextarea");
+      notesField.value = t.notes || "";
+      const rect = anchorBtn.getBoundingClientRect();
+      pop.style.left = `${Math.min(window.innerWidth - 360, rect.left)}px`;
+      pop.style.top = `${rect.bottom + window.scrollY + 6}px`;
+      pop.hidden = false;
+      requestAnimationFrame(() => notesField.focus());
+    }
+    function closeNotesPopover() { popoverTaskId = null; document.getElementById("notesPopover").hidden = true; }
+    function applyNotes() {
+      if (popoverTaskId == null) return;
+      const t = state.tasks.find((x) => x.taskId === popoverTaskId);
+      if (!t) return;
+      const notesField = document.getElementById("notesTextarea");
+      const v = notesField.value;
+      t.notes = v.trim() ? v : null;
+      closeNotesPopover();
+      renderWbsBody();
+      checkDirty();
+    }
+
+    // ============================================================
+    // HISTORY TAB
+    // ============================================================
+    async function loadHistory() {
+      const body = document.getElementById("historyBody");
+      try {
+        const r = await fetch(`api/projects/${state.projectId}/versions`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const versions = await r.json();
+        state.versions = versions;
+        document.getElementById("historyCount").textContent = `(${versions.length})`;
+        if (versions.length === 0) {
+          body.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center; padding:24px;">No versions saved yet.</td></tr>`;
+          return;
+        }
+        body.innerHTML = versions.map((v) => `
+          <tr>
+            <td><strong>v${v.versionNumber}</strong></td>
+            <td><span class="${statusChipClass(v.statusAtSave)}">${escapeHtml(v.statusAtSave)}</span></td>
+            <td>${escapeHtml(formatModified(v.createdAtUtc))}</td>
+            <td>${escapeHtml(v.createdBy)}</td>
+            <td>${escapeHtml(v.changeSummary || "")}</td>
+            <td>${!isWbsEditable() ? "" : `<button class="md-btn md-btn--icon" data-action="revert" data-version="${v.versionNumber}" title="Revert to this version">
+              <span class="material-symbols-outlined">restore</span>
+            </button>`}</td>
+          </tr>`).join("");
+      } catch (err) {
+        body.innerHTML = `<tr><td colspan="6" class="muted" style="text-align:center; padding:24px;">Failed to load: ${escapeHtml(err.message)}</td></tr>`;
+      }
+    }
+    async function revertToVersion(n) {
+      showConfirm(
+        "Revert to version?",
+        `Any unsaved changes will be lost. You'll still need to click Save to commit the revert as a new version.`,
+        async () => {
+          try {
+            const r = await fetch(`api/projects/${state.projectId}/versions/${n}`);
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const v = await r.json();
+            if (!v.snapshot) throw new Error("Version has no snapshot.");
+            applySnapshotToState(v.snapshot);
+            switchTab("wbs");
+            showToast(`Loaded version ${n}. Click Save to commit.`, "ok");
+          } catch (err) {
+            showToast(`Revert failed: ${err.message}`, "err");
+          }
+        }
+      );
+    }
+    function camelKey(k) { return k.charAt(0).toLowerCase() + k.slice(1); }
+    function deepCamel(v) {
+      if (Array.isArray(v)) return v.map(deepCamel);
+      if (v && typeof v === "object" && v.constructor === Object) {
+        const out = {};
+        for (const [k, val] of Object.entries(v)) out[camelKey(k)] = deepCamel(val);
+        return out;
+      }
+      return v;
+    }
+    function applySnapshotToState(rawSnap) {
+      const snap = deepCamel(rawSnap);
+      state.project = {
+        ...state.project,
+        clientName: snap.project.clientName,
+        projectName: snap.project.projectName,
+        sowOrTaskId: snap.project.sowOrTaskId,
+        status: snap.project.status,
+        bufferPercent: snap.project.bufferPercent,
+        startDate: snap.project.startDate,
+      };
+      const currentBufferByRes = new Map(state.resources.map((r) => [r.resourceId, r.bufferPercent]));
+      state.resources = snap.resources.map((r) => ({
+        resourceId: r.resourceId, shortCode: r.shortCode, roleName: r.roleName,
+        bufferPercent: currentBufferByRes.get(r.resourceId) ?? 0,
+      }));
+      state.tasks = snap.tasks.map((t) => ({
+        taskId: t.taskId, parentTaskId: t.parentTaskId ?? null, depth: t.depth,
+        sortOrder: t.sortOrder, rowNumber: t.rowNumber || "", taskName: t.taskName || "",
+        isConcurrent: !!t.isConcurrent, notes: t.notes ?? null,
+        durationDays: t.durationDays ?? null,
+        resourceHours: { ...(t.resourceHours || {}) },
+        dependsOnTaskIds: [...(t.dependsOnTaskIds || [])],
+      }));
+      renderHeader();
+      fillForm();
+      renderResources();
+      renumberRows();
+      reschedule();
+      renderWbs();
+      checkDirty();
+    }
+    function bindHistoryEvents() {
+      document.getElementById("historyBody").addEventListener("click", (e) => {
+        const btn = e.target.closest("[data-action='revert']");
+        if (!btn) return;
+        revertToVersion(Number(btn.dataset.version));
+      });
+    }
+
+    // ============================================================
+    // TIMELINE (GANTT) — built when the Timeline tab is shown
+    // ============================================================
+    let _maxDisplayDepth = 0;
+    function isoToUtc(iso) { return new Date(iso + "T00:00:00Z"); }
+    function addDaysUtc(d, n) { const r = new Date(d); r.setUTCDate(r.getUTCDate() + n); return r; }
+    function isWeekday(d) { const dow = d.getUTCDay(); return dow !== 0 && dow !== 6; }
+
+    function buildDayWeekMap(startIso, endIso) {
+      const map = new Map();
+      if (!startIso || !endIso) return { map, totalWeeks: 0, totalDays: 0 };
+      const s = isoToUtc(startIso), e = isoToUtc(endIso);
+      if (e <= s) return { map, totalWeeks: 0, totalDays: 0 };
+      let idx = 0;
+      for (let d = new Date(s); d < e; d = addDaysUtc(d, 1)) {
+        if (!isWeekday(d)) continue;
+        map.set(d.toISOString().slice(0, 10), Math.floor(idx / 5));
+        idx++;
+      }
+      const totalWeeks = map.size === 0 ? 0 : Math.max(...map.values()) + 1;
+      return { map, totalWeeks, totalDays: idx };
+    }
+
+    function projectMaxEnd() {
+      let m = null;
+      for (const id of Object.keys(state.schedule)) {
+        const e = state.schedule[id].endDate;
+        if (e && (!m || e > m)) m = e;
+      }
+      return m;
+    }
+
+    function renderTimeline() {
+      const wrap = document.getElementById("ganttWrap");
+      if (state.tasks.length === 0 || !state.project.startDate) {
+        wrap.innerHTML = `<div class="gantt-empty muted">Add tasks and a start date to see a timeline.</div>`;
+        document.getElementById("timelineSummary").textContent = "";
+        return;
+      }
+      const maxEnd = projectMaxEnd();
+      const { totalWeeks, totalDays } = buildDayWeekMap(state.project.startDate, maxEnd);
+      if (totalWeeks === 0) {
+        wrap.innerHTML = `<div class="gantt-empty muted">Schedule has no working days yet.</div>`;
+        return;
+      }
+      const totalMonths = Math.ceil(totalWeeks / 4);
+      const leafCount = state.tasks.filter((t) => isLeaf(t.taskId)).length;
+      document.getElementById("timelineSummary").textContent =
+        `${leafCount} leaf tasks · ${totalDays} business days (~${Math.ceil(totalDays / 5)} weeks / ~${Math.ceil(totalDays / 20)} months)`;
+
+      // Build DFS order
+      const byParent = new Map();
+      for (const t of state.tasks) {
+        const pid = t.parentTaskId ?? 0;
+        if (!byParent.has(pid)) byParent.set(pid, []);
+        byParent.get(pid).push(t);
+      }
+      for (const arr of byParent.values()) arr.sort((a, b) => a.sortOrder - b.sortOrder);
+      const dfs = [];
+      (function walk(pid) {
+        for (const t of byParent.get(pid) || []) { dfs.push(t); walk(t.taskId); }
+      })(0);
+      const visible = _maxDisplayDepth === 0 ? dfs : dfs.filter((t) => t.depth <= _maxDisplayDepth);
+
+      const dayWidth = 14;
+      const labelWidth = 320;
+      const barAreaWidth = totalDays * dayWidth;
+
+      // Header: month + week rows
+      let monthHdr = "", weekHdr = "";
+      let cursorDays = 0;
+      for (let m = 0; m < totalMonths; m++) {
+        const wksInMonth = Math.min(4, totalWeeks - m * 4);
+        const monthDays = wksInMonth * 5;
+        monthHdr += `<div class="gantt-month" style="width:${monthDays * dayWidth}px;">Month ${m + 1}</div>`;
+        for (let w = 0; w < wksInMonth; w++) {
+          weekHdr += `<div class="gantt-week" style="width:${5 * dayWidth}px;">Wk ${m * 4 + w + 1}</div>`;
+        }
+        cursorDays += monthDays;
+      }
+
+      const dayToIdx = new Map();
+      let bi = 0;
+      for (let d = isoToUtc(state.project.startDate); d < isoToUtc(maxEnd); d = addDaysUtc(d, 1)) {
+        if (!isWeekday(d)) continue;
+        dayToIdx.set(d.toISOString().slice(0, 10), bi++);
+      }
+
+      const rowsHtml = visible.map((t, ri) => {
+        const sched = state.schedule[t.taskId] || {};
+        const indent = (t.depth - 1) * 14;
+        let bar = "";
+        if (sched.startDate && sched.endDate) {
+          const s = dayToIdx.get(sched.startDate);
+          // end is exclusive — count business days from start to (end - 1 day)
+          let e = null;
+          const endDate = isoToUtc(sched.endDate);
+          // Find the last business day index before endDate
+          let lastIdx = -1;
+          for (let d = isoToUtc(sched.startDate); d < endDate; d = addDaysUtc(d, 1)) {
+            if (!isWeekday(d)) continue;
+            const idx = dayToIdx.get(d.toISOString().slice(0, 10));
+            if (idx != null) lastIdx = idx;
+          }
+          if (s != null && lastIdx >= s) {
+            const left = s * dayWidth;
+            const width = (lastIdx - s + 1) * dayWidth;
+            const colors = [
+              "var(--md-sys-color-primary)",      // L1: primary
+              "var(--gantt-l2-bar)",              // L2: teal
+              "var(--gantt-l3-bar)",              // L3: grey-blue
+              "var(--gantt-l4-bar)"               // L4: light grey
+            ];
+            const color = colors[Math.min(t.depth - 1, 3)];
+            bar = `<div class="gantt-bar" style="left:${left}px; width:${width}px; background:${color};"></div>`;
+          }
+        }
+        return `
+          <div class="gantt-row" style="${ri % 2 === 0 ? "" : "background:var(--md-sys-color-surface-container-low);"}">
+            <div class="gantt-label" style="padding-left:${8 + indent}px; font-weight:${isLeaf(t.taskId) ? 400 : 600};">
+              <span class="gantt-row-num">${escapeHtml(t.rowNumber || "")}</span>
+              <span class="gantt-task-name">${escapeHtml(t.taskName || "")}</span>
+            </div>
+            <div class="gantt-bar-cell" style="width:${barAreaWidth}px;">${bar}</div>
+          </div>`;
+      }).join("");
+
+      wrap.innerHTML = `
+        <div class="gantt-scroll">
+          <div class="gantt-header-row">
+            <div class="gantt-corner" style="width:${labelWidth}px;"></div>
+            <div class="gantt-header-chart" style="width:${barAreaWidth}px;">
+              <div class="gantt-months">${monthHdr}</div>
+              <div class="gantt-weeks">${weekHdr}</div>
+            </div>
+          </div>
+          ${rowsHtml}
+        </div>`;
+    }
+
+    function bindTimelineEvents() {
+      const lvl1 = document.getElementById("lvl1Only");
+      const lvl12 = document.getElementById("lvl12Only");
+      lvl1.addEventListener("change", () => {
+        _maxDisplayDepth = lvl1.checked ? 1 : 0;
+        if (lvl1.checked) lvl12.checked = false;
+        renderTimeline();
+      });
+      lvl12.addEventListener("change", () => {
+        _maxDisplayDepth = lvl12.checked ? 2 : 0;
+        if (lvl12.checked) lvl1.checked = false;
+        renderTimeline();
+      });
+    }
+
+    // ============================================================
+    // RESOURCE PLAN — monthly hours, weekly detail, cost estimate
+    // ============================================================
+    function computeResourcePlan() {
+      const used = state.resources.filter((r) =>
+        state.tasks.some((t) => isLeaf(t.taskId) && Number(t.resourceHours[r.resourceId] || 0) > 0)
+      );
+      if (used.length === 0) return { resources: [], totalWeeks: 0, totalMonths: 0, hours: [] };
+      const maxEnd = projectMaxEnd();
+      const { map: dayToWeek, totalWeeks } = buildDayWeekMap(state.project.startDate, maxEnd);
+      if (totalWeeks === 0) return { resources: used, totalWeeks: 0, totalMonths: 0, hours: [] };
+      const hours = used.map(() => new Array(totalWeeks).fill(0));
+      for (const t of state.tasks) {
+        if (!isLeaf(t.taskId)) continue;
+        const sched = state.schedule[t.taskId];
+        if (!sched || !sched.startDate || !sched.endDate) continue;
+        const wkCounts = new Map();
+        for (let d = isoToUtc(sched.startDate); d < isoToUtc(sched.endDate); d = addDaysUtc(d, 1)) {
+          if (!isWeekday(d)) continue;
+          const wk = dayToWeek.get(d.toISOString().slice(0, 10));
+          if (wk == null) continue;
+          wkCounts.set(wk, (wkCounts.get(wk) || 0) + 1);
+        }
+        let actual = 0;
+        for (const c of wkCounts.values()) actual += c;
+        if (actual <= 0) continue;
+        for (let ri = 0; ri < used.length; ri++) {
+          const total = Number(t.resourceHours[used[ri].resourceId] || 0);
+          if (total <= 0) continue;
+          for (const [wk, cnt] of wkCounts.entries()) hours[ri][wk] += (total * cnt) / actual;
+        }
+      }
+      return { resources: used, totalWeeks, totalMonths: Math.ceil(totalWeeks / 4), hours };
+    }
+
+    function monthHours(plan, ri, m) {
+      const start = m * 4;
+      const wks = Math.min(start + 4, plan.totalWeeks) - start;
+      let s = 0;
+      for (let w = start; w < start + wks; w++) s += plan.hours[ri][w] || 0;
+      return s;
+    }
+    function phaseHours(plan, ri, phaseTaskId) {
+      const phase = state.tasks.find((t) => t.taskId === phaseTaskId);
+      if (!phase) return 0;
+      const ids = descendantsOf(phase.taskId).filter((id) => isLeaf(id));
+      if (isLeaf(phase.taskId)) ids.push(phase.taskId);
+      const resId = plan.resources[ri].resourceId;
+      let s = 0;
+      for (const id of ids) {
+        const t = state.tasks.find((x) => x.taskId === id);
+        if (t) s += Number(t.resourceHours[resId] || 0);
+      }
+      return s;
+    }
+    function fmtHrs(v) { return v > 0 ? Number(v.toFixed(1)) : ""; }
+    function fmtMoney(v) {
+      if (v == null) return "";
+      return v.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+    }
+
+    function renderResourcePlan() {
+      const plan = computeResourcePlan();
+      const mt = document.getElementById("planMonthly");
+      if (plan.resources.length === 0) {
+        mt.innerHTML = `<tbody><tr><td class="muted" style="padding:20px;">Add tasks with hours to see the resource plan.</td></tr></tbody>`;
+        document.getElementById("planCostWrap").hidden = true;
+        // The Actuals grid is still useful even with no plan (user can add
+        // resources and track actuals against an unscheduled project).
+        renderActualsGrid(plan, []);
+        return;
+      }
+      // L1 phases
+      const phases = state.tasks.filter((t) => (t.parentTaskId ?? 0) === 0).sort((a, b) => a.sortOrder - b.sortOrder);
+
+      // Monthly Hours table
+      mt.querySelector("thead").innerHTML = `
+        <tr>
+          <th class="plan-resource-col">Resource</th>
+          ${phases.map((p) => `<th class="plan-col-phase">${escapeHtml(p.taskName || "")}</th>`).join("")}
+          ${Array.from({ length: plan.totalMonths }, (_, m) => `<th class="plan-col-month">Month ${m + 1}</th>`).join("")}
+          <th class="plan-col-total">Total</th>
+          <th class="plan-col-bufpct">Buffer %</th>
+          <th class="plan-col-bufftotal">Buffered Total</th>
+        </tr>`;
+      let bodyHtml = "";
+      for (let ri = 0; ri < plan.resources.length; ri++) {
+        const r = plan.resources[ri];
+        const resBuf = (state.resources.find((x) => x.resourceId === r.resourceId) || {}).bufferPercent || 0;
+        const total = plan.hours[ri].reduce((s, v) => s + v, 0);
+        const bufTotal = roundHalf(total * (1 + resBuf / 100));
+        bodyHtml += `<tr>
+          <td class="plan-resource-col">${escapeHtml(r.roleName || "")}</td>
+          ${phases.map((p) => `<td class="plan-col-phase">${fmtHrs(phaseHours(plan, ri, p.taskId))}</td>`).join("")}
+          ${Array.from({ length: plan.totalMonths }, (_, m) => `<td class="plan-col-month">${fmtHrs(monthHours(plan, ri, m))}</td>`).join("")}
+          <td class="plan-col-total">${fmtHrs(total)}</td>
+          <td class="plan-col-bufpct">${resBuf}%</td>
+          <td class="plan-col-bufftotal">${bufTotal.toFixed(1)}</td>
+        </tr>`;
+      }
+      mt.querySelector("tbody").innerHTML = bodyHtml;
+
+      // Totals row
+      const phaseTotals = phases.map((p) => {
+        let s = 0;
+        for (let ri = 0; ri < plan.resources.length; ri++) s += phaseHours(plan, ri, p.taskId);
+        return s;
+      });
+      const monthTotals = Array.from({ length: plan.totalMonths }, (_, m) => {
+        let s = 0;
+        for (let ri = 0; ri < plan.resources.length; ri++) s += monthHours(plan, ri, m);
+        return s;
+      });
+      const grand = plan.hours.reduce((s, row) => s + row.reduce((a, v) => a + v, 0), 0);
+      let bufGrand = 0;
+      for (let ri = 0; ri < plan.resources.length; ri++) {
+        const r = plan.resources[ri];
+        const buf = (state.resources.find((x) => x.resourceId === r.resourceId) || {}).bufferPercent || 0;
+        bufGrand += roundHalf(plan.hours[ri].reduce((s, v) => s + v, 0) * (1 + buf / 100));
+      }
+      mt.querySelector("tfoot").innerHTML = `
+        <tr class="plan-total-row">
+          <td class="plan-resource-col">Total</td>
+          ${phaseTotals.map((v) => `<td class="plan-col-phase">${fmtHrs(v)}</td>`).join("")}
+          ${monthTotals.map((v) => `<td class="plan-col-month">${fmtHrs(v)}</td>`).join("")}
+          <td class="plan-col-total">${fmtHrs(grand)}</td>
+          <td class="plan-col-bufpct"></td>
+          <td class="plan-col-bufftotal">${bufGrand.toFixed(1)}</td>
+        </tr>`;
+
+      // Refresh cost grid if currently applied
+      if (state.appliedCosting) renderCostGrid(plan, phases);
+
+      // Actuals grid (migration 010) — sits below Cost Estimate.
+      renderActualsGrid(plan, phases);
+    }
+
+    function renderCostGrid(plan, phases) {
+      const wrap = document.getElementById("planCostWrap");
+      if (!state.appliedCosting) { wrap.hidden = true; return; }
+      wrap.hidden = false;
+      const rates = state.appliedCosting.rates || {};
+      const has = (rid) => rates[rid] != null;
+      const cost = (hrs, rid) => has(rid) ? hrs * Number(rates[rid]) : null;
+
+      const ct = document.getElementById("planCost");
+      ct.querySelector("thead").innerHTML = `
+        <tr>
+          <th class="plan-resource-col">Resource</th>
+          ${phases.map((p) => `<th class="plan-col-phase">${escapeHtml(p.taskName || "")}</th>`).join("")}
+          ${Array.from({ length: plan.totalMonths }, (_, m) => `<th class="plan-col-month">Month ${m + 1}</th>`).join("")}
+          <th class="plan-col-total">Total</th>
+          <th class="plan-col-bufpct">Buffer %</th>
+          <th class="plan-col-bufftotal">Buffered Total</th>
+        </tr>`;
+      let body = "";
+      let grandCost = 0;
+      let bufGrand = 0;
+      for (let ri = 0; ri < plan.resources.length; ri++) {
+        const r = plan.resources[ri];
+        const rid = r.resourceId;
+        const resBuf = (state.resources.find((x) => x.resourceId === rid) || {}).bufferPercent || 0;
+        const monthCosts = Array.from({ length: plan.totalMonths }, (_, m) => cost(monthHours(plan, ri, m), rid));
+        const phaseCosts = phases.map((p) => cost(phaseHours(plan, ri, p.taskId), rid));
+        const total = has(rid)
+          ? plan.hours[ri].reduce((s, v) => s + v, 0) * Number(rates[rid])
+          : null;
+        if (total != null) grandCost += total;
+        const bufCost = total != null ? roundHalf(total * (1 + resBuf / 100)) : null;
+        if (bufCost != null) bufGrand += bufCost;
+        body += `<tr>
+          <td class="plan-resource-col">${escapeHtml(r.roleName || "")}</td>
+          ${phaseCosts.map((c) => `<td class="plan-col-phase">${c == null ? '<span class="muted">N/A</span>' : (c > 0 ? fmtMoney(c) : "")}</td>`).join("")}
+          ${monthCosts.map((c) => `<td class="plan-col-month">${c == null ? '<span class="muted">N/A</span>' : (c > 0 ? fmtMoney(c) : "")}</td>`).join("")}
+          <td class="plan-col-total">${total == null ? '<span class="muted">N/A</span>' : fmtMoney(total)}</td>
+          <td class="plan-col-bufpct">${resBuf}%</td>
+          <td class="plan-col-bufftotal">${bufCost == null ? '<span class="muted">N/A</span>' : fmtMoney(bufCost)}</td>
+        </tr>`;
+      }
+      ct.querySelector("tbody").innerHTML = body;
+      ct.querySelector("tfoot").innerHTML = `
+        <tr class="plan-total-row">
+          <td class="plan-resource-col">Total</td>
+          ${phases.map(() => `<td class="plan-col-phase"></td>`).join("")}
+          ${Array.from({ length: plan.totalMonths }, () => `<td class="plan-col-month"></td>`).join("")}
+          <td class="plan-col-total">${fmtMoney(grandCost)}</td>
+          <td class="plan-col-bufpct"></td>
+          <td class="plan-col-bufftotal">${fmtMoney(bufGrand)}</td>
+        </tr>`;
+    }
+
+    async function applyCosting() {
+      const id = Number(document.getElementById("costingPicker").value);
+      if (!id) return;
+      try {
+        const r = await fetch(`api/costing-profiles/${id}`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const profile = await r.json();
+        const ratesMap = {};
+        for (const row of profile.rates || []) ratesMap[row.resourceId] = row.ratePerHour;
+        state.appliedCosting = { profile, rates: ratesMap };
+        document.getElementById("costingStatus").textContent = `Applied: ${profile.profileName}`;
+        const plan = computeResourcePlan();
+        const phases = state.tasks.filter((t) => (t.parentTaskId ?? 0) === 0).sort((a, b) => a.sortOrder - b.sortOrder);
+        renderCostGrid(plan, phases);
+      } catch (err) {
+        showToast(`Failed to apply costing: ${err.message}`, "err");
+      }
+    }
+
+    // ============================================================
+    // ACTUAL HOURS (Resource Plan tab) — migration 010
+    // ============================================================
+    // Renders the Actuals grid sitting below Cost Estimate. Rows are the
+    // union of: (a) resources in the WBS plan (state.resources), and
+    // (b) actuals-only additions tracked in state.actuals but NOT in
+    // ProjectResources. Only the rightmost "Actuals" column is editable;
+    // phase / total / buffered cells stay blank for actuals-only rows.
+    function renderActualsGrid(plan, phases) {
+      const tbl = document.getElementById("planActuals");
+      if (!tbl) return;
+
+      // Inputs editable only when (the user is not read-only) AND (the
+      // Actuals table is currently in edit mode).
+      const inputsEditable = !READONLY && state.actualsEditMode;
+
+      // Build the visible-row resource list (plan first, then actuals-only).
+      const planByRes = new Map(state.resources.map((r) => [r.resourceId, r]));
+      const planResourceIds = new Set(state.resources.map((r) => r.resourceId));
+      const extras = [];
+      for (const [rid] of state.actuals) {
+        if (planResourceIds.has(rid)) continue;
+        const meta = state.allResources.find((x) => x.resourceId === rid);
+        if (meta) extras.push(meta);
+      }
+
+      // Index of each plan resource inside plan.resources (so we can call
+      // phaseHours). Resources in state.resources that don't appear in
+      // plan.resources (no hours assigned anywhere) get a null index.
+      const planIdx = new Map(plan.resources.map((r, i) => [r.resourceId, i]));
+
+      // Header
+      tbl.querySelector("thead").innerHTML = `
+        <tr>
+          <th class="plan-resource-col">Resource</th>
+          ${phases.map((p) => `<th class="plan-col-phase">${escapeHtml(p.taskName || "")}</th>`).join("")}
+          <th class="plan-col-total">Total</th>
+          <th class="plan-col-bufftotal">Buffered Total</th>
+          <th class="plan-col-bufftotal">Actuals</th>
+        </tr>`;
+
+      let bodyHtml = "";
+      const renderRow = (res, isPlan) => {
+        const ri = planIdx.has(res.resourceId) ? planIdx.get(res.resourceId) : null;
+        const planEntry = planByRes.get(res.resourceId);
+        const resBuf = (planEntry && planEntry.bufferPercent) || 0;
+
+        let phaseCells = "";
+        let total = 0;
+        if (isPlan && ri !== null) {
+          for (const p of phases) {
+            const h = phaseHours(plan, ri, p.taskId);
+            total += h;
+            phaseCells += `<td class="plan-col-phase">${fmtHrs(h)}</td>`;
+          }
+        } else {
+          for (let i = 0; i < phases.length; i++) {
+            phaseCells += `<td class="plan-col-phase is-blank">—</td>`;
+          }
+        }
+        const totalCell = (isPlan && ri !== null)
+          ? `<td class="plan-col-total">${fmtHrs(total)}</td>`
+          : `<td class="plan-col-total is-blank">—</td>`;
+        const bufCell = (isPlan && ri !== null)
+          ? `<td class="plan-col-bufftotal">${roundHalf(total * (1 + resBuf / 100)).toFixed(1)}</td>`
+          : `<td class="plan-col-bufftotal is-blank">—</td>`;
+        const actualHours = state.actuals.get(res.resourceId) ?? 0;
+        // Only actuals-only rows are deletable (and only in edit mode). Plan
+        // resources are managed by the WBS Columns modal, not from here.
+        const deleteBtn = (!isPlan && state.actualsEditMode && !READONLY)
+          ? `<button type="button" class="actuals-delete"
+                     data-rid="${res.resourceId}"
+                     title="Remove this actuals-only resource"
+                     aria-label="Remove ${escapeHtml(res.roleName || res.shortCode || '')}">
+               <span class="material-symbols-outlined">close</span>
+             </button>`
+          : "";
+        const inputCell = `<td class="plan-col-bufftotal">
+          <span class="actuals-input-wrap">
+            <input type="number" class="actuals-input" min="0" step="0.5"
+                   data-rid="${res.resourceId}" value="${actualHours || ""}"
+                   placeholder="0" ${inputsEditable ? "" : "disabled"} />
+            ${deleteBtn}
+          </span>
+        </td>`;
+        return `<tr>
+          <td class="plan-resource-col">${escapeHtml(res.roleName || res.shortCode || "")}</td>
+          ${phaseCells}${totalCell}${bufCell}${inputCell}
+        </tr>`;
+      };
+
+      for (const r of state.resources) bodyHtml += renderRow(r, true);
+      for (const r of extras)          bodyHtml += renderRow(r, false);
+
+      if (!bodyHtml) {
+        const empty = `<tr><td class="muted" colspan="${phases.length + 4}"
+          style="padding:20px;">No resources yet. Use Edit → Rows to add one.</td></tr>`;
+        bodyHtml = empty;
+      }
+      tbl.querySelector("tbody").innerHTML = bodyHtml;
+      tbl.querySelector("tfoot").innerHTML = "";
+
+      // Row count badge on the toolbar button.
+      const cnt = document.getElementById("actualsRowsCount");
+      if (cnt) cnt.textContent = String(state.resources.length + extras.length);
+
+      // Toolbar visibility: Rows button only when editing.
+      const rowsBtn = document.getElementById("manageActualsRowsBtn");
+      if (rowsBtn) rowsBtn.hidden = !state.actualsEditMode || READONLY;
+      const editLbl = document.getElementById("actualsEditBtnLabel");
+      if (editLbl) editLbl.textContent = state.actualsEditMode ? "Done" : "Edit";
+
+      // Per-input change handler — update state.actuals, then re-check dirty.
+      // Only attach when inputs are actually editable (otherwise the disabled
+      // attribute already swallows events but no harm being explicit).
+      for (const input of tbl.querySelectorAll(".actuals-input")) {
+        input.addEventListener("input", (e) => {
+          if (e.target.disabled) return;
+          const rid = parseInt(e.target.dataset.rid, 10);
+          const raw = parseFloat(e.target.value);
+          const val = Number.isFinite(raw) && raw >= 0 ? raw : 0;
+          state.actuals.set(rid, val);
+          checkDirty();
+        });
+      }
+      // Delete handlers for actuals-only rows.
+      for (const btn of tbl.querySelectorAll(".actuals-delete")) {
+        btn.addEventListener("click", () => {
+          const rid = parseInt(btn.dataset.rid, 10);
+          if (!Number.isFinite(rid)) return;
+          const meta = state.allResources.find((x) => x.resourceId === rid);
+          const label = (meta && (meta.roleName || meta.shortCode)) || "this resource";
+          const recorded = Number(state.actuals.get(rid) || 0);
+          const drop = () => {
+            state.actuals.delete(rid);
+            renderResourcePlan();
+            checkDirty();
+          };
+          if (recorded > 0) {
+            showConfirm(
+              "Remove actuals row?",
+              `Remove ${label} and discard the ${recorded} h recorded against it? This won't affect the WBS plan.`,
+              drop
+            );
+          } else {
+            drop();
+          }
+        });
+      }
+    }
+
+    // Modal lists the resources NOT yet on the actuals grid (those would
+    // otherwise be a no-op to add). Per user decision the modal is add-only
+    // — there is no uncheck path here.
+    function renderActualsRowsModal() {
+      const list = document.getElementById("actualsResourcesList");
+      if (!list) return;
+      const onGrid = new Set([
+        ...state.resources.map((r) => r.resourceId),
+        ...state.actuals.keys(),
+      ]);
+      const addable = (state.allResources || [])
+        .filter((r) => r.isActive !== false && !onGrid.has(r.resourceId))
+        .sort((a, b) =>
+          (a.displayOrder || 0) - (b.displayOrder || 0)
+          || (a.roleName || "").localeCompare(b.roleName || "")
+        );
+      if (addable.length === 0) {
+        list.innerHTML = `<div class="muted" style="padding:8px 0;">
+          All active resources are already on the actuals grid.
+        </div>`;
+        return;
+      }
+      list.innerHTML = addable.map((r) => `
+        <label style="display:flex; align-items:center; gap:10px; padding:6px 0; cursor:pointer;">
+          <md-checkbox data-rid="${r.resourceId}"></md-checkbox>
+          <span><strong>${escapeHtml(r.shortCode || "")}</strong> — ${escapeHtml(r.roleName || "")}</span>
+        </label>
+      `).join("");
+    }
+
+    function bindActualsEvents() {
+      // Edit / Done toggle — only flips local view state; the global Save bar
+      // handles persistence as part of the normal dirty-tracking flow.
+      const editBtn = document.getElementById("actualsEditBtn");
+      if (editBtn) {
+        editBtn.addEventListener("click", () => {
+          if (READONLY) return;
+          state.actualsEditMode = !state.actualsEditMode;
+          renderResourcePlan();
+        });
+      }
+      const openBtn = document.getElementById("manageActualsRowsBtn");
+      if (openBtn) {
+        openBtn.addEventListener("click", () => {
+          if (READONLY) return;
+          renderActualsRowsModal();
+          document.getElementById("actualsRowsOverlay").style.display = "block";
+          document.getElementById("actualsRowsModal").style.display = "block";
+        });
+      }
+      // Scrim click closes (matches the Columns modal UX).
+      document.getElementById("actualsRowsOverlay")?.addEventListener("click", () => {
+        document.getElementById("actualsRowsOverlay").style.display = "none";
+        document.getElementById("actualsRowsModal").style.display = "none";
+      });
+      // Check handler — add an actuals-only row at zero hours. No uncheck.
+      document.getElementById("actualsResourcesList")?.addEventListener("change", (e) => {
+        const cb = e.target.closest("md-checkbox");
+        if (!cb || !cb.checked) return;
+        const rid = parseInt(cb.dataset.rid, 10);
+        if (!Number.isFinite(rid)) return;
+        if (!state.actuals.has(rid)) state.actuals.set(rid, 0);
+        // Re-render both the modal (removes the just-added resource from
+        // the addable list) and the grid (shows the new row).
+        renderActualsRowsModal();
+        renderResourcePlan();
+        checkDirty();
+      });
+    }
+
+    function bindResourcePlanEvents() {
+      const picker = document.getElementById("costingPicker");
+      picker.addEventListener("change", () => {
+        document.getElementById("applyCostingBtn").disabled = !picker.value;
+      });
+      document.getElementById("applyCostingBtn").addEventListener("click", applyCosting);
+      bindActualsEvents();
+      // Buffer % is read-only here — single source of truth is the WBS footer / Edit panel.
+    }
+    function fillCostingPicker() {
+      const picker = document.getElementById("costingPicker");
+      picker.innerHTML = `<md-select-option value=""><div slot="headline">— Select —</div></md-select-option>` +
+        state.costingProfiles.map((cp) => `<md-select-option value="${cp.profileId}"><div slot="headline">${escapeHtml(cp.profileName)}</div></md-select-option>`).join("");
+    }
+
+    // ============================================================
+    // TABS
+    // ============================================================
+    function switchTab(name) {
+      state.activeTab = name;
+      document.querySelectorAll(".proj-tab").forEach((b) => {
+        b.classList.toggle("proj-tab--active", b.dataset.tab === name);
+      });
+      document.querySelectorAll(".tab-panel").forEach((p) => {
+        const active = p.dataset.panel === name;
+        p.classList.toggle("tab-panel--active", active);
+        p.hidden = !active;
+      });
+      if (name === "history") loadHistory();
+      if (name === "timeline") renderTimeline();
+      if (name === "plan") renderResourcePlan();
+      if (name === "ai" && aiState.enabled && aiState.conversations.length === 0) {
+        // Lazy-load conversations the first time the AI tab is opened.
+        aiLoadConversations();
+      }
+    }
+    function bindTabs() {
+      document.querySelectorAll(".proj-tab").forEach((b) => {
+        b.addEventListener("click", () => switchTab(b.dataset.tab));
+      });
+    }
+
+    // ============================================================
+    // SAVE / DISCARD
+    // ============================================================
+    // Build a short, human-readable description of what changed between two
+    // editable snapshots. Saved into ProjectVersions.ChangeSummary on each
+    // PUT so the History tab's "What changed" column is actually informative
+    // (the row used to be blank). Comma-separated phrases, capped at 500
+    // chars (matches the server-side slice).
+    function summariseChanges(prev, curr) {
+      if (!prev || !curr) return "Saved";
+      const parts = [];
+
+      // Project metadata fields
+      const projFields = [
+        ["clientName",       "client"],
+        ["projectName",      "project name"],
+        ["sowOrTaskId",      "SOW / Task ID"],
+        ["status",           "status"],
+        ["bufferPercent",    "buffer %"],
+        ["startDate",        "start date"],
+        ["costingProfileId", "costing profile"],
+        ["productId",        "product"],
+        ["solutionId",       "solution"],
+        ["moduleId",         "module"],
+      ];
+      const projChanged = projFields
+        .filter(([f]) => (prev.project?.[f] ?? null) !== (curr.project?.[f] ?? null))
+        .map(([, label]) => label);
+      if (projChanged.length) parts.push(`Project ${projChanged.join(", ")}`);
+
+      // Resources (additions, removals, per-resource buffer %)
+      const prevResIds = new Set((prev.resources || []).map((r) => r.resourceId));
+      const currResIds = new Set((curr.resources || []).map((r) => r.resourceId));
+      const resAdded   = [...currResIds].filter((id) => !prevResIds.has(id)).length;
+      const resRemoved = [...prevResIds].filter((id) => !currResIds.has(id)).length;
+      const prevResBuf = new Map((prev.resources || []).map((r) => [r.resourceId, r.bufferPercent]));
+      let resBufChanged = 0;
+      for (const r of curr.resources || []) {
+        if (prevResBuf.has(r.resourceId) && prevResBuf.get(r.resourceId) !== r.bufferPercent) resBufChanged++;
+      }
+      const resBits = [];
+      if (resAdded)      resBits.push(`${resAdded} added`);
+      if (resRemoved)    resBits.push(`${resRemoved} removed`);
+      if (resBufChanged) resBits.push(`buffer % on ${resBufChanged}`);
+      if (resBits.length) parts.push(`Resources ${resBits.join(", ")}`);
+
+      // Tasks (added / removed / renamed / hours edited / other-meta edited)
+      const prevByTaskId = new Map((prev.tasks || []).map((t) => [t.taskId, t]));
+      const currTaskIds  = new Set((curr.tasks || []).map((t) => t.taskId));
+      const tasksAdded   = (curr.tasks || []).filter((t) => !prevByTaskId.has(t.taskId)).length;
+      const tasksRemoved = [...prevByTaskId.keys()].filter((id) => !currTaskIds.has(id)).length;
+      let tasksRenamed = 0, tasksHoursChanged = 0, tasksMetaChanged = 0;
+      for (const t of curr.tasks || []) {
+        const p = prevByTaskId.get(t.taskId);
+        if (!p) continue;
+        if ((p.taskName || "") !== (t.taskName || "")) tasksRenamed++;
+        if (JSON.stringify(p.resourceHours || {}) !== JSON.stringify(t.resourceHours || {})) tasksHoursChanged++;
+        const metaSame =
+          (p.notes || "") === (t.notes || "") &&
+          !!p.isConcurrent === !!t.isConcurrent &&
+          (p.durationDays ?? null) === (t.durationDays ?? null) &&
+          JSON.stringify(p.dependsOnTaskIds || []) === JSON.stringify(t.dependsOnTaskIds || []) &&
+          (p.parentTaskId ?? null) === (t.parentTaskId ?? null) &&
+          (p.sortOrder ?? null) === (t.sortOrder ?? null);
+        if (!metaSame) tasksMetaChanged++;
+      }
+      const taskBits = [];
+      if (tasksAdded)         taskBits.push(`${tasksAdded} added`);
+      if (tasksRemoved)       taskBits.push(`${tasksRemoved} removed`);
+      if (tasksRenamed)       taskBits.push(`${tasksRenamed} renamed`);
+      if (tasksHoursChanged)  taskBits.push(`hours on ${tasksHoursChanged}`);
+      if (tasksMetaChanged)   taskBits.push(`other on ${tasksMetaChanged}`);
+      if (taskBits.length) parts.push(`Tasks ${taskBits.join(", ")}`);
+
+      // Actuals (migration 010) — additions, removals, hour edits. Each
+      // sub-change gets its own readable phrase (e.g. "3 resources added to
+      // actuals") rather than being grouped under a single "Actuals …" prefix.
+      const prevActs = new Map((prev.actuals || []).map((a) => [a.resourceId, a.actualHours]));
+      const currActs = new Map((curr.actuals || []).map((a) => [a.resourceId, a.actualHours]));
+      let actAdded = 0, actRemoved = 0, actChanged = 0;
+      for (const [id, h] of currActs) {
+        if (!prevActs.has(id)) actAdded++;
+        else if (Number(prevActs.get(id)) !== Number(h)) actChanged++;
+      }
+      for (const id of prevActs.keys()) if (!currActs.has(id)) actRemoved++;
+      const plural = (n, one, many) => `${n} ${n === 1 ? one : many}`;
+      if (actAdded)   parts.push(`${plural(actAdded, "resource", "resources")} added to actuals`);
+      if (actRemoved) parts.push(`${plural(actRemoved, "resource", "resources")} removed from actuals`);
+      if (actChanged) parts.push(`${plural(actChanged, "actual", "actuals")} updated`);
+
+      const out = parts.length ? parts.join("; ") : "Saved (no detectable changes)";
+      return out.length > 500 ? out.slice(0, 497) + "…" : out;
+    }
+
+    async function save() {
+      const body = currentEditable();
+      // Build a "what changed" summary from the diff against the last
+      // saved snapshot; server slices to 500 chars defensively.
+      try {
+        body.changeSummary = summariseChanges(
+          state.pristine ? JSON.parse(state.pristine) : null,
+          body
+        );
+      } catch { body.changeSummary = "Saved"; }
+      for (const btn of document.querySelectorAll("#saveBtn, #saveBtnTop")) btn.disabled = true;
+      document.getElementById("saveMsg").textContent = "Saving…";
+      try {
+        const res = await fetch(`api/projects/${state.projectId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          throw new Error(j.error || `HTTP ${res.status}`);
+        }
+        const j = await res.json();
+        showToast(`Saved as version ${j.versionNumber}.`, "ok");
+        await loadProject(state.projectId);
+      } catch (err) {
+        showToast(`Save failed: ${err.message}`, "err");
+        document.getElementById("saveMsg").textContent = "Unsaved changes";
+      } finally {
+        for (const btn of document.querySelectorAll("#saveBtn, #saveBtnTop")) btn.disabled = false;
+      }
+    }
+    function discard() {
+      showConfirm(
+        "Discard changes?",
+        "All unsaved changes will be lost.",
+        () => loadProject(state.projectId)
+      );
+    }
+
+    // ============================================================
+    // CLIENT COMBOBOX (MWC text-field + menu)
+    // ============================================================
+    function setupClientCombobox() {
+      const clientField = document.getElementById("clientNameField");
+      const clientMenu = document.getElementById("clientMenu");
+      clientField.addEventListener("input", () => {
+        const q = clientField.value.trim().toLowerCase();
+        const matches = q
+          ? state.clients.map((c) => c.name)
+              .filter((n) => n.toLowerCase().includes(q) && n.toLowerCase() !== q)
+              .slice(0, 8)
+          : [];
+        clientMenu.innerHTML = matches
+          .map((n) => `<md-menu-item><div slot="headline">${escapeHtml(n)}</div></md-menu-item>`)
+          .join("");
+        clientMenu.open = matches.length > 0;
+      });
+      clientMenu.addEventListener("click", (e) => {
+        const item = e.target.closest("md-menu-item");
+        if (!item) return;
+        clientField.value = item.textContent.trim();
+        clientMenu.open = false;
+      });
+    }
+
+    // ============================================================
+    // LOADERS
+    // ============================================================
+    async function loadLookups() {
+      const [resR, cliR, cpR, prodR, solR, modR] = await Promise.all([
+        fetch("api/resources").then((r) => r.json()),
+        fetch("api/clients").then((r) => r.json()).catch(() => []),
+        fetch("api/costing-profiles").then((r) => r.json()).catch(() => []),
+        fetch("api/products").then((r) => r.json()).catch(() => []),
+        fetch("api/solutions").then((r) => r.json()).catch(() => []),
+        fetch("api/modules").then((r) => r.json()).catch(() => []),
+      ]);
+      state.allResources = resR;
+      state.clients = cliR;
+      state.costingProfiles = cpR;
+
+      // Product / Solution / Module dropdowns
+      const fillSel = (name, rows) => {
+        document.querySelector(`md-outlined-select[name="${name}"]`).innerHTML =
+          `<md-select-option value=""><div slot="headline">— None —</div></md-select-option>` +
+          rows.map((r) => `<md-select-option value="${r.id}"><div slot="headline">${escapeHtml(r.name)}</div></md-select-option>`).join("");
+      };
+      fillSel("productId", prodR);
+      fillSel("solutionId", solR);
+      fillSel("moduleId", modR);
+    }
+    async function loadProject(id) {
+      const r = await fetch(`api/projects/${id}`);
+      if (!r.ok) { const j = await r.json().catch(() => ({})); throw new Error(j.error || `HTTP ${r.status}`); }
+      const bundle = await r.json();
+      state.projectId = id;
+      state.project = bundle.project;
+      state.resources = bundle.resources.map((r) => ({
+        resourceId: r.resourceId, shortCode: r.shortCode, roleName: r.roleName, bufferPercent: r.bufferPercent,
+      }));
+      state.tasks = bundle.tasks.map((t) => ({ ...t, resourceHours: { ...t.resourceHours } }));
+      state.schedule = bundle.schedule;
+      // Hydrate actuals (migration 010). The Actuals grid will auto-include
+      // plan resources (zeroed when missing) and any actuals-only additions.
+      state.actuals = new Map(
+        (bundle.actuals || []).map((a) => [a.resourceId, Number(a.actualHours) || 0])
+      );
+      state.nextTempId = -1;
+      renderHeader();
+      fillForm();
+      renderResources();
+      renderWbs();
+      // Engage / release the status-based WBS lock based on the loaded
+      // status. Runs AFTER renderWbs so the per-row affordances reflect
+      // the lock from the very first paint.
+      applyStatusLock();
+      markPristine();
+      // Populate the History tab badge eagerly so the version count is
+      // visible without having to click into the tab. Fires & forgets;
+      // failures are surfaced inside renderHistory itself.
+      loadHistory();
+    }
+
+    // Strip every mutation affordance from the page for read-only accounts.
+    function applyReadOnly() {
+      document.getElementById("readOnlyChip").hidden = false;
+      for (const elId of ["editProjBtn", "saveBtnTop", "addRootBtn",
+                          "actualsEditBtn", "manageActualsRowsBtn"]) {
+        const el = document.getElementById(elId);
+        if (el) el.hidden = true;
+      }
+      // Existing actuals inputs (rendered before applyReadOnly may run again)
+      // and any delete buttons rendered in a prior edit-mode cycle.
+      for (const inp of document.querySelectorAll(".actuals-input")) inp.disabled = true;
+      for (const btn of document.querySelectorAll(".actuals-delete")) btn.hidden = true;
+      const saveBar = document.getElementById("saveBar");
+      if (saveBar) saveBar.hidden = true;
+    }
+
+    // ============================================================
+    // AI PROJECT ANALYST — chat + analyse, tab + drawer + FAB
+    // ============================================================
+    // State shared between the full tab and the drawer. Both views render
+    // from the same `messages` array; whichever container is visible at
+    // the time gets the DOM update.
+    const aiState = {
+      projectId: null,
+      conversationId: null,
+      conversations: [],
+      messages: [],
+      pending: false,
+      enabled: false,            // true once READONLY check confirms allowed + API reachable
+    };
+
+    function aiTime(ts) {
+      if (!ts) return "";
+      try { return new Date(ts).toLocaleString(); } catch { return ts; }
+    }
+
+    // Markdown -> HTML for assistant replies. Handles headings, bold, italic,
+    // inline code, blockquotes, horizontal rules, and bullet / numbered lists.
+    // Inline pass also auto-detects "Key: value" leads (Why:, Action:, Note:,
+    // Risk:, etc.) and tags them so the CSS can give them a coloured label.
+    function aiRenderInline(s) {
+      // escapeHtml runs upstream — `s` is already HTML-safe but we still need
+      // to turn the **/*/` markers into real elements.
+      return s
+        // Inline code: `code` — protect from further parsing.
+        .replace(/`([^`]+)`/g, (_, c) => `<code>${c}</code>`)
+        // Bold: **text** or __text__
+        .replace(/\*\*([^\*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/__([^_]+)__/g, "<strong>$1</strong>")
+        // Italic: *text* or _text_ (after bold so we don't eat asterisks)
+        .replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>")
+        .replace(/(^|[^_])_([^_\n]+)_(?!_)/g, "$1<em>$2</em>");
+    }
+
+    function aiRenderMarkdown(text) {
+      const safe = escapeHtml(text);
+      const lines = safe.split(/\r?\n/);
+      const out = [];
+      let inUl = false, inOl = false, inBlockquote = false;
+      const closeLists = () => {
+        if (inUl) { out.push("</ul>"); inUl = false; }
+        if (inOl) { out.push("</ol>"); inOl = false; }
+      };
+      const closeBlockquote = () => {
+        if (inBlockquote) { out.push("</blockquote>"); inBlockquote = false; }
+      };
+
+      // Tags well-known PM jargon leads ("Why:", "Action:", …) so the CSS can
+      // give them a coloured chip. Matches at the start of an item or line.
+      const LABEL_RE = /^(\s*)(Why|Action|Note|Risk|Impact|Recommendation|Insight|Why\?|Action item|Mitigation|Owner|Deadline|Status|Next step):\s+/i;
+      const decorateLabel = (s) => s.replace(LABEL_RE,
+        (_, lead, label) => `${lead}<span class="ai-tag ai-tag--${label.toLowerCase().replace(/[^a-z]/g, "")}">${label}</span> `);
+
+      for (const raw of lines) {
+        // Horizontal rule
+        if (/^\s*(---|\*\*\*|___)\s*$/.test(raw)) {
+          closeLists(); closeBlockquote();
+          out.push("<hr />");
+          continue;
+        }
+        // Headings
+        if (/^###\s+/.test(raw)) {
+          closeLists(); closeBlockquote();
+          out.push(`<h4>${aiRenderInline(raw.replace(/^###\s+/, ""))}</h4>`);
+          continue;
+        }
+        if (/^##\s+/.test(raw)) {
+          closeLists(); closeBlockquote();
+          out.push(`<h3>${aiRenderInline(raw.replace(/^##\s+/, ""))}</h3>`);
+          continue;
+        }
+        if (/^#\s+/.test(raw)) {
+          closeLists(); closeBlockquote();
+          out.push(`<h2>${aiRenderInline(raw.replace(/^#\s+/, ""))}</h2>`);
+          continue;
+        }
+        // Blockquote — gather consecutive `> ` lines.
+        if (/^\s*>\s?/.test(raw)) {
+          closeLists();
+          if (!inBlockquote) { out.push("<blockquote>"); inBlockquote = true; }
+          out.push(`<p>${aiRenderInline(raw.replace(/^\s*>\s?/, ""))}</p>`);
+          continue;
+        }
+        // Bulleted list
+        if (/^\s*[-*+]\s+/.test(raw)) {
+          closeBlockquote();
+          if (!inUl) { closeLists(); out.push("<ul>"); inUl = true; }
+          const body = aiRenderInline(decorateLabel(raw.replace(/^\s*[-*+]\s+/, "")));
+          out.push(`<li>${body}</li>`);
+          continue;
+        }
+        // Numbered list
+        if (/^\s*\d+\.\s+/.test(raw)) {
+          closeBlockquote();
+          if (!inOl) { closeLists(); out.push("<ol>"); inOl = true; }
+          const body = aiRenderInline(decorateLabel(raw.replace(/^\s*\d+\.\s+/, "")));
+          out.push(`<li>${body}</li>`);
+          continue;
+        }
+        // Blank — flush any open list/blockquote.
+        if (raw.trim() === "") {
+          closeLists(); closeBlockquote();
+          continue;
+        }
+        // Plain paragraph.
+        closeLists(); closeBlockquote();
+        out.push(`<p>${aiRenderInline(decorateLabel(raw))}</p>`);
+      }
+      closeLists(); closeBlockquote();
+      return out.join("");
+    }
+
+    async function aiApi(method, path, body) {
+      const opts = { method, headers: { "Content-Type": "application/json" } };
+      if (body) opts.body = JSON.stringify(body);
+      const r = await fetch(path, opts);
+      if (!r.ok) {
+        const j = await r.json().catch(() => ({}));
+        throw new Error(j.error || `HTTP ${r.status}`);
+      }
+      return r.json();
+    }
+
+    async function aiLoadConversations() {
+      try {
+        aiState.conversations = await aiApi("GET", `api/projects/${aiState.projectId}/ai/conversations`);
+        aiRenderConvoList();
+      } catch (err) {
+        console.error("[ai] load conversations failed:", err.message);
+      }
+    }
+
+    function aiRenderConvoList() {
+      // Both the full tab's rail and the drawer's popover render from the
+      // same list — keep them in lockstep.
+      const targets = [
+        document.getElementById("aiConvoList"),
+        document.getElementById("aiDrawerConvoList"),
+      ].filter(Boolean);
+      const empty = `<li class="ai-rail__empty">No conversations yet. Click <span class="material-symbols-outlined" style="vertical-align:-3px; font-size:14px;">add</span> to start one.</li>`;
+      const html = aiState.conversations.length === 0
+        ? empty
+        : aiState.conversations.map((c) => {
+            const title = c.title || c.firstUserMessage || "New chat";
+            const active = c.conversationId === aiState.conversationId ? " ai-convo-item--active" : "";
+            return `<li class="ai-convo-item${active}" data-cid="${c.conversationId}">
+              <div class="ai-convo-item__body">
+                <div class="ai-convo-item__title">${escapeHtml(title)}</div>
+                <div class="ai-convo-item__meta">${aiTime(c.updatedAtUtc)} · ${c.messageCount || 0} msg</div>
+              </div>
+              <button type="button" class="ai-convo-item__delete" data-action="delete" data-cid="${c.conversationId}" title="Delete chat">
+                <span class="material-symbols-outlined">delete</span>
+              </button>
+            </li>`;
+          }).join("");
+      for (const ul of targets) ul.innerHTML = html;
+    }
+
+    function aiCloseDrawerConvoPopover() {
+      const p = document.getElementById("aiDrawerConvoPopover");
+      if (p) p.hidden = true;
+    }
+    function aiToggleDrawerConvoPopover() {
+      const p = document.getElementById("aiDrawerConvoPopover");
+      if (!p) return;
+      p.hidden = !p.hidden;
+      if (!p.hidden && aiState.conversations.length === 0) {
+        aiLoadConversations();
+      }
+    }
+
+    async function aiSelectConversation(cid) {
+      try {
+        const data = await aiApi("GET", `api/projects/${aiState.projectId}/ai/conversations/${cid}`);
+        aiState.conversationId = data.conversationId;
+        aiState.messages = data.messages || [];
+        aiRenderConvoList();
+        aiRenderThread();
+        aiUpdateTitles(data.title);
+      } catch (err) {
+        showToast(`Could not open chat: ${err.message}`, "err");
+      }
+    }
+
+    async function aiNewConversation() {
+      try {
+        const c = await aiApi("POST", `api/projects/${aiState.projectId}/ai/conversations`);
+        aiState.conversationId = c.conversationId;
+        aiState.messages = [];
+        aiState.conversations.unshift({ ...c, messageCount: 0, firstUserMessage: null });
+        aiRenderConvoList();
+        aiRenderThread();
+        aiUpdateTitles(null);
+      } catch (err) {
+        showToast(`Could not start chat: ${err.message}`, "err");
+      }
+    }
+
+    async function aiDeleteConversation(cid) {
+      try {
+        await aiApi("DELETE", `api/projects/${aiState.projectId}/ai/conversations/${cid}`);
+        aiState.conversations = aiState.conversations.filter((c) => c.conversationId !== cid);
+        if (aiState.conversationId === cid) {
+          aiState.conversationId = null;
+          aiState.messages = [];
+          aiRenderThread();
+          aiUpdateTitles(null);
+        }
+        aiRenderConvoList();
+      } catch (err) {
+        showToast(`Delete failed: ${err.message}`, "err");
+      }
+    }
+
+    function aiUpdateTitles(title) {
+      const t = title || "New chat";
+      const a = document.getElementById("aiChatTitle");
+      const b = document.getElementById("aiDrawerTitle");
+      if (a) a.textContent = t;
+      if (b) b.textContent = t;
+    }
+
+    function aiRenderThread() {
+      const containers = [document.getElementById("aiThread"), document.getElementById("aiDrawerThread")];
+      for (const wrap of containers) {
+        if (!wrap) continue;
+        if (aiState.messages.length === 0 && !aiState.pending) {
+          wrap.innerHTML = `<div class="ai-thread__empty">
+            <span class="material-symbols-outlined">smart_toy</span>
+            <p>Ask a question about this project, or click <strong>Analyse</strong> for a structured assessment grounded in PMP/PRINCE2 methodology.</p>
+          </div>`;
+          continue;
+        }
+        const items = aiState.messages.map((m) => {
+          if (m.role === "user") {
+            return `<div class="ai-msg ai-msg--user">${escapeHtml(m.content)}</div>`;
+          }
+          if (m.role === "system") {
+            return `<div class="ai-msg ai-msg--system">${escapeHtml(m.content)}</div>`;
+          }
+          // assistant
+          const up = m.feedback === 1 ? " active" : "";
+          const down = m.feedback === -1 ? " active" : "";
+          return `<div class="ai-msg ai-msg--assistant">
+            ${aiRenderMarkdown(m.content)}
+            <div class="ai-msg__foot">
+              <button type="button" class="ai-feedback-btn ai-feedback-btn--up${up}"   data-mid="${m.messageId}" data-vote="1"  title="Helpful">
+                <span class="material-symbols-outlined">thumb_up</span>
+              </button>
+              <button type="button" class="ai-feedback-btn ai-feedback-btn--down${down}" data-mid="${m.messageId}" data-vote="-1" title="Not helpful">
+                <span class="material-symbols-outlined">thumb_down</span>
+              </button>
+            </div>
+          </div>`;
+        }).join("");
+        const pending = aiState.pending
+          ? `<div class="ai-pending"><span class="material-symbols-outlined spin">progress_activity</span> Analyst thinking…</div>`
+          : "";
+        wrap.innerHTML = items + pending;
+        wrap.scrollTop = wrap.scrollHeight;
+      }
+    }
+
+    async function aiSend(content, mode) {
+      if (aiState.pending) return;
+      if (!aiState.conversationId) {
+        await aiNewConversation();
+        if (!aiState.conversationId) return;
+      }
+      aiState.pending = true;
+      // Lock the quick-prompt pills + analyse buttons so the user can't
+      // queue a second request while one is in flight. Unlocked in the
+      // finally block below.
+      aiSetPillsDisabled(true);
+      // Optimistic local user message — replaced by server's row on success.
+      if (mode === "chat") {
+        aiState.messages.push({ messageId: `temp-${Date.now()}`, role: "user", content, mode });
+      } else {
+        aiState.messages.push({ messageId: `temp-${Date.now()}`, role: "user",
+          content: "Please provide a structured analysis of this project.", mode });
+      }
+      aiRenderThread();
+      try {
+        const result = await aiApi(
+          "POST",
+          `api/projects/${aiState.projectId}/ai/conversations/${aiState.conversationId}/messages`,
+          { content, mode }
+        );
+        // Replace optimistic user message with server's row, then append assistant.
+        aiState.messages.pop();
+        aiState.messages.push(result.userMessage);
+        aiState.messages.push(result.assistantMessage);
+        // Refresh the conversation list (so title + updatedAt move to the top).
+        aiLoadConversations();
+      } catch (err) {
+        aiState.messages.push({ role: "system", content: `Request failed: ${err.message}` });
+        showToast(`AI request failed: ${err.message}`, "err");
+      } finally {
+        aiState.pending = false;
+        aiSetPillsDisabled(false);
+        aiRenderThread();
+      }
+    }
+
+    async function aiSetFeedback(messageId, vote) {
+      try {
+        const r = await aiApi(
+          "PATCH",
+          `api/projects/${aiState.projectId}/ai/messages/${messageId}/feedback`,
+          { feedback: vote }
+        );
+        const m = aiState.messages.find((x) => x.messageId === messageId);
+        if (m) m.feedback = r.feedback;
+        aiRenderThread();
+      } catch (err) {
+        showToast(`Feedback failed: ${err.message}`, "err");
+      }
+    }
+
+    // Pin state: when true, the drawer is persistent (no scrim, page shifts
+    // left to make room). Toggled via the push-pin icon in the drawer head;
+    // persisted to localStorage so it survives page reload.
+    const AI_PIN_KEY = "wbs.ai.pinned";
+
+    function aiIsPinned() {
+      return document.body.classList.contains("wbs-page--ai-pinned");
+    }
+
+    function aiSetPinned(on) {
+      document.body.classList.toggle("wbs-page--ai-pinned", !!on);
+      const btn = document.getElementById("aiDrawerPin");
+      if (btn) {
+        btn.title = on ? "Unpin (return to overlay mode)" : "Pin to side (keep visible while you edit)";
+        // Material's filled push_pin is a quick visual cue for "active".
+        const icon = btn.querySelector(".material-symbols-outlined");
+        if (icon) icon.style.fontVariationSettings = on ? "'FILL' 1" : "'FILL' 0";
+      }
+      try { localStorage.setItem(AI_PIN_KEY, on ? "1" : "0"); } catch {}
+      // Scrim is irrelevant when pinned — also reflects when unpinning.
+      const s = document.getElementById("drawerScrim");
+      const edit = document.getElementById("editPanel");
+      const aiOpen = !document.getElementById("aiDrawer").hidden;
+      if (s) s.hidden = on || ((!edit || edit.hidden) && !aiOpen);
+    }
+
+    function aiOpenDrawer() {
+      const d = document.getElementById("aiDrawer");
+      const s = document.getElementById("drawerScrim");
+      if (d) d.hidden = false;
+      // Only show the scrim when not pinned.
+      if (s && !aiIsPinned()) s.hidden = false;
+      // Lazy-load the conversations the first time so the drawer picker is
+      // populated even before the user opens the full tab.
+      if (aiState.enabled && aiState.conversations.length === 0) {
+        aiLoadConversations();
+      }
+    }
+    function aiCloseDrawer() {
+      const d = document.getElementById("aiDrawer");
+      const s = document.getElementById("drawerScrim");
+      if (d) d.hidden = true;
+      // Closing also unpins — keeps the model simple (X always means "go away").
+      if (aiIsPinned()) aiSetPinned(false);
+      // Only hide scrim if no other drawer is open.
+      const edit = document.getElementById("editPanel");
+      if (s && (!edit || edit.hidden)) s.hidden = true;
+    }
+
+    // ----- Quick-prompt pills ----------------------------------------------
+    // Predefined PMP/PRINCE2-grounded questions the user can fire with one
+    // click instead of typing. Each key's `text` field is what's actually
+    // sent to the analyst (and shown as the user message in the transcript).
+    const AI_QUICK_PROMPTS = {
+      risks: {
+        label: "Risks",
+        icon: "warning",
+        text: "Identify the top risks in this project. For each, propose a mitigation and tag it with the PMP knowledge area or PRINCE2 theme it relates to.",
+      },
+      resources: {
+        label: "Resource balance",
+        icon: "groups",
+        text: "Are any roles over- or under-allocated compared to comparable peer projects? Cite specific hours from the payload and apply PMP Resource Management.",
+      },
+      schedule: {
+        label: "Schedule",
+        icon: "timeline",
+        text: "Assess the schedule, dependencies, and critical path. Flag missing prerequisites, unrealistic durations, or sequencing gaps. Apply PMP Schedule Management and PRINCE2 Plans.",
+      },
+      scope: {
+        label: "Scope coverage",
+        icon: "account_tree",
+        text: "Check whether the WBS covers all standard delivery phases (Initiate, Design, Build, Test, Activate, Close). What standard tasks are missing? Apply PMP Scope Management.",
+      },
+      gates: {
+        label: "Stage gates",
+        icon: "check_circle",
+        text: "Apply PRINCE2 stage boundaries: are there formal Phase Gate / sign-off tasks at the end of each major phase (Design, Build, Test, Activate)? What's missing?",
+      },
+      governance: {
+        label: "Governance & comms",
+        icon: "forum",
+        text: "Review communications, status reporting, and stakeholder governance tasks. Apply PMP Communications Management and Stakeholder Management.",
+      },
+    };
+
+    function aiRenderQuickPrompts() {
+      const html = Object.entries(AI_QUICK_PROMPTS).map(([key, p]) => {
+        // The title attribute gives the full prompt on hover; the visible
+        // label is the short noun phrase.
+        return `<button type="button" class="ai-prompt-pill" data-prompt="${key}" title="${escapeHtml(p.text)}">
+          <span class="material-symbols-outlined">${p.icon}</span> ${escapeHtml(p.label)}
+        </button>`;
+      }).join("");
+      for (const id of ["aiQuickPrompts", "aiDrawerQuickPrompts"]) {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = html;
+      }
+    }
+
+    function aiSetPillsDisabled(disabled) {
+      document.querySelectorAll(".ai-prompt-pill").forEach((b) => { b.disabled = !!disabled; });
+      // The analyse buttons should follow the same gating so the user
+      // can't queue a second request before the first comes back.
+      for (const id of ["aiAnalyseBtn", "aiDrawerAnalyseBtn"]) {
+        const el = document.getElementById(id);
+        if (el) el.disabled = !!disabled;
+      }
+    }
+
+    function aiBindUI() {
+      // Conversation lists (full tab + drawer popover) — same handler.
+      const handleConvoListClick = (e, popoverClose) => {
+        // Delete button click — confirm, then delete.
+        const delBtn = e.target.closest('[data-action="delete"]');
+        if (delBtn) {
+          e.stopPropagation();
+          const cid = parseInt(delBtn.dataset.cid, 10);
+          if (!Number.isFinite(cid)) return;
+          const c = aiState.conversations.find((x) => x.conversationId === cid);
+          const title = (c && (c.title || c.firstUserMessage)) || "this chat";
+          showConfirm(
+            "Delete chat",
+            `Permanently delete "${title}"? This cannot be undone.`,
+            () => aiDeleteConversation(cid)
+          );
+          return;
+        }
+        // Otherwise treat as a select.
+        const item = e.target.closest(".ai-convo-item");
+        if (!item) return;
+        const cid = parseInt(item.dataset.cid, 10);
+        if (Number.isFinite(cid)) {
+          aiSelectConversation(cid);
+          if (popoverClose) aiCloseDrawerConvoPopover();
+        }
+      };
+      document.getElementById("aiConvoList")?.addEventListener("click", (e) => handleConvoListClick(e, false));
+      document.getElementById("aiDrawerConvoList")?.addEventListener("click", (e) => handleConvoListClick(e, true));
+
+      // Picker toggle + "+ New chat" inside the drawer.
+      document.getElementById("aiDrawerConvoPicker")?.addEventListener("click", aiToggleDrawerConvoPopover);
+      document.getElementById("aiDrawerConvoNew")?.addEventListener("click", () => {
+        aiNewConversation();
+        aiCloseDrawerConvoPopover();
+      });
+      // Click outside the popover to close it.
+      document.addEventListener("click", (e) => {
+        const pop = document.getElementById("aiDrawerConvoPopover");
+        if (!pop || pop.hidden) return;
+        if (pop.contains(e.target)) return;
+        if (document.getElementById("aiDrawerConvoPicker")?.contains(e.target)) return;
+        aiCloseDrawerConvoPopover();
+      });
+
+      document.getElementById("aiNewConvoBtn")?.addEventListener("click", aiNewConversation);
+
+      // Input rows — Enter sends (Shift+Enter newline).
+      const sendFromTextarea = (taId, mode) => {
+        const ta = document.getElementById(taId);
+        if (!ta) return;
+        const txt = ta.value.trim();
+        if (!txt) return;
+        ta.value = "";
+        aiSend(txt, mode);
+      };
+      document.getElementById("aiSendBtn")?.addEventListener("click", () => sendFromTextarea("aiInput", "chat"));
+      document.getElementById("aiInput")?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendFromTextarea("aiInput", "chat"); }
+      });
+      document.getElementById("aiDrawerSendBtn")?.addEventListener("click", () => sendFromTextarea("aiDrawerInput", "chat"));
+      document.getElementById("aiDrawerInput")?.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendFromTextarea("aiDrawerInput", "chat"); }
+      });
+
+      // Analyse buttons (both views).
+      const runAnalyse = () => aiSend("Please provide a structured analysis of this project.", "analysis");
+      document.getElementById("aiAnalyseBtn")?.addEventListener("click", runAnalyse);
+      document.getElementById("aiDrawerAnalyseBtn")?.addEventListener("click", runAnalyse);
+
+      // Quick-prompt pills — render once, then a single delegated click
+      // routes by data-prompt key to the matching prompt text.
+      aiRenderQuickPrompts();
+      const handlePillClick = (e) => {
+        const btn = e.target.closest(".ai-prompt-pill");
+        if (!btn || btn.disabled) return;
+        const key = btn.dataset.prompt;
+        const p = AI_QUICK_PROMPTS[key];
+        if (p) aiSend(p.text, "chat");
+      };
+      document.getElementById("aiQuickPrompts")?.addEventListener("click", handlePillClick);
+      document.getElementById("aiDrawerQuickPrompts")?.addEventListener("click", handlePillClick);
+
+      // Feedback buttons — delegate.
+      for (const wrapId of ["aiThread", "aiDrawerThread"]) {
+        document.getElementById(wrapId)?.addEventListener("click", (e) => {
+          const btn = e.target.closest(".ai-feedback-btn");
+          if (!btn) return;
+          const mid = btn.dataset.mid;
+          if (!mid || mid.startsWith("temp-")) return;
+          const vote = parseInt(btn.dataset.vote, 10);
+          const m = aiState.messages.find((x) => String(x.messageId) === String(mid));
+          // Toggle off if already set the same way.
+          const newVote = (m && m.feedback === vote) ? 0 : vote;
+          aiSetFeedback(parseInt(mid, 10), newVote);
+        });
+      }
+
+      // FAB + drawer chrome.
+      document.getElementById("aiFab")?.addEventListener("click", aiOpenDrawer);
+      document.getElementById("aiDrawerClose")?.addEventListener("click", aiCloseDrawer);
+      document.getElementById("aiDrawerPin")?.addEventListener("click", () => {
+        aiSetPinned(!aiIsPinned());
+      });
+
+      // Restore pin state from localStorage. If the user left it pinned, open
+      // the drawer too so it's actually visible.
+      try {
+        if (localStorage.getItem(AI_PIN_KEY) === "1") {
+          aiSetPinned(true);
+          aiOpenDrawer();
+        }
+      } catch {}
+    }
+
+    (async () => {
+      const id = Number(new URLSearchParams(location.search).get("id"));
+      if (!id) { document.getElementById("projTitle").textContent = "No project ID"; return; }
+      try {
+        // Resolve permissions first — READONLY must be known before the
+        // initial renderWbs() so task rows render without action buttons.
+        const me = await fetch("api/me").then((r) => r.json()).catch(() => ({}));
+        READONLY = !!(me.permissions && me.permissions.isReadOnly);
+        if (READONLY) applyReadOnly();
+
+        // CAN_APPROVE gates the right to flip status TO or FROM "Approved"
+        // (migration 012). Non-approvers don't even see the option in the
+        // status dropdown — prune it from the DOM so md-outlined-select
+        // doesn't render it. Server independently enforces the same rule.
+        CAN_APPROVE = !!(me.permissions && me.permissions.canApprove);
+        if (!CAN_APPROVE) {
+          document
+            .querySelector('#projForm md-outlined-select[name="status"] md-select-option[value="Approved"]')
+            ?.remove();
+        }
+
+        await loadLookups();
+        await loadProject(id);
+        bindFormEvents();
+        bindWbsEvents();
+        bindDepsPopover();
+        bindHistoryEvents();
+        bindTimelineEvents();
+        bindResourcePlanEvents();
+        fillCostingPicker();
+        bindTabs();
+
+        // Header buttons
+        document.getElementById("editProjBtn").addEventListener("click", openEditPanel);
+        document.getElementById("editClose").addEventListener("click", closeEditPanel);
+        document.getElementById("editPanelDone").addEventListener("click", closeEditPanel);
+        // The scrim is the click-outside catcher for any open drawer. Close
+        // whichever drawer is currently visible (the AI drawer is only ever
+        // backed by a scrim when it's NOT pinned — pinned mode hides the
+        // scrim entirely, so this never accidentally closes a pinned chat).
+        document.getElementById("drawerScrim").addEventListener("click", () => {
+          const aiOpen = !document.getElementById("aiDrawer")?.hidden;
+          if (aiOpen && !aiIsPinned()) aiCloseDrawer();
+          const editOpen = !document.getElementById("editPanel")?.hidden;
+          if (editOpen) closeEditPanel();
+        });
+
+        // Save buttons (top + sticky bar)
+        document.getElementById("saveBtnTop").addEventListener("click", save);
+        document.getElementById("saveBtn").addEventListener("click", save);
+        document.getElementById("discardBtn").addEventListener("click", discard);
+
+        // Notes popover (kept available if needed by other UI paths)
+        document.getElementById("notesClose").addEventListener("click", closeNotesPopover);
+        document.getElementById("notesCancel").addEventListener("click", closeNotesPopover);
+        document.getElementById("notesApply").addEventListener("click", applyNotes);
+
+        // AI Assistant — gated to non-read-only users. The tab and FAB stay
+        // hidden for read-only accounts; the backend also enforces this.
+        if (!READONLY) {
+          aiState.projectId = id;
+          aiState.enabled = true;
+          const aiTab = document.getElementById("aiTabBtn");
+          const aiFab = document.getElementById("aiFab");
+          if (aiTab) aiTab.hidden = false;
+          if (aiFab) aiFab.hidden = false;
+          aiBindUI();
+        }
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key !== "Escape") return;
+          if (!document.getElementById("notesPopover").hidden) { closeNotesPopover(); return; }
+          if (!document.getElementById("depsPopover").hidden)  { closeDepsPopover();  return; }
+          if (!document.getElementById("aiDrawer")?.hidden)    { aiCloseDrawer();     return; }
+          if (!document.getElementById("editPanel").hidden)    { closeEditPanel();    return; }
+        });
+      } catch (err) {
+        document.getElementById("projTitle").textContent = "Failed to load project";
+      }
+    })();
+  </script>
+</body>
+</html>
