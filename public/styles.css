@@ -959,6 +959,9 @@ h3 {
 
 .userManagementCard {
   width: min(1080px, 96vw);
+  min-height: 705px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
 .userManagementGrid {
@@ -1034,6 +1037,7 @@ h3 {
   display: grid;
   gap: 12px;
   justify-items: center;
+  align-content: center;
 }
 
 .userManagementArrowBtn {
@@ -1042,6 +1046,19 @@ h3 {
   border-radius: 16px;
   font-size: 1.1rem;
   font-weight: 800;
+}
+
+.userManagementStatusWrap {
+  min-height: 62px;
+  margin-top: 14px;
+}
+
+.userManagementStatusWrap .hubFeedbackStatus {
+  margin-top: 0;
+}
+
+.userManagementStatusPlaceholder {
+  visibility: hidden;
 }
 
 .workspacePill {
@@ -1078,6 +1095,10 @@ h3 {
   min-height: 1380px;
   border: 0;
   background: transparent;
+}
+
+.embeddedAppFrame--tall {
+  min-height: 1880px;
 }
 
 body.widgetMode .appShell {
@@ -2115,6 +2136,7 @@ body.widgetMode .widgetIdentityName {
 
   .userManagementArrowColumn {
     grid-auto-flow: column;
+    justify-content: center;
   }
 }
 

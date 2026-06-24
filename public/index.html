@@ -32,6 +32,10 @@
               Training Platform
             </button>
 
+            <button class="navItem" type="button" data-view-target="test-script-builder-platform" data-app-id="test-script-builder">
+              Test Script Builder
+            </button>
+
             <div class="navGroup navGroup--sme" data-app-id="subject-matter-expert">
               <button
                 id="smeNavToggle"
@@ -66,10 +70,6 @@
 
             <button class="navItem navItem--upcoming" type="button" data-view-target="integration-sow-platform" data-app-id="integration-sow-platform">
               SOW to Design (Integration)
-            </button>
-
-            <button class="navItem navItem--disabled" type="button" disabled>
-              Test Script Generator
             </button>
           </div>
         </nav>
@@ -290,6 +290,29 @@
                   class="embeddedAppFrame"
                   data-src="/training-platform/"
                   title="APAC AI Training Platform"
+                  loading="lazy"
+                ></iframe>
+              </div>
+            </section>
+          </section>
+
+          <section id="test-script-builder-platform" class="appView" data-app-id="test-script-builder">
+            <section class="workspaceBoard">
+              <div class="boardHeader">
+                <div>
+                  <p class="sectionEyebrow">Live Workspace</p>
+                  <h2>Test Script Builder</h2>
+                  <p class="boardText">
+                    AI-assisted generation of test scripts from product documentation, exposed through the Application Hub.
+                  </p>
+                </div>
+              </div>
+
+              <div class="embeddedAppFrameWrap">
+                <iframe
+                  class="embeddedAppFrame embeddedAppFrame--tall"
+                  data-src="/test-script-builder/"
+                  title="Test Script Builder"
                   loading="lazy"
                 ></iframe>
               </div>

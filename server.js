@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const express = require("express");
 const multer = require("multer");
+const { spawn } = require("child_process");
+const { Readable } = require("stream");
 const JSZip = require("jszip");
 const { DOMParser, XMLSerializer } = require("@xmldom/xmldom");
 
@@ -29,6 +31,9 @@ const TRAINING_BUNDLED_VIDEOS_DIR = path.join(TRAINING_BUNDLED_RESOURCES_DIR, "v
 const TRAINING_BUNDLED_DOCS_DIR = path.join(TRAINING_BUNDLED_RESOURCES_DIR, "documents");
 const TRAINING_BUNDLED_TEMPLATES_DIR = path.join(TRAINING_BUNDLED_ROOT, "trainings");
 const PERSONA_PATH = path.join(ROOT, "persona_improved.md");
+const TEST_SCRIPT_APP_DIR = path.join(ROOT, "Test_Script_and_WBS", "sm-test-script-builder");
+const TEST_SCRIPT_APP_BASE_PATH = "/test-script-builder";
+const TEST_SCRIPT_APP_PORT = Number(process.env.TEST_SCRIPT_APP_PORT || 3210);
 const INTEGRATION_TEMPLATE_PATH = path.join(PUBLIC_DIR, "resources", "2026 Integration Design Document.docx");
 const INTEGRATION_EXPORTS_DIR = path.join(ROOT, ".tmp", "integration-exports");
 const MATCHA_BASE_URL = process.env.MATCHA_BASE_URL || "https://matcha.harriscomputer.com/rest/api/v1";
@@ -74,7 +79,8 @@ const HUB_APP_DEFINITIONS = [
   { id: "troubleshooting-platform", label: "Troubleshooting Platform" },
   { id: "training-platform", label: "Training Platform" },
   { id: "subject-matter-expert", label: "Subject Matter Expert Platform" },
-  { id: "integration-sow-platform", label: "SOW to Design" }
+  { id: "integration-sow-platform", label: "SOW to Design" },
+  { id: "test-script-builder", label: "Test Script Builder" }
 ];
 const HUB_APP_ID_SET = new Set(
   HUB_APP_DEFINITIONS.map(function (appDefinition) {
@@ -134,8 +140,164 @@ initializeTrainingStorage();
 ensureDir(INTEGRATION_EXPORTS_DIR);
 ensureDir(HUB_DATA_ROOT);
 
+const childApps = {
+  testScriptBuilder: {
+    name: "test-script-builder",
+    port: TEST_SCRIPT_APP_PORT,
+    basePath: TEST_SCRIPT_APP_BASE_PATH,
+    cwd: TEST_SCRIPT_APP_DIR,
+    child: null,
+    starting: null,
+  }
+};
+
 function noCache(res) {
   res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+}
+
+function cleanupChildProcess(runtime) {
+  if (runtime.child) {
+    runtime.child.removeAllListeners();
+  }
+  runtime.child = null;
+  runtime.starting = null;
+}
+
+async function waitForChildHealth(runtime, timeoutMs) {
+  const startedAt = Date.now();
+  let lastError = null;
+  while (Date.now() - startedAt < timeoutMs) {
+    try {
+      const response = await fetch("http://127.0.0.1:" + runtime.port + "/health", {
+        cache: "no-store"
+      });
+      if (response.ok) {
+        return;
+      }
+      lastError = new Error("Child health probe returned " + response.status);
+    } catch (error) {
+      lastError = error;
+    }
+    await new Promise(function (resolve) {
+      setTimeout(resolve, 250);
+    });
+  }
+  throw lastError || new Error("Timed out waiting for child app health.");
+}
+
+async function ensureChildApp(runtime) {
+  if (!fs.existsSync(runtime.cwd)) {
+    throw new Error("Child app folder not found: " + runtime.cwd);
+  }
+
+  if (runtime.child && runtime.child.exitCode == null && !runtime.child.killed) {
+    return runtime;
+  }
+
+  if (runtime.starting) {
+    await runtime.starting;
+    return runtime;
+  }
+
+  runtime.starting = (async function () {
+    const child = spawn(process.execPath, ["server.js"], {
+      cwd: runtime.cwd,
+      env: Object.assign({}, process.env, {
+        PORT: String(runtime.port),
+      }),
+      stdio: ["ignore", "pipe", "pipe"],
+      windowsHide: true,
+    });
+
+    runtime.child = child;
+
+    child.stdout.on("data", function (chunk) {
+      process.stdout.write("[test-script-builder] " + String(chunk));
+    });
+    child.stderr.on("data", function (chunk) {
+      process.stderr.write("[test-script-builder] " + String(chunk));
+    });
+    child.on("exit", function () {
+      cleanupChildProcess(runtime);
+    });
+    child.on("error", function () {
+      cleanupChildProcess(runtime);
+    });
+
+    try {
+      await waitForChildHealth(runtime, 15000);
+    } catch (error) {
+      try {
+        child.kill();
+      } catch (_killError) {
+        // Ignore child termination errors.
+      }
+      cleanupChildProcess(runtime);
+      throw error;
+    } finally {
+      runtime.starting = null;
+    }
+  })();
+
+  await runtime.starting;
+  return runtime;
+}
+
+function setProxyResponseHeaders(sourceHeaders, res) {
+  sourceHeaders.forEach(function (value, key) {
+    const lowerKey = String(key || "").toLowerCase();
+    if (lowerKey === "content-encoding" || lowerKey === "transfer-encoding" || lowerKey === "connection") {
+      return;
+    }
+    res.setHeader(key, value);
+  });
+}
+
+async function proxyChildRequest(req, res, runtime, childPath, user) {
+  await ensureChildApp(runtime);
+
+  const childUrl = new URL("http://127.0.0.1:" + runtime.port + childPath);
+  const headers = new Headers();
+
+  Object.keys(req.headers || {}).forEach(function (key) {
+    if (key === "host" || key === "connection" || key === "content-length") {
+      return;
+    }
+    const value = req.headers[key];
+    if (Array.isArray(value)) {
+      headers.set(key, value.join(", "));
+      return;
+    }
+    if (typeof value === "string") {
+      headers.set(key, value);
+    }
+  });
+
+  headers.set("x-forwarded-user", String(user && user.name ? user.name : ""));
+  headers.set("x-forwarded-email", String(user && user.email ? user.email : ""));
+  headers.set("x-forwarded-oid", String(user && user.userId ? user.userId : ""));
+
+  const method = String(req.method || "GET").toUpperCase();
+  const fetchOptions = {
+    method,
+    headers,
+    redirect: "manual"
+  };
+
+  if (method !== "GET" && method !== "HEAD") {
+    fetchOptions.body = req;
+    fetchOptions.duplex = "half";
+  }
+
+  const response = await fetch(childUrl, fetchOptions);
+  res.status(response.status);
+  setProxyResponseHeaders(response.headers, res);
+
+  if (!response.body) {
+    return res.end();
+  }
+
+  Readable.fromWeb(response.body).pipe(res);
 }
 
 function getMatchaWriteHeaders() {
@@ -732,6 +894,24 @@ async function buildIntegrationTemplateExport(options) {
 app.get("/auth.js", function (req, res) {
   noCache(res);
   res.type("application/javascript").sendFile(path.join(ROOT, "auth.js"));
+});
+
+app.use(TEST_SCRIPT_APP_BASE_PATH, async function (req, res) {
+  const user = requireHubAppAccess(req, res, "test-script-builder");
+  if (!user) {
+    return;
+  }
+
+  const childPath = req.originalUrl.slice(TEST_SCRIPT_APP_BASE_PATH.length) || "/";
+  try {
+    await proxyChildRequest(req, res, childApps.testScriptBuilder, childPath, user);
+  } catch (error) {
+    if (!res.headersSent) {
+      res.status(502).json({ error: "Test Script Builder proxy failed: " + error.message });
+      return;
+    }
+    res.end();
+  }
 });
 
 app.use(
@@ -1744,9 +1924,21 @@ function normalizeHubAccessUser(entry) {
       )
     : [];
 
+  const nextApps = email === HUB_REQUEST_ADMIN_EMAIL
+    ? Array.from(
+        new Set(
+          apps.concat(
+            HUB_APP_DEFINITIONS.map(function (appDefinition) {
+              return appDefinition.id;
+            })
+          )
+        )
+      )
+    : apps;
+
   return {
     email,
-    apps,
+    apps: nextApps,
     updatedAtIso: String(entry && entry.updatedAtIso ? entry.updatedAtIso : new Date().toISOString())
   };
 }
@@ -2652,6 +2844,21 @@ app.use("/training-platform", function (req, res, next) {
 });
 
 app.use("/training-platform", trainingRouter);
+
+["SIGINT", "SIGTERM", "exit"].forEach(function (signalName) {
+  process.on(signalName, function () {
+    Object.keys(childApps).forEach(function (key) {
+      const runtime = childApps[key];
+      if (runtime && runtime.child && runtime.child.exitCode == null && !runtime.child.killed) {
+        try {
+          runtime.child.kill();
+        } catch (_error) {
+          // Ignore child shutdown failures.
+        }
+      }
+    });
+  });
+});
 
 app.listen(PORT, function () {
   console.log("APAC PS Application Hub running on http://localhost:" + PORT);

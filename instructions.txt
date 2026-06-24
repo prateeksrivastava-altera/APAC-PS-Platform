@@ -9,7 +9,7 @@ git push
 || LOCAL RUN ||
 $env:DEV_BYPASS_AUTH="true"
 $env:DEV_USER_NAME="Prateek Srivastava"
-$env:DEV_USER_EMAIL="prateek@example.com"
+$env:DEV_USER_EMAIL="prateek.srivastava@alterahealth.com"
 $env:MATCHA_API_KEY="1568636f2ee44def97f16f6fffdcea2b"
 $env:MATCHA_MISSION_ID="1920"
 $env:MATCHA_WORKSPACE_ID="-1"
@@ -30,7 +30,8 @@ tar.exe -a -c -f .\altera-apac-ps-hub.zip `
   persona_improved.md `
   matcha-client.js `
   AZURE_DEPLOYMENT.md `
-  APAC_AI_Training_Platform\Website
+  APAC_AI_Training_Platform\Website `
+  Test_Script_and_WBS
 
 az account set --subscription "SalesAustraliaQa"
 az webapp deploy `

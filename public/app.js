@@ -56,7 +56,8 @@
   const integrationSowFileMetaEl = document.getElementById("integrationSowFileMeta");
   const integrationResultEl = document.getElementById("integrationResult");
   const integrationSendBtnEl = document.getElementById("integrationSendBtn");
-  const trainingFrameEl = document.querySelector(".embeddedAppFrame");
+  const trainingFrameEl = document.querySelector('.embeddedAppFrame[data-src="/training-platform/"]');
+  const testScriptFrameEl = document.querySelector('.embeddedAppFrame[data-src="/test-script-builder/"]');
   const chatHistory = [];
   const TROUBLESHOOTING_ARCHIVE_KEY = "apac_ps_troubleshooting_archives";
   const currentChatMessages = [];
@@ -120,6 +121,7 @@
   const HUB_APP_DEFINITIONS = [
     { id: "troubleshooting-platform", label: "Troubleshooting Platform" },
     { id: "training-platform", label: "Training Platform" },
+    { id: "test-script-builder", label: "Test Script Builder" },
     { id: "subject-matter-expert", label: "Subject Matter Expert Platform" },
     { id: "integration-sow-platform", label: "SOW to Design" }
   ];
@@ -259,10 +261,11 @@
     if (
       viewId === "troubleshooting-platform" ||
       viewId === "training-platform" ||
+      viewId === "test-script-builder-platform" ||
       viewId === "subject-matter-expert" ||
       viewId === "integration-sow-platform"
     ) {
-      return viewId;
+      return viewId === "test-script-builder-platform" ? "test-script-builder" : viewId;
     }
     return "";
   }
@@ -282,6 +285,7 @@
     const order = [
       "troubleshooting-platform",
       "training-platform",
+      "test-script-builder-platform",
       "subject-matter-expert",
       "integration-sow-platform",
     ];
@@ -326,6 +330,9 @@
     }
     if (activeViewId === "training-platform") {
       return "Training Platform";
+    }
+    if (activeViewId === "test-script-builder-platform") {
+      return "Test Script Builder";
     }
     if (activeViewId === "integration-sow-platform") {
       return "SOW to Design (Integration)";
@@ -664,17 +671,13 @@
           return Array.isArray(selectedUser.apps) && selectedUser.apps.includes(appDefinition.id);
         })
       : [];
-    const availableApps = getAppDefinitions().filter(function (appDefinition) {
-      return !assignedApps.some(function (assignedApp) {
-        return assignedApp.id === appDefinition.id;
-      });
-    });
+    const allApps = getAppDefinitions();
 
     if (!assignedApps.some(function (appDefinition) { return appDefinition.id === userManagementState.selectedAssignedAppId; })) {
       userManagementState.selectedAssignedAppId = assignedApps[0] ? assignedApps[0].id : "";
     }
-    if (!availableApps.some(function (appDefinition) { return appDefinition.id === userManagementState.selectedAvailableAppId; })) {
-      userManagementState.selectedAvailableAppId = availableApps[0] ? availableApps[0].id : "";
+    if (!allApps.some(function (appDefinition) { return appDefinition.id === userManagementState.selectedAvailableAppId; })) {
+      userManagementState.selectedAvailableAppId = allApps[0] ? allApps[0].id : "";
     }
 
     userManagementOverlayEl.innerHTML = `
@@ -714,13 +717,13 @@
                 </select>
               </div>
               <div class="userManagementArrowColumn">
-                <button id="userManagementAddAppBtn" class="ghostButton userManagementArrowBtn" type="button"${selectedUser && userManagementState.selectedAvailableAppId ? "" : " disabled"} aria-label="Grant application access">&#9650;</button>
-                <button id="userManagementRemoveAppBtn" class="ghostButton userManagementArrowBtn" type="button"${selectedUser && userManagementState.selectedAssignedAppId ? "" : " disabled"} aria-label="Remove application access">&#9660;</button>
+                <button id="userManagementAddAppBtn" class="ghostButton userManagementArrowBtn" type="button"${selectedUser && userManagementState.selectedAvailableAppId ? "" : " disabled"} aria-label="Grant application access">&#8592;</button>
+                <button id="userManagementRemoveAppBtn" class="ghostButton userManagementArrowBtn" type="button"${selectedUser && userManagementState.selectedAssignedAppId ? "" : " disabled"} aria-label="Remove application access">&#8594;</button>
               </div>
               <div class="userManagementBoxWrap">
                 <div class="userManagementBoxLabel">All Applications</div>
                 <select id="userManagementAvailableApps" class="userManagementList" size="8">
-                  ${availableApps.map(function (appDefinition) {
+                  ${allApps.map(function (appDefinition) {
                     const selected = appDefinition.id === userManagementState.selectedAvailableAppId;
                     return '<option value="' + escapeHtml(appDefinition.id) + '"' + (selected ? " selected" : "") + ">" + escapeHtml(appDefinition.label) + "</option>";
                   }).join("")}
@@ -729,7 +732,9 @@
             </div>
           </section>
         </div>
-        ${userManagementState.message ? `<div class="hubFeedbackStatus${userManagementState.error ? " hubFeedbackStatus--error" : ""}">${escapeHtml(userManagementState.message)}</div>` : ""}
+        <div class="userManagementStatusWrap">
+          ${userManagementState.message ? `<div class="hubFeedbackStatus${userManagementState.error ? " hubFeedbackStatus--error" : ""}">${escapeHtml(userManagementState.message)}</div>` : `<div class="hubFeedbackStatus userManagementStatusPlaceholder" aria-hidden="true"></div>`}
+        </div>
       </div>
     `;
     userManagementOverlayEl.hidden = false;
@@ -1942,6 +1947,7 @@
 
   function applyAccessState() {
     const allowedApps = Array.isArray(hubAccessState.currentUser.apps) ? hubAccessState.currentUser.apps : [];
+    const user = getCurrentHubUser();
     appScopedButtons.forEach(function (element) {
       const appId = element.getAttribute("data-app-id") || "";
       const allowed = canAccessApp(appId);
@@ -1954,6 +1960,9 @@
     if (userManagementBtnEl) {
       userManagementBtnEl.hidden = !hubAccessState.currentUser.isAdmin;
     }
+
+    updateEmbeddedFrame(trainingFrameEl, "training-platform", user, "/training-platform/");
+    updateEmbeddedFrame(testScriptFrameEl, "test-script-builder", user, "/test-script-builder/");
 
     if (accessSummaryMessageEl) {
       if (!allowedApps.length) {
@@ -2040,6 +2049,34 @@
     removeWaitingMessage();
   }
 
+  function updateEmbeddedFrame(frameEl, appId, user, defaultSrc) {
+    if (!frameEl) {
+      return;
+    }
+
+    const frameSource = frameEl.getAttribute("data-src") || frameEl.getAttribute("src") || defaultSrc;
+    const frameUrl = new URL(frameSource, window.location.origin);
+    if (user?.name) {
+      frameUrl.searchParams.set("user_name", user.name);
+    } else {
+      frameUrl.searchParams.delete("user_name");
+    }
+    if (user?.email) {
+      frameUrl.searchParams.set("user_email", user.email);
+    } else {
+      frameUrl.searchParams.delete("user_email");
+    }
+
+    if (!canAccessApp(appId)) {
+      frameEl.removeAttribute("src");
+      return;
+    }
+
+    if (frameEl.getAttribute("src") !== frameUrl.toString()) {
+      frameEl.src = frameUrl.toString();
+    }
+  }
+
   function applyAuthState(state) {
     const fetchedUser = state?.user || null;
     const storedUser = readStoredHubAuthUser();
@@ -2086,25 +2123,8 @@
     } catch (_error) {
       // Ignore storage access failures.
     }
-    if (trainingFrameEl) {
-      const frameSource = trainingFrameEl.getAttribute("data-src") || trainingFrameEl.getAttribute("src") || "/training-platform/";
-      const frameUrl = new URL(frameSource, window.location.origin);
-      if (user?.name) {
-        frameUrl.searchParams.set("user_name", user.name);
-      } else {
-        frameUrl.searchParams.delete("user_name");
-      }
-      if (user?.email) {
-        frameUrl.searchParams.set("user_email", user.email);
-      } else {
-        frameUrl.searchParams.delete("user_email");
-      }
-      if (!canAccessApp("training-platform")) {
-        trainingFrameEl.removeAttribute("src");
-      } else if (trainingFrameEl.getAttribute("src") !== frameUrl.toString()) {
-        trainingFrameEl.src = frameUrl.toString();
-      }
-    }
+    updateEmbeddedFrame(trainingFrameEl, "training-platform", user, "/training-platform/");
+    updateEmbeddedFrame(testScriptFrameEl, "test-script-builder", user, "/test-script-builder/");
     if (!hubFeedbackOverlayEl?.hidden) {
       hubFeedbackFormState.application = getCurrentApplicationLabel();
       renderHubFeedbackForm();
